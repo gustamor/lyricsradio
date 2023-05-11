@@ -7,14 +7,13 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import dagger.hilt.android.AndroidEntryPoint
 import net.laenredadera.app.android.lyricsradio.ui.RadioHomeScreen
 import net.laenredadera.app.android.lyricsradio.ui.RadioStationViewModel
 import net.laenredadera.app.android.lyricsradio.ui.theme.LyricsRadioTheme
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val radioStationsViewModel: RadioStationViewModel by viewModels()

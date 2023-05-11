@@ -1,10 +1,14 @@
 package net.laenredadera.app.android.lyricsradio.data
 
+import dagger.Module
 import net.laenredadera.app.android.lyricsradio.data.model.RadioStationItem
+import net.laenredadera.app.android.lyricsradio.data.network.RadioStationsApiClient
 import net.laenredadera.app.android.lyricsradio.data.network.RetrofitService
+import javax.inject.Inject
 
-class RadioStationsRepository {
-    private val retrofitService = RetrofitService()
+class RadioStationsRepository @Inject constructor(private val retrofitService: RetrofitService) {
 
-    suspend fun getAllRadioStations() : List<RadioStationItem> = retrofitService.getAllRadioStations()
+    suspend fun getAllRadioStations(): List<RadioStationItem>? {
+        return retrofitService.getAllRadioStations()
+    }
 }

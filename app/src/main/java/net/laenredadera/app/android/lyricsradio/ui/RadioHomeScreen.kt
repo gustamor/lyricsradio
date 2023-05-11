@@ -14,7 +14,7 @@ fun RadioHomeScreen(radioStationViewModel: RadioStationViewModel) {
 
 @Composable
 fun RadioList(radioStationViewModel: RadioStationViewModel) {
-
+    radioStationViewModel.getStations()
     val stations = radioStationViewModel.stations
 
 }

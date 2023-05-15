@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,13 +21,14 @@ import javax.inject.Inject
 class RadioStationViewModel @Inject constructor(private val getRadioStationsUseCase: GetRadioStationsUseCase) :
     ViewModel() {
 
-    private val _stations = mutableListOf<RadioStationModel>()
-    val stations: List<RadioStationModel> = _stations
+    private var _stations = MutableLiveData<List<RadioStationModel>?>()
+    val stations: LiveData<List<RadioStationModel>?> = _stations
 
     fun getStations() {
-        viewModelScope.launch {
-            val _stations = getRadioStationsUseCase()
-            Log.i("GusMor", _stations.toString())
+       viewModelScope.launch {
+            _stations.value = getRadioStationsUseCase()
+           Log.i("GusMor", _stations.value.toString())
+
         }
     }
 }

@@ -17,7 +17,7 @@ class NetworkModule {
     @Provides
     fun providesRetrofit() : Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://radios.gustavomoreno.es/")
+            .baseUrl("https://api.npoint.io/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

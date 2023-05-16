@@ -43,4 +43,18 @@ class ComponentHomeScreenTest {
         }
         composeTestRule.onNodeWithContentDescription("MenuHorizImage").assertExists()
     }
+    @Test
+    fun MenuHorizontal_CheckIfItemExists() {
+        composeTestRule.setContent {
+            ItemStation()
+        }
+        composeTestRule.onNodeWithTag("MenuHorizontalItem").assertExists()
+    }
+    @Test
+    fun MenuHorizontal_CheckIfItemIsClickable() {
+        composeTestRule.setContent {
+            ItemStation()
+        }
+        composeTestRule.onNodeWithTag("MenuHorizontalItem").assertHasClickAction()
+    }
 }

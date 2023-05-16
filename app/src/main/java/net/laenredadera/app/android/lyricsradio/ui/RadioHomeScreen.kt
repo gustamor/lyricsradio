@@ -26,6 +26,7 @@ import androidx.compose.foundation.magnifier
 import androidx.compose.material.Colors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
@@ -82,7 +83,7 @@ fun RadioStationsList(radioStationsViewModel: RadioStationViewModel) {
 @Composable
 fun ItemStation() {
 
-    val darkMode by rememberSaveable { mutableStateOf<Boolean>(false) }
+    val darkMode by rememberSaveable { mutableStateOf<Boolean>(true) }
     Card(
         modifier = Modifier
             .shadow(4.dp)
@@ -93,40 +94,37 @@ fun ItemStation() {
         Row(
             Modifier
                 .fillMaxWidth()
-                .height(100.dp)
-                .background(Color.Green),
+                .height(92.dp)
+                .background(MaterialTheme.colorScheme.background),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         )
         {
             Row(
                 Modifier
-                    .height(100.dp)
-                    .padding(8.dp)
-                    .background(Color.Red),
+                    .height(92.dp)
+                    .padding(4.dp)
+                    .background(MaterialTheme.colorScheme.background),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 StationCover()
                 Column() {
-                    Text(text = "Nombre de radio", fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                    Text(text = "Nombre de radio",  fontSize = 15.sp, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(1.dp))
                     Text(text = "Cualquier cosa", fontSize = 13.sp)
                 }
             }
             Box(
                 Modifier
-                    .padding(8.dp)
+                    .padding(16.dp)
                     .size(32.dp)
+                    .clickable {  }
+                    .testTag("MenuHorizontalItem")
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.more_horiz),
                     contentDescription = "MenuHorizImage",
-
-                    colorFilter = if (darkMode) {
-                        ColorFilter.tint(Color.White)
-                    } else {
-                        ColorFilter.tint(Color.Black)
-                    }
+                    colorFilter =  ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
                 )
 
             }

@@ -29,12 +29,26 @@ class ComponentHomeScreenTest {
         composeTestRule.onNodeWithTag("ItemCard").assertHasClickAction()
     }
     @Test
-    fun StationConver_CheckIfExists() {
+    fun StationCover_CheckIfExists() {
         composeTestRule.setContent {
             StationCover()
         }
         composeTestRule.onNodeWithTag("StationCover").assertExists()
         composeTestRule.onNodeWithContentDescription("stationCoverImage").assertExists()
+    }
+    @Test
+    fun ItemText_CheckIfExistsTextOfItemTitle() {
+        composeTestRule.setContent {
+            ItemStation()
+        }
+        composeTestRule.onNodeWithTag("TextItemTitle").assertExists()
+    }
+    @Test
+    fun ItemText_CheckIfExistsTextOfItemDescription() {
+        composeTestRule.setContent {
+            ItemStation()
+        }
+        composeTestRule.onNodeWithTag("TextItemDescription").assertExists()
     }
     @Test
     fun MenuHorizontal_CheckIfImageOfMenuExists() {

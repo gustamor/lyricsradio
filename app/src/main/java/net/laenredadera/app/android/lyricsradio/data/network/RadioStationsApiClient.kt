@@ -4,6 +4,6 @@ import net.laenredadera.app.android.lyricsradio.data.model.RadioStationsDataResp
 import retrofit2.Response
 import retrofit2.http.GET
 interface RadioStationsApiClient {
-    @GET("3ca4a39444bc3d2927c6")
+    @GET("d8318bea95b9929dcf00")
     suspend fun getRadioStations() : Response<List<RadioStationsDataResponse>>
 }

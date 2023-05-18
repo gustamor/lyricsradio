@@ -8,6 +8,7 @@ data class RadioStationModel(
     @SerializedName("id") val id: Int,
     @SerializedName("name") val name: String,
     @SerializedName("cover") val cover: String,
+    @SerializedName("url") val url: String?,
     @SerializedName("description") val description: String?,
     @SerializedName("address") val address: RadioStationsAddress
 )
@@ -18,5 +19,4 @@ data class RadioStationsAddress(
     @SerializedName("pls") val pls: String?,
     @SerializedName("xspf") val xspf: String? )
 
-
-fun RadioStationItem.toData() = RadioStationModel(id,name,cover, description!!,address);
+fun RadioStationItem.toData() = RadioStationModel(id,name,cover, url,description!!,address);

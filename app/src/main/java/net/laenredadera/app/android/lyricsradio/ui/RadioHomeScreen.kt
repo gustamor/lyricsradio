@@ -84,7 +84,7 @@ fun RadioStationsList(radioStationsViewModel: RadioStationViewModel) {
             .fillMaxSize()
     ) {
         LazyColumn {
-            items(stations.orEmpty(), key = { it.id }) { station -> ItemStation(station) }
+            items(stations.orEmpty(), key = { it.id }) { station -> if (station.enabled) ItemStation(station) }
         }
     }
 }

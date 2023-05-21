@@ -1,10 +1,11 @@
-package net.laenredadera.app.android.lyricsradio.data.model
+package net.laenredadera.app.android.lyricsradio.data.network.model
 
 import com.google.gson.annotations.SerializedName
 import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModel
 
 data class RadioStationItem (
     @SerializedName("id") val id: Int,
+    @SerializedName("enabled") val enabled: Boolean,
     @SerializedName("name") val name: String,
     @SerializedName("cover") val cover: String,
     @SerializedName("url") val url: String?,

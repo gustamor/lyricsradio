@@ -1,11 +1,12 @@
 package net.laenredadera.app.android.lyricsradio.ui.model
 
 import com.google.gson.annotations.SerializedName
-import net.laenredadera.app.android.lyricsradio.data.model.RadioStationItem
-import net.laenredadera.app.android.lyricsradio.data.model.RadioStationsAddress
+import net.laenredadera.app.android.lyricsradio.data.network.model.RadioStationItem
+import net.laenredadera.app.android.lyricsradio.data.network.model.RadioStationsAddress
 
 data class RadioStationModel(
     @SerializedName("id") val id: Int,
+    @SerializedName("enabled") val enabled: Boolean = true,
     @SerializedName("name") val name: String,
     @SerializedName("cover") val cover: String,
     @SerializedName("url") val url: String?,
@@ -19,4 +20,4 @@ data class RadioStationsAddress(
     @SerializedName("pls") val pls: String?,
     @SerializedName("xspf") val xspf: String? )
 
-fun RadioStationItem.toData() = RadioStationModel(id,name,cover, url,description!!,address);
+fun RadioStationItem.toData() = RadioStationModel(id,enabled, name,cover, url,description!!,address);

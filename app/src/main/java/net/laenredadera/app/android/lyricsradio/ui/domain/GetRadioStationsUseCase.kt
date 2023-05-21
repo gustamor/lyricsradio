@@ -2,7 +2,7 @@ package net.laenredadera.app.android.lyricsradio.ui.domain
 
 import androidx.lifecycle.MutableLiveData
 import net.laenredadera.app.android.lyricsradio.data.RadioStationsRepository
-import net.laenredadera.app.android.lyricsradio.data.model.RadioStationItem
+import net.laenredadera.app.android.lyricsradio.data.network.model.RadioStationItem
 import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModel
 import javax.inject.Inject
 

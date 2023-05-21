@@ -1,4 +1,4 @@
-package net.laenredadera.app.android.lyricsradio.data.model
+package net.laenredadera.app.android.lyricsradio.data.network.model
 
 import com.google.gson.annotations.SerializedName
 

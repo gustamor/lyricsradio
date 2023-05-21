@@ -1,7 +1,7 @@
 package net.laenredadera.app.android.lyricsradio.data
 
 import dagger.Module
-import net.laenredadera.app.android.lyricsradio.data.model.RadioStationItem
+import net.laenredadera.app.android.lyricsradio.data.network.model.RadioStationItem
 import net.laenredadera.app.android.lyricsradio.data.network.RadioStationsApiClient
 import net.laenredadera.app.android.lyricsradio.data.network.RetrofitService
 import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModel

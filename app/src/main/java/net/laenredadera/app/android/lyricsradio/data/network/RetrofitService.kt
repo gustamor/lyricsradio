@@ -3,7 +3,7 @@ package net.laenredadera.app.android.lyricsradio.data.network
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import net.laenredadera.app.android.lyricsradio.data.model.RadioStationItem
+import net.laenredadera.app.android.lyricsradio.data.network.model.RadioStationItem
 import retrofit2.Retrofit
 import javax.inject.Inject
 

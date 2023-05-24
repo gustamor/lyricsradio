@@ -8,6 +8,7 @@ import net.laenredadera.app.android.lyricsradio.data.services.network.LyricsApiC
 import net.laenredadera.app.android.lyricsradio.data.services.network.RadioStationsApiClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -16,40 +17,39 @@ class StationsListNetworkModule {
 
     @Singleton
     @Provides
+    @Named("StationsClient")
+
     fun providesRetrofitRadiosList(): Retrofit {
         return Retrofit.Builder()
-         //   .baseUrl("https://api.npoint.io/")
-            .baseUrl("https://lyricas-api.laenredadera.net/")
+            .baseUrl("https://api.npoint.io/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
 
-    @Singleton
+
     @Provides
-    fun providesStationsApiClient(retrofit: Retrofit): RadioStationsApiClient {
+    @Singleton
+        fun providesStationsApiClient(@Named("StationsClient") retrofit: Retrofit): RadioStationsApiClient {
         return retrofit.create(RadioStationsApiClient::class.java)
     }
-    @Singleton
-    @Provides
-    fun providesLyricsApiClient(retrofit: Retrofit): LyricsApiClient {
-        return retrofit.create(LyricsApiClient::class.java)
-    }
+}
+@Module
+@InstallIn(SingletonComponent::class)
+class LyricsNetworkModule {
 
-/*
-    @Singleton
     @Provides
+    @Named("LyricsClient")
+    @Singleton
     fun providesRetrofitLyrics() : Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://genius-song-lyrics1.p.rapidapi.com/")
+             .baseUrl("https://lyricas-api.laenredadera.net/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
 
     @Singleton
     @Provides
-    fun providesLyricsApiClient(retrofit: Retrofit) : LyricsApiClient {
+    fun providesLyricsApiClient(@Named("LyricsClient") retrofit: Retrofit): LyricsApiClient {
         return retrofit.create(LyricsApiClient::class.java)
-    }*/
-
-
+    }
 }

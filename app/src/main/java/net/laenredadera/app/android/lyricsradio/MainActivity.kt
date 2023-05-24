@@ -28,8 +28,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LyricsScreen(lyricsViewModel)
-                //    RadioHomeScreen(radioStationsViewModel)
+                //    LyricsScreen(lyricsViewModel)
+                    RadioHomeScreen(radioStationsViewModel)
                 }
             }
         }

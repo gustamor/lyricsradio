@@ -6,7 +6,7 @@ import net.laenredadera.app.android.lyricsradio.data.services.network.RadioStati
 import net.laenredadera.app.android.lyricsradio.data.services.network.model.RadioStationItem
 import javax.inject.Inject
 
-class RadioStationsListService @Inject constructor(private val api: RadioStationsApiClient) {
+class RadioStationsListService @Inject constructor( private val api: RadioStationsApiClient) {
 
     suspend fun getAllRadioStations(): List<RadioStationItem> {
       return withContext(Dispatchers.IO) {

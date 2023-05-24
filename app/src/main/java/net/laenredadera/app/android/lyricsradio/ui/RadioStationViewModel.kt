@@ -4,17 +4,11 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import net.laenredadera.app.android.lyricsradio.data.network.model.RadioStationItem
 import net.laenredadera.app.android.lyricsradio.ui.domain.GetRadioStationsUseCase
 import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModel
-import java.io.Console
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,7 +21,7 @@ class RadioStationViewModel @Inject constructor(private val getRadioStationsUseC
     fun getStations() {
        viewModelScope.launch {
             _stations.value = getRadioStationsUseCase()
-           Log.i("GusMor", _stations.value.toString())
+           Log.i("GusMorUseCase", _stations.value.toString())
 
         }
     }

@@ -1,13 +1,12 @@
-package net.laenredadera.app.android.lyricsradio.data.network
+package net.laenredadera.app.android.lyricsradio.data.services
 
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import net.laenredadera.app.android.lyricsradio.data.network.model.RadioStationItem
-import retrofit2.Retrofit
+import net.laenredadera.app.android.lyricsradio.data.services.network.RadioStationsApiClient
+import net.laenredadera.app.android.lyricsradio.data.services.network.model.RadioStationItem
 import javax.inject.Inject
 
-class RetrofitService @Inject constructor(private val api: RadioStationsApiClient) {
+class RadioStationsListService @Inject constructor(private val api: RadioStationsApiClient) {
 
     suspend fun getAllRadioStations(): List<RadioStationItem> {
       return withContext(Dispatchers.IO) {

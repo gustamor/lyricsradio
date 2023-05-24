@@ -5,7 +5,7 @@ import androidx.compose.ui.test.assertIsNotFocused
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
-import net.laenredadera.app.android.lyricsradio.data.network.model.RadioStationsAddress
+import net.laenredadera.app.android.lyricsradio.data.services.network.model.RadioStationsAddress
 import net.laenredadera.app.android.lyricsradio.ui.ItemStation
 import net.laenredadera.app.android.lyricsradio.ui.StationCover
 import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModel

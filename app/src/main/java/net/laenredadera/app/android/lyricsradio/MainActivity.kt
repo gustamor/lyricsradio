@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
+import net.laenredadera.app.android.lyricsradio.ui.PlayerViewModel
 import net.laenredadera.app.android.lyricsradio.ui.RadioHomeScreen
 import net.laenredadera.app.android.lyricsradio.ui.RadioStationViewModel
 import net.laenredadera.app.android.lyricsradio.ui.theme.LyricsRadioTheme
@@ -17,6 +18,7 @@ import net.laenredadera.app.android.lyricsradio.ui.theme.LyricsRadioTheme
 class MainActivity : ComponentActivity() {
 
     private val radioStationsViewModel: RadioStationViewModel by viewModels()
+    private val playerViewModel: PlayerViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +29,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 
-                    RadioHomeScreen(radioStationsViewModel)
+                    RadioHomeScreen(radioStationsViewModel,playerViewModel)
                 }
             }
         }

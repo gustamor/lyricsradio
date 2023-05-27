@@ -67,7 +67,10 @@ import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModel
 fun RadioHomeScreen(radioStationsViewModel: RadioStationViewModel) {
     radioStationsViewModel.getStations()
 
-    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)
+    ) {
         RadioStationsList(radioStationsViewModel)
     }
 }
@@ -84,7 +87,9 @@ fun RadioStationsList(radioStationsViewModel: RadioStationViewModel) {
             .fillMaxSize()
     ) {
         LazyColumn {
-            items(stations.orEmpty(), key = { it.id }) { station -> if (station.enabled) ItemStation(station) }
+            items(
+                stations.orEmpty(),
+                key = { it.id }) { station -> if (station.enabled) ItemStation(station) }
         }
     }
 }
@@ -98,16 +103,16 @@ fun ItemStation(station: RadioStationModel) {
             .shadow(4.dp)
             .testTag("ItemCard")
             .background(MaterialTheme.colorScheme.background)
-            .clickable { /* TODO */},
+            .clickable { /* TODO */ },
 
         ) {
         Row(
             Modifier
                 .fillMaxWidth()
                 .height(92.dp)
-            .background(MaterialTheme.colorScheme.background),
+                .background(MaterialTheme.colorScheme.background),
 
-        verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         )
         {
@@ -115,15 +120,25 @@ fun ItemStation(station: RadioStationModel) {
                 Modifier
                     .height(92.dp)
                     .padding(4.dp)
-                .background(MaterialTheme.colorScheme.background),
+                    .background(MaterialTheme.colorScheme.background),
+                horizontalArrangement = Arrangement.SpaceBetween,
 
-            verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 StationCover(station.cover)
                 Column() {
-                    Text(text = station.name,  fontSize = 15.sp, fontWeight = FontWeight.Bold, modifier = Modifier.testTag("TextItemTitle"))
+                    Text(
+                        text = station.name,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.testTag("TextItemTitle")
+                    )
                     Spacer(modifier = Modifier.height(1.dp))
-                    Text(text = station.description ?: "cualquiera ", fontSize = 13.sp, modifier = Modifier.testTag("TextItemDescription"))
+                    Text(
+                        text = station.description ?: "cualquiera ",
+                        fontSize = 13.sp,
+                        modifier = Modifier.padding(4.dp).testTag("TextItemDescription")
+                    )
                 }
             }
             Box(
@@ -137,12 +152,13 @@ fun ItemStation(station: RadioStationModel) {
                 Image(
                     painter = painterResource(id = R.drawable.more_horiz),
                     contentDescription = "MenuHorizImage",
-                    colorFilter =  ColorFilter.tint(MaterialTheme.colorScheme.tertiary)
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.tertiary)
                 )
             }
         }
     }
 }
+
 @Composable
 fun StationCover(url: String) {
     Box(
@@ -158,15 +174,22 @@ fun StationCover(url: String) {
             model = url,
             contentDescription = "stationCoverImage",
             contentScale = ContentScale.FillBounds,
-            ) {
+        ) {
             val state = painter.state
             if (state is AsyncImagePainter.State.Loading) {
-                CircularProgressIndicator(color = Color.Red, modifier = Modifier.fillMaxSize().padding(4.dp))
-            }
-            else if (state is AsyncImagePainter.State.Error || state is AsyncImagePainter.State.Empty){
-                Image(painter = painterResource(id = R.drawable.blur), modifier = Modifier.fillMaxSize(), contentDescription = "imagenBlur")
-            }
-            else  {
+                CircularProgressIndicator(
+                    color = Color.Red,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(4.dp)
+                )
+            } else if (state is AsyncImagePainter.State.Error || state is AsyncImagePainter.State.Empty) {
+                Image(
+                    painter = painterResource(id = R.drawable.blur),
+                    modifier = Modifier.fillMaxSize(),
+                    contentDescription = "imagenBlur"
+                )
+            } else {
                 SubcomposeAsyncImageContent()
             }
         }

@@ -43,11 +43,14 @@ import coil.compose.SubcomposeAsyncImageContent
 import net.laenredadera.app.android.lyricsradio.R
 import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModel
 
+
 @Composable
 fun RadioHomeScreen(radioStationsViewModel: RadioStationViewModel, playerViewModel: PlayerViewModel) {
     radioStationsViewModel.getStations()
 
-    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background),) {
         RadioStationsList(radioStationsViewModel,playerViewModel)
     }
 }
@@ -72,22 +75,22 @@ fun RadioStationsList(radioStationsViewModel: RadioStationViewModel, playerViewM
 @Composable
 fun ItemStation(station: RadioStationModel,playerViewModel: PlayerViewModel) {
 
-    val darkMode by rememberSaveable { mutableStateOf<Boolean>(true) }
     val uri = Uri.parse(station.address.icy_url)
-    playerViewModel.addMediaItem(uri)
-    playerViewModel.prepare()
     Card(
         modifier = Modifier
             .shadow(4.dp)
             .testTag("ItemCard")
             .background(MaterialTheme.colorScheme.background)
-            .clickable { playerViewModel.play()},
+            .clickable {
+                playerViewModel.addMediaItem(uri)
+                playerViewModel.prepare()
+                playerViewModel.play() },
         ) {
         Row(
             Modifier
                 .fillMaxWidth()
                 .height(92.dp)
-            .background(MaterialTheme.colorScheme.background),
+                .background(MaterialTheme.colorScheme.background),
 
         verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -97,7 +100,7 @@ fun ItemStation(station: RadioStationModel,playerViewModel: PlayerViewModel) {
                 Modifier
                     .height(92.dp)
                     .padding(4.dp)
-                .background(MaterialTheme.colorScheme.background),
+                    .background(MaterialTheme.colorScheme.background),
 
             verticalAlignment = Alignment.CenterVertically
             ) {
@@ -143,7 +146,9 @@ fun StationCover(url: String) {
             ) {
             val state = painter.state
             if (state is AsyncImagePainter.State.Loading) {
-                CircularProgressIndicator(color = Color.Red, modifier = Modifier.fillMaxSize().padding(4.dp))
+                CircularProgressIndicator(color = Color.Red, modifier = Modifier
+                    .fillMaxSize()
+                    .padding(4.dp))
             }
             else if (state is AsyncImagePainter.State.Error || state is AsyncImagePainter.State.Empty){
                 Image(painter = painterResource(id = R.drawable.blur), modifier = Modifier.fillMaxSize(), contentDescription = "imagenBlur")

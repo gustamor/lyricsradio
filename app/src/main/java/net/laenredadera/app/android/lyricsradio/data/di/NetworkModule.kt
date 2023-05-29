@@ -1,4 +1,4 @@
-package net.laenredadera.app.android.lyricsradio.data.core
+package net.laenredadera.app.android.lyricsradio.data.di
 
 import dagger.Module
 import dagger.Provides

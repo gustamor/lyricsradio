@@ -1,4 +1,4 @@
-package net.laenredadera.app.android.lyricsradio.ui.domain
+package net.laenredadera.app.android.lyricsradio.domain
 
 import androidx.lifecycle.MutableLiveData
 import net.laenredadera.app.android.lyricsradio.data.RadioStationsRepository

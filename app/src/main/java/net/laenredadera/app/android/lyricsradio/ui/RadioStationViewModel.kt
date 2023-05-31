@@ -12,7 +12,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import net.laenredadera.app.android.lyricsradio.data.network.model.RadioStationItem
-import net.laenredadera.app.android.lyricsradio.ui.domain.GetRadioStationsUseCase
+import net.laenredadera.app.android.lyricsradio.domain.GetRadioStationsUseCase
 import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModel
 import java.io.Console
 import javax.inject.Inject

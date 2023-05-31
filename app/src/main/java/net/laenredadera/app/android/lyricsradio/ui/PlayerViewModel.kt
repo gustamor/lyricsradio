@@ -1,59 +1,56 @@
 package net.laenredadera.app.android.lyricsradio.ui
 
 import android.net.Uri
-import android.util.Log
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.util.EventLogger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import net.laenredadera.app.android.lyricsradio.BuildConfig
-import net.laenredadera.app.android.lyricsradio.ui.domain.GetExoPlayerUseCase
+import net.laenredadera.app.android.lyricsradio.data.services.RadioReceiverService
+import net.laenredadera.app.android.lyricsradio.domain.GetExoPlayerUseCase
+import net.laenredadera.app.android.lyricsradio.domain.GetMediaAddItemUseCase
+import net.laenredadera.app.android.lyricsradio.domain.GetMediaPauseUseCase
+import net.laenredadera.app.android.lyricsradio.domain.GetMediaPlayUseCase
+import net.laenredadera.app.android.lyricsradio.domain.GetMediaPrepareUseCase
+import net.laenredadera.app.android.lyricsradio.domain.GetMediaStopUseCase
 import javax.inject.Inject
 
 @HiltViewModel
-class PlayerViewModel @Inject constructor(getExoPlayerUseCase: GetExoPlayerUseCase) : ViewModel() {
+class PlayerViewModel @Inject constructor(
+    private val getMediaPlayUseCase: GetMediaPlayUseCase,
+    private val getMediaStopUseCase: GetMediaStopUseCase,
+    private val getMediaPauseUseCase: GetMediaPauseUseCase,
+    private val getMediaPrepareUseCase: GetMediaPrepareUseCase,
+    private val getMediaAddItemUseCase: GetMediaAddItemUseCase,
+) : ViewModel() {
 
-    private var _isPlaying = false
-    var isPlaying: Boolean = _isPlaying
-    private val player = getExoPlayerUseCase()
     fun prepare() {
-        if (BuildConfig.DEBUG) player.addAnalyticsListener(EventLogger())
-        player.prepare()
+        viewModelScope.launch {
+            getMediaPrepareUseCase()
+        }
     }
 
     fun addMediaItem(uri: Uri) {
         viewModelScope.launch {
-            if (player.mediaItemCount > 0) player.clearMediaItems()
-            player.addMediaItem(MediaItem.fromUri(uri))
+            getMediaAddItemUseCase(uri)
         }
     }
 
     fun play() {
         viewModelScope.launch {
-           if (_isPlaying) {
-               stop()
-               prepare()
-
-           } else {
-               player.play()
-               _isPlaying = true
-           }
-
+            getMediaPlayUseCase()
         }
     }
 
     fun pause() {
-        player.pause()
+        viewModelScope.launch {
+            getMediaPauseUseCase()
+        }
     }
 
     fun stop() {
-        player.stop()
-        _isPlaying = false
-
+        viewModelScope.launch {
+            getMediaStopUseCase()
+        }
     }
 }

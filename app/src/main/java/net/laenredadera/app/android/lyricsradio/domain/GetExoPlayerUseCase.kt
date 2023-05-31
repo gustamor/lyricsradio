@@ -1,4 +1,4 @@
-package net.laenredadera.app.android.lyricsradio.ui.domain
+package net.laenredadera.app.android.lyricsradio.domain
 
 import androidx.media3.exoplayer.ExoPlayer
 import net.laenredadera.app.android.lyricsradio.data.PlayerRepository

@@ -35,7 +35,8 @@ object PlayerModule {
                 setHandleAudioBecomingNoisy(true) }
     }
 
-
+    @Provides
+    @Singleton
     fun provideMediaSession(@ApplicationContext context: Context) : MediaSession =
         MediaSession.Builder(context, provideExoPlayer(context))
             .build()

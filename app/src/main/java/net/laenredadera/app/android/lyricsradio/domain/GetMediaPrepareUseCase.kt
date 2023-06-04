@@ -1,12 +1,13 @@
 package net.laenredadera.app.android.lyricsradio.domain
 
+import net.laenredadera.app.android.lyricsradio.data.MediaServiceRepository
 import net.laenredadera.app.android.lyricsradio.data.services.RadioReceiverService
 import javax.inject.Inject
 
 
-class GetMediaPrepareUseCase @Inject constructor(private val radioReceiverService: RadioReceiverService){
+class GetMediaPrepareUseCase @Inject constructor(private val media: MediaServiceRepository){
 
     operator fun invoke() {
-        return radioReceiverService.initPlayer()
+        return media.initPlayer()
     }
 }

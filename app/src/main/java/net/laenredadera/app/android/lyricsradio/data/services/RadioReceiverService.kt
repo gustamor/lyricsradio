@@ -22,6 +22,16 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
     private var _isPlaying by mutableStateOf(false)
     var isPlaying: Boolean = _isPlaying
 
+    /*override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        if (intent.action == Intent.ACTION_MEDIA_BUTTON) {
+            mediaSessionComponent.handleMediaButtonIntent(intent)
+        }
+        return START_NOT_STICKY
+    }*/
+
+    override fun onBind(intent: Intent): IBinder? = null
+
+
     fun initPlayer() {
         player.prepare()
     }
@@ -31,20 +41,27 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
         player.prepare()
     }
 
+    // Play the stream of the player
+    // Play() -> Unit
     fun play(){
         if (_isPlaying) {
             stop()
             prepare()
         } else {
+            prepare()
             player.play()
             _isPlaying = true
         }
     }
+    // Pause the stream of the player
+    // Pause() -> Unit
 
     fun pause(){
         player.pause()
         _isPlaying = false
     }
+    // Stop the stream of the player
+    // Stop() -> Unit
     fun stop(){
         player.stop()
         _isPlaying = false
@@ -53,12 +70,11 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
         if (player.mediaItemCount > 0) player.clearMediaItems()
         player.addMediaItem(MediaItem.fromUri(uri))
     }
-    fun relase(){
+
+    fun release(){
         player.stop()
         _isPlaying = false
         player.release()
     }
-   override fun onBind(intent: Intent?): IBinder? {
-        return null
-    }
+
 }

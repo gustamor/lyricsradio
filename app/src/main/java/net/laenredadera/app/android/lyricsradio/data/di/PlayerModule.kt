@@ -32,7 +32,10 @@ object PlayerModule {
             .build()
             .apply {
                 setAudioAttributes(provideAudioAttributes(), true)
-                setHandleAudioBecomingNoisy(true) }
+                setHandleAudioBecomingNoisy(true)
+                setWakeMode(C.WAKE_MODE_LOCAL)
+
+            }
     }
 
     @Provides

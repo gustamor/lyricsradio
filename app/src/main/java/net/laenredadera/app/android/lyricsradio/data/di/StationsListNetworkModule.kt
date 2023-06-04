@@ -1,9 +1,11 @@
 package net.laenredadera.app.android.lyricsradio.data.di
 
+import android.content.res.Resources
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import net.laenredadera.app.android.lyricsradio.R
 import net.laenredadera.app.android.lyricsradio.data.services.network.LyricsApiClient
 import net.laenredadera.app.android.lyricsradio.data.services.network.RadioStationsApiClient
 import retrofit2.Retrofit
@@ -42,7 +44,7 @@ class LyricsNetworkModule {
     @Singleton
     fun providesRetrofitLyrics() : Retrofit {
         return Retrofit.Builder()
-             .baseUrl("https://lyricas-api.laenredadera.net/")
+            .baseUrl(Resources.getSystem().getString(R.string.api_lyrics))
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

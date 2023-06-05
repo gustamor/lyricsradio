@@ -9,4 +9,5 @@ class GetLyricsUseCase @Inject constructor(private val repository: LyricsReposit
     suspend operator fun invoke(artist:String, title:String): LyricsModel {
         return repository.getLyrics(artist,title)
     }
+
 }

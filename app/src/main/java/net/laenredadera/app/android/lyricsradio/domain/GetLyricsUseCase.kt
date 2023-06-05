@@ -1,4 +1,4 @@
-package net.laenredadera.app.android.lyricsradio.ui.domain
+package net.laenredadera.app.android.lyricsradio.domain
 
 import net.laenredadera.app.android.lyricsradio.data.LyricsRepository
 import net.laenredadera.app.android.lyricsradio.ui.model.LyricsModel

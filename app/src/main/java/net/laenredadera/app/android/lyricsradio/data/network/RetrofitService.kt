@@ -9,7 +9,6 @@ import javax.inject.Inject
 
 class RetrofitService @Inject constructor(private val api: RadioStationsApiClient) {
 
-
     suspend fun getAllRadioStations(): List<RadioStationItem> {
       return withContext(Dispatchers.IO) {
           val response = api.getRadioStations()

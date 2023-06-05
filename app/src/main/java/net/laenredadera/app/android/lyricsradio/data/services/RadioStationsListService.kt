@@ -5,7 +5,6 @@ import kotlinx.coroutines.withContext
 import net.laenredadera.app.android.lyricsradio.data.services.network.RadioStationsApiClient
 import net.laenredadera.app.android.lyricsradio.data.services.network.model.RadioStationItem
 import javax.inject.Inject
-
 class RadioStationsListService @Inject constructor( private val api: RadioStationsApiClient) {
 
     suspend fun getAllRadioStations(): List<RadioStationItem> {

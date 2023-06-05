@@ -25,7 +25,7 @@ class StationsListNetworkModule {
     @Named("StationsClient")
     fun providesRetrofitRadiosList(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://api.npoint.io")
+            .baseUrl(Resources.getSystem().getString(R.string.api_radiostations))
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
@@ -46,7 +46,7 @@ class LyricsNetworkModule {
     @Singleton
     fun providesRetrofitLyrics(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("")
+            .baseUrl(Resources.getSystem().getString(R.string.api_radiostations))
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

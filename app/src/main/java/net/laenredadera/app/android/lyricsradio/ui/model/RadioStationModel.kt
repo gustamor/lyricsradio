@@ -1,8 +1,9 @@
 package net.laenredadera.app.android.lyricsradio.ui.model
 
 import com.google.gson.annotations.SerializedName
-import net.laenredadera.app.android.lyricsradio.data.network.model.RadioStationItem
-import net.laenredadera.app.android.lyricsradio.data.network.model.RadioStationsAddressResponse
+
+import net.laenredadera.app.android.lyricsradio.data.services.network.model.RadioStationItem
+import net.laenredadera.app.android.lyricsradio.data.services.network.model.RadioStationsAddressResponse
 
 data class RadioStationModel(
     @SerializedName("id") val id: Int,

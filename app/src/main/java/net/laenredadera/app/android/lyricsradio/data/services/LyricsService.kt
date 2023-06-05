@@ -14,7 +14,7 @@ class LyricsService  @Inject constructor( private val api: LyricsApiClient) {
             val response = api.getLyrics(artist,title)
             Log.i("GusMor", response.toString())
             (if (response.code() == 429) {
-                "El temido código 429"
+                throw Exception("codigo 429")
             } else if (response.code() == 200) {
                 response.body()!!
             } else {

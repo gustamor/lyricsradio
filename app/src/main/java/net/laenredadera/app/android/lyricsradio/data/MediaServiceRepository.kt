@@ -1,0 +1,35 @@
+package net.laenredadera.app.android.lyricsradio.data
+
+import android.net.Uri
+import net.laenredadera.app.android.lyricsradio.data.services.RadioReceiverService
+import javax.inject.Inject
+
+class MediaServiceRepository @Inject constructor(private val service: RadioReceiverService) {
+
+    var isPlaying: Boolean = service.isPlaying
+
+    fun initPlayer() {
+        service.initPlayer()
+    }
+
+
+    fun play() {
+        service.play()
+    }
+
+    fun pause() {
+        service.pause()
+    }
+
+    fun stop() {
+        service.stop()
+    }
+
+    fun addMedia(uri: Uri) {
+        service.addMedia(uri)
+    }
+
+    fun release() {
+        service.release()
+    }
+}

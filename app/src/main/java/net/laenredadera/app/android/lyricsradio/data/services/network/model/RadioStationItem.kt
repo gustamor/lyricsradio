@@ -10,11 +10,11 @@ data class RadioStationItem (
     @SerializedName("cover") val cover: String,
     @SerializedName("url") val url: String?,
     @SerializedName("description") val description: String,
-    @SerializedName("address") val address: RadioStationsAddress
+    @SerializedName("address") val address: RadioStationsAddressResponse
 )
 
-data class RadioStationsAddress(
-    @SerializedName("urlAddress") val url: String,
+data class RadioStationsAddressResponse(
+    @SerializedName("icy_url") val icy_url: String,
     @SerializedName("mp3u") val mp3u: String,
     @SerializedName("pls") val pls: String,
     @SerializedName("xspf") val xspf: String)

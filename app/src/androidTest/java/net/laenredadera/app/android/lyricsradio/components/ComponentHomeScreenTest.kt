@@ -1,7 +1,6 @@
 package net.laenredadera.app.android.lyricsradio.components
 
 import androidx.compose.ui.test.assertHasClickAction
-import androidx.compose.ui.test.assertIsNotFocused
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
@@ -9,7 +8,6 @@ import net.laenredadera.app.android.lyricsradio.data.services.network.model.Radi
 import net.laenredadera.app.android.lyricsradio.ui.ItemStation
 import net.laenredadera.app.android.lyricsradio.ui.StationCover
 import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModel
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 

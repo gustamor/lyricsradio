@@ -2,7 +2,6 @@ package net.laenredadera.app.android.lyricsradio.ui
 
 import android.net.Uri
 import android.util.Log
-import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,13 +18,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
@@ -39,29 +34,38 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import net.laenredadera.app.android.lyricsradio.R
+import net.laenredadera.app.android.lyricsradio.Routes
 import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModel
 
 
 @Composable
-fun RadioHomeScreen(radioStationsViewModel: RadioStationViewModel, playerViewModel: PlayerViewModel) {
+fun RadioHomeScreen(
+    navigationController: NavHostController,
+    radioStationsViewModel: RadioStationViewModel,
+    playerViewModel: PlayerViewModel
+) {
     radioStationsViewModel.getStations()
 
     Box(modifier = Modifier
         .fillMaxSize()
         .background(MaterialTheme.colorScheme.background),) {
-        RadioStationsList(radioStationsViewModel,playerViewModel)
+        RadioStationsList(radioStationsViewModel,navigationController,playerViewModel)
     }
 }
 
 @Composable
-fun RadioStationsList(radioStationsViewModel: RadioStationViewModel, playerViewModel: PlayerViewModel) {
+fun RadioStationsList(
+    radioStationsViewModel: RadioStationViewModel,
+    navigationController: NavHostController,
+    playerViewModel: PlayerViewModel
+) {
 
     val stations: List<RadioStationModel>? by radioStationsViewModel.stations.observeAsState()
     Log.i("GusMor", radioStationsViewModel.stations.value.toString())
@@ -72,13 +76,13 @@ fun RadioStationsList(radioStationsViewModel: RadioStationViewModel, playerViewM
             .fillMaxSize()
     ) {
         LazyColumn {
-            items(stations.orEmpty(),key = { it.id }) { station -> if (station.enabled) ItemStation(station,playerViewModel) }
+            items(stations.orEmpty(),key = { it.id }) { station -> if (station.enabled) ItemStation(station,navigationController,playerViewModel) }
         }
     }
 }
 
 @Composable
-fun ItemStation(station: RadioStationModel, playerViewModel: PlayerViewModel) {
+fun ItemStation(station: RadioStationModel, navigationController: NavHostController,playerViewModel: PlayerViewModel) {
 
     val uri = Uri.parse(station.address.icy_url)
     Card(
@@ -88,8 +92,7 @@ fun ItemStation(station: RadioStationModel, playerViewModel: PlayerViewModel) {
             .background(MaterialTheme.colorScheme.background)
             .clickable {
                 playerViewModel.addMediaItem(uri)
-                playerViewModel.prepare()
-                playerViewModel.play() },
+                navigationController.navigate(Routes.PlayerScreen.route) },
         ) {
         Row(
             Modifier

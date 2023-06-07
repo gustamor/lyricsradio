@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,26 +32,27 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import net.laenredadera.app.android.lyricsradio.R
+import net.laenredadera.app.android.lyricsradio.Routes
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun PlayerScreen() {
+fun PlayerScreen(navigationController: NavHostController, playerViewModel: PlayerViewModel) {
 
     Scaffold(
         topBar = {
-            PlayerTopAppBar()
+            PlayerTopAppBar(navigationController)
         },
         content = {
-            PlayerBody()
+            PlayerBody(playerViewModel)
         })
 }
 
 @Composable
-fun PlayerBody() {
+fun PlayerBody(playerViewModel: PlayerViewModel) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     Column(
@@ -100,7 +100,10 @@ fun PlayerBody() {
             Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
                 IconButton(
                     modifier = Modifier.size(96.dp),
-                    onClick = { /* doSomething() */ }) {
+                    onClick = {
+                       // playerViewModel.addMediaItem(uri)
+                        playerViewModel.prepare()
+                        playerViewModel.play() }) {
 
                     Image(
                         painter = painterResource(R.drawable.ic_play),
@@ -129,7 +132,7 @@ fun Space(size: Int) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlayerTopAppBar() {
+fun PlayerTopAppBar(navigationController: NavHostController) {
     TopAppBar(
         title = {
             Text(
@@ -139,7 +142,7 @@ fun PlayerTopAppBar() {
             )
         },
         navigationIcon = {
-            IconButton(onClick = { /* doSomething() */ }) {
+            IconButton(onClick = { navigationController.navigate(Routes.HomeScreen.route) }) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "Arrow Back to Home"

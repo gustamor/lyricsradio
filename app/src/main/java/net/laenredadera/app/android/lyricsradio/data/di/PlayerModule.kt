@@ -34,7 +34,6 @@ object PlayerModule {
                 setAudioAttributes(provideAudioAttributes(), true)
                 setHandleAudioBecomingNoisy(true)
                 setWakeMode(C.WAKE_MODE_LOCAL)
-
             }
     }
 

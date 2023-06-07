@@ -22,12 +22,12 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
     private var _isPlaying by mutableStateOf(false)
     var isPlaying: Boolean = _isPlaying
 
-    /*override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         if (intent.action == Intent.ACTION_MEDIA_BUTTON) {
-            mediaSessionComponent.handleMediaButtonIntent(intent)
+        //    mediaSessionComponent.handleMediaButtonIntent(intent)
         }
         return START_NOT_STICKY
-    }*/
+    }
 
     override fun onBind(intent: Intent): IBinder? = null
 

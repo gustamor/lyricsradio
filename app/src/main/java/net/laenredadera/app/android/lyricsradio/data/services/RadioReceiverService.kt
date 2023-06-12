@@ -18,9 +18,13 @@ import net.laenredadera.app.android.lyricsradio.BuildConfig
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaPrepareUseCase
 import javax.inject.Inject
 
+/**
+ * Radio receiver service
+ *
+ * @property player
+ * @constructor Create empty Radio receiver service
+ */
 class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : Service() {
-    private var _isPlaying by mutableStateOf(false)
-    var isPlaying: Boolean = _isPlaying
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         if (intent.action == Intent.ACTION_MEDIA_BUTTON) {
@@ -31,49 +35,65 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
 
     override fun onBind(intent: Intent): IBinder? = null
 
-
+    /**
+     * use this function to prepare de player
+     *
+     */
     fun initPlayer() {
-        player.prepare()
+        prepare()
     }
 
+    /**
+     * Prepare the player
+     *
+     */
     fun prepare(){
         if (BuildConfig.DEBUG) player.addAnalyticsListener(EventLogger())
         player.prepare()
     }
 
-    // Play the stream of the player
-    // Play() -> Unit
+    /**
+     * Plays the player
+     *
+     */
     fun play(){
-        if (_isPlaying) {
-            stop()
-            prepare()
-        } else {
-            prepare()
-            player.play()
-            _isPlaying = true
-        }
+        prepare()
+      //  player.play()
+       player.playWhenReady = true
     }
-    // Pause the stream of the player
-    // Pause() -> Unit
 
+    /**
+     * Pause the player
+     *
+     */
     fun pause(){
         player.pause()
-        _isPlaying = false
     }
-    // Stop the stream of the player
-    // Stop() -> Unit
+
+    /**
+     * Stop the player
+     *
+     */
     fun stop(){
         player.stop()
-        _isPlaying = false
     }
+
+    /**
+     * Add media
+     *
+     * @param uri
+     */
     fun addMedia(uri: Uri){
         if (player.mediaItemCount > 0) player.clearMediaItems()
         player.addMediaItem(MediaItem.fromUri(uri))
     }
 
+    /**
+     * Release
+     *
+     */
     fun release(){
         player.stop()
-        _isPlaying = false
         player.release()
     }
 

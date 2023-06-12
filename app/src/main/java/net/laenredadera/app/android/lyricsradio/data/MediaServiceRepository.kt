@@ -6,8 +6,6 @@ import javax.inject.Inject
 
 class MediaServiceRepository @Inject constructor(private val service: RadioReceiverService) {
 
-    var isPlaying: Boolean = service.isPlaying
-
     fun initPlayer() {
         service.initPlayer()
     }

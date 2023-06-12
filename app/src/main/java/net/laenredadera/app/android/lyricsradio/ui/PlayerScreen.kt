@@ -1,6 +1,7 @@
 package net.laenredadera.app.android.lyricsradio.ui
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +24,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -55,6 +60,8 @@ fun PlayerScreen(navigationController: NavHostController, playerViewModel: Playe
 fun PlayerBody(playerViewModel: PlayerViewModel) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
+    val playerStateFlow = playerViewModel.UiIsPlying.observeAsState(false)
+
     Column(
         modifier = Modifier
             .padding(8.dp)
@@ -97,19 +104,42 @@ fun PlayerBody(playerViewModel: PlayerViewModel) {
             )
 
             Space(32)
+
             Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-                IconButton(
+                    IconButton(
                     modifier = Modifier.size(96.dp),
                     onClick = {
-                       // playerViewModel.addMediaItem(uri)
-                        playerViewModel.prepare()
-                        playerViewModel.play() }) {
+                        Log.i("GusMor", playerStateFlow.value.toString())
 
-                    Image(
-                        painter = painterResource(R.drawable.ic_play),
-                        modifier = Modifier.fillMaxSize(),
-                        contentDescription = "playButton"
-                    )
+                        if (playerStateFlow.value == false) {
+                            playerViewModel.prepare()
+                            playerViewModel.play().apply {
+                                Log.i("GusMor1", playerViewModel.UiIsPlying.value.toString())
+
+                            }
+
+                        } else {
+                            playerViewModel.stop().apply {
+                                Log.i("GusMor2", playerViewModel.UiIsPlying.value.toString())
+
+                            }
+
+                        }
+                    }) {
+                    if (playerStateFlow.value == false) {
+                        Image(
+                            painter = (painterResource(R.drawable.ic_play)),
+                            modifier = Modifier.fillMaxSize(),
+                            contentDescription = "playButton"
+                        )
+                    } else {
+                        Image(
+                            painter = (painterResource(R.drawable.ic_pause)),
+                            modifier = Modifier.fillMaxSize(),
+                            contentDescription = "pauseButton"
+                        )
+                    }
+
                 }
             }
         }

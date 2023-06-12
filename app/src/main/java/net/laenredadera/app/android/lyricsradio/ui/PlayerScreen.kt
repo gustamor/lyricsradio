@@ -24,10 +24,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -60,7 +57,7 @@ fun PlayerScreen(navigationController: NavHostController, playerViewModel: Playe
 fun PlayerBody(playerViewModel: PlayerViewModel) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
-    val playerStateFlow = playerViewModel.UiIsPlying.observeAsState(false)
+    val playerStateFlow = playerViewModel.uiIsPlying.observeAsState(false)
 
     Column(
         modifier = Modifier
@@ -114,13 +111,13 @@ fun PlayerBody(playerViewModel: PlayerViewModel) {
                         if (playerStateFlow.value == false) {
                             playerViewModel.prepare()
                             playerViewModel.play().apply {
-                                Log.i("GusMor1", playerViewModel.UiIsPlying.value.toString())
+                                Log.i("GusMor1", playerViewModel.uiIsPlying.value.toString())
 
                             }
 
                         } else {
                             playerViewModel.stop().apply {
-                                Log.i("GusMor2", playerViewModel.UiIsPlying.value.toString())
+                                Log.i("GusMor2", playerViewModel.uiIsPlying.value.toString())
 
                             }
 

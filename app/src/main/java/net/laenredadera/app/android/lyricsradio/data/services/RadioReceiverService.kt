@@ -9,8 +9,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Metadata
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.analytics.AnalyticsListener
 import androidx.media3.exoplayer.util.EventLogger
+import androidx.media3.extractor.metadata.icy.IcyHeaders
+import androidx.media3.extractor.metadata.icy.IcyInfo
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import kotlinx.coroutines.coroutineScope
@@ -26,6 +31,15 @@ import javax.inject.Inject
  */
 class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : Service() {
 
+    private val _isPlaying = mutableStateOf(false)
+    var isPlaying = _isPlaying
+
+    private val _artistName = mutableStateOf(" ")
+    var artistName = _artistName
+
+    private val _songName = mutableStateOf("")
+    var songName = _songName
+
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         if (intent.action == Intent.ACTION_MEDIA_BUTTON) {
         //    mediaSessionComponent.handleMediaButtonIntent(intent)
@@ -34,6 +48,7 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
     }
 
     override fun onBind(intent: Intent): IBinder? = null
+
 
     /**
      * use this function to prepare de player
@@ -60,6 +75,7 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
         prepare()
       //  player.play()
        player.playWhenReady = true
+        _isPlaying.value = true
     }
 
     /**
@@ -68,6 +84,8 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
      */
     fun pause(){
         player.pause()
+        _isPlaying.value = false
+
     }
 
     /**
@@ -76,6 +94,8 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
      */
     fun stop(){
         player.stop()
+        _isPlaying.value = false
+
     }
 
     /**
@@ -95,6 +115,42 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
     fun release(){
         player.stop()
         player.release()
+
+    }
+
+    fun icyMetadata() {
+        player.addAnalyticsListener(@UnstableApi object : AnalyticsListener {
+            override fun onMetadata(
+                eventTime: AnalyticsListener.EventTime,
+                metadata: Metadata
+            ) {
+                super.onMetadata(eventTime, metadata)
+                for (i in 0 until metadata.length()) {
+                    val entry = metadata[i]
+                    Log.i("GusMorEntry", metadata.toString())
+
+                    // Comprueba si el tipo de metadatos es el que buscas Icyinfo
+                    if (entry is IcyInfo) {
+                        val _artistTitle: String = entry.title.orEmpty()
+                        if (_artistTitle.isNotEmpty()) {
+                           val partes = _artistTitle.split(" - ")
+                            if (partes.size >= 2) {
+                                _artistName.value = partes[0]
+                                _songName.value = partes[1]
+                            } else {
+                                _artistName.value = " "
+                                _songName.value = " "
+
+                            }
+
+                        }
+
+                    }
+                }
+            }
+
+
+        })
     }
 
 }

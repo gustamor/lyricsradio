@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                   //  PlayerScreen()
                     val navigationController = rememberNavController()
-                    NavHost(navController = navigationController, startDestination = Routes.PlayerScreen.route){
+                    NavHost(navController = navigationController, startDestination = Routes.HomeScreen.route){
                         composable(Routes.HomeScreen.route) { RadioHomeScreen(navigationController,radioStationsViewModel,playerViewModel)}
                         composable(Routes.PlayerScreen.route) {PlayerScreen(navigationController,playerViewModel)}
 

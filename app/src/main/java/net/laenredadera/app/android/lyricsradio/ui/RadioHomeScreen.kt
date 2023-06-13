@@ -91,6 +91,7 @@ fun ItemStation(station: RadioStationModel, navigationController: NavHostControl
             .testTag("ItemCard")
             .background(MaterialTheme.colorScheme.background)
             .clickable {
+                playerViewModel.addStationModel(station)
                 playerViewModel.addMediaItem(uri)
                 navigationController.navigate(Routes.PlayerScreen.route) },
         ) {

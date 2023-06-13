@@ -9,4 +9,4 @@ data class LyricsModel (
     @SerializedName("lyrics") val lyrics:String
     )
 
-fun LyricsResponse.toData() = LyricsModel(artist,title,lyrics);
+fun LyricsResponse.toData() = LyricsModel(artist,title,lyrics)

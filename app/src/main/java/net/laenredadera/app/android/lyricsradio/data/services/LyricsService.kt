@@ -19,7 +19,7 @@ class LyricsService  @Inject constructor( private val api: LyricsApiClient) {
                 response.body()!!
             } else {
                 throw Exception("Lyrics API call failed")
-            }) as LyricsResponse
+            })
         }
     }
 }

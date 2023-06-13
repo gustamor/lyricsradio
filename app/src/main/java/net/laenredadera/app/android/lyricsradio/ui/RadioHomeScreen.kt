@@ -117,7 +117,7 @@ fun ItemStation(station: RadioStationModel, navigationController: NavHostControl
             verticalAlignment = Alignment.CenterVertically
             ) {
                 StationCover(station.cover)
-                Column() {
+                Column {
                     Text(text = station.name,  fontSize = 15.sp, fontWeight = FontWeight.Bold, modifier = Modifier.testTag("TextItemTitle"))
                     Spacer(modifier = Modifier.height(1.dp))
                     Text(text = station.description ?: "cualquiera ", fontSize = 13.sp, modifier = Modifier.testTag("TextItemDescription"))

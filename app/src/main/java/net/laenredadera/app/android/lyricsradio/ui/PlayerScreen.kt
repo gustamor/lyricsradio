@@ -42,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImagePainter
@@ -66,7 +67,7 @@ fun PlayerScreen(navigationController: NavHostController, playerViewModel: Playe
 }
 
 @Composable
-fun PlayerBody(playerViewModel: PlayerViewModel) {
+fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()){
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val station = playerViewModel.station.observeAsState()

@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class RadioStationsRepository @Inject constructor(private val retrofitService: RetrofitService) {
 
-    suspend fun getAllRadioStations(): List<RadioStationModel>? {
+    suspend fun getAllRadioStations(): List<RadioStationModel> {
         val response: List<RadioStationItem> = retrofitService.getAllRadioStations()
         return response.map { it.toData() }
     }

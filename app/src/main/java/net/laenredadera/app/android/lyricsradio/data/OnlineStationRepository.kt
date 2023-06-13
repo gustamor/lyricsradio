@@ -18,7 +18,7 @@ class OnlineStationRepository @Inject constructor(
 
     }
 
-    suspend fun getArtist(): String? {
+    suspend fun getArtist(): String {
 
             service.icyMetadata()
 
@@ -26,7 +26,7 @@ class OnlineStationRepository @Inject constructor(
 
     }
 
-    suspend fun getTitle(): String? {
+    suspend fun getTitle(): String {
 
             service.icyMetadata()
             return service.songName.value

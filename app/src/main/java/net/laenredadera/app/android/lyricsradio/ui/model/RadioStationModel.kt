@@ -22,4 +22,4 @@ data class RadioStationsAddress(
     @SerializedName("pls") val pls: String?,
     @SerializedName("xspf") val xspf: String? )
 fun RadioStationsAddressResponse.toData() = RadioStationsAddress(icy_url,mp3u,pls,xspf)
-fun RadioStationItem.toData() = RadioStationModel(id,enabled, name,cover, url,description,address.toData());
+fun RadioStationItem.toData() = RadioStationModel(id,enabled, name,cover, url,description,address.toData())

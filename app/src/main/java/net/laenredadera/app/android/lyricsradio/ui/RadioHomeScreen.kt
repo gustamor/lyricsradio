@@ -2,6 +2,7 @@ package net.laenredadera.app.android.lyricsradio.ui
 
 import android.net.Uri
 import android.util.Log
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,6 +32,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -40,6 +42,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
+import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import net.laenredadera.app.android.lyricsradio.R
 import net.laenredadera.app.android.lyricsradio.Routes
 import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModel
@@ -120,6 +123,7 @@ fun ItemStation(station: RadioStationModel, navigationController: NavHostControl
                     Text(text = station.description ?: "cualquiera ", fontSize = 13.sp, modifier = Modifier.testTag("TextItemDescription"))
                 }
             }
+
             Box(
                 Modifier
                     .padding(16.dp)
@@ -128,8 +132,9 @@ fun ItemStation(station: RadioStationModel, navigationController: NavHostControl
                     .background(MaterialTheme.colorScheme.background)
                     .testTag("MenuHorizontalItem")
             ) {
+                val drawable = AppCompatResources.getDrawable(LocalContext.current, R.drawable.more_horiz)
                 Image(
-                    painter = painterResource(id = R.drawable.more_horiz),
+                    painter = rememberDrawablePainter(drawable = drawable),
                     contentDescription = "MenuHorizImage",
                     colorFilter =  ColorFilter.tint(MaterialTheme.colorScheme.tertiary)
                 )
@@ -162,7 +167,9 @@ fun StationCover(url: String) {
                     .padding(4.dp))
             }
             else if (state is AsyncImagePainter.State.Error || state is AsyncImagePainter.State.Empty){
-                Image(painter = painterResource(id = R.drawable.blur), modifier = Modifier.fillMaxSize(), contentDescription = "imagenBlur")
+                val drawable = AppCompatResources.getDrawable(LocalContext.current, R.drawable.blur)
+                Image(painter = rememberDrawablePainter(drawable = drawable),
+                    modifier = Modifier.fillMaxSize(), contentDescription = "imagenBlur")
             }
             else  {
                 SubcomposeAsyncImageContent()

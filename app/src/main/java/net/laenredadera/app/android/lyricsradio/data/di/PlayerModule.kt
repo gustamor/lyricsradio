@@ -1,8 +1,11 @@
 package net.laenredadera.app.android.lyricsradio.data.di
 
 import android.content.Context
+import android.util.Log
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import dagger.Module
@@ -34,8 +37,10 @@ object PlayerModule {
                 setAudioAttributes(provideAudioAttributes(), true)
                 setHandleAudioBecomingNoisy(true)
                 setWakeMode(C.WAKE_MODE_LOCAL)
+
             }
     }
+
 
     @Provides
     @Singleton

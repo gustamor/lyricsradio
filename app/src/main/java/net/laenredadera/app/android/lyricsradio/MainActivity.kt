@@ -4,13 +4,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+
+
 import dagger.hilt.android.AndroidEntryPoint
 import net.laenredadera.app.android.lyricsradio.ui.PlayerScreen
 import net.laenredadera.app.android.lyricsradio.ui.PlayerViewModel
@@ -32,7 +37,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                  //  PlayerScreen()
+
                     val navigationController = rememberNavController()
                     NavHost(navController = navigationController, startDestination = Routes.HomeScreen.route){
                         composable(Routes.HomeScreen.route) { RadioHomeScreen(navigationController,radioStationsViewModel,playerViewModel)}

@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -25,9 +26,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -38,7 +42,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
+import kotlinx.coroutines.flow.collectLatest
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import net.laenredadera.app.android.lyricsradio.R
 import net.laenredadera.app.android.lyricsradio.Routes
@@ -60,7 +69,9 @@ fun PlayerScreen(navigationController: NavHostController, playerViewModel: Playe
 fun PlayerBody(playerViewModel: PlayerViewModel) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
+    val station = playerViewModel.station.observeAsState()
     val playerStateFlow = playerViewModel.uiIsPlying.observeAsState(false)
+    val song by playerViewModel.song.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -71,33 +82,56 @@ fun PlayerBody(playerViewModel: PlayerViewModel) {
     ) {
         Column(Modifier.weight(6f)) {
             Space(64)
-            val blur = AppCompatResources.getDrawable(LocalContext.current, R.drawable.blur)
-            Image(
-                painter = rememberDrawablePainter (drawable = blur),
-                modifier = Modifier
-                    .aspectRatio(1f)
-                    .width(screenWidth / 2),
-                contentScale = ContentScale.Fit,
+
+            SubcomposeAsyncImage(
+                model = station.value?.cover ?: "",
                 contentDescription = "albumCover",
-            )
+                contentScale = ContentScale.Fit,
+                modifier = Modifier.width(screenWidth).scale(1f)
+            ) {
+                val state = painter.state
+                when (state) {
+                    is AsyncImagePainter.State.Loading -> {
+                        CircularProgressIndicator(
+                            color = Color.Red, modifier = Modifier
+                                .fillMaxSize()
+                                .padding(4.dp)
+                        )
+                    }
+
+                    is AsyncImagePainter.State.Error, is AsyncImagePainter.State.Empty -> {
+                        val blur = AppCompatResources.getDrawable(LocalContext.current, R.drawable.blur)
+                        Image(
+                            painter = rememberDrawablePainter(drawable = blur),
+                            modifier = Modifier.fillMaxSize(),
+                            contentDescription = "imagenBlur"
+                        )
+                    }
+
+                    else -> {
+                        SubcomposeAsyncImageContent()
+                    }
+                }
+            }
+
         }
         Column(Modifier.weight(4f)) {
             Space(16)
             Text(
-                text = "Radio Name forever",
+                text = station.value?.name ?: " Radio Name forever",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.testTag("StationNameInPlayer")
             )
             Space(4)
             Text(
-                text = "Artist",
+                text = song[0] ?: "Radio name",
                 fontSize = 21.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.testTag("ArtistNameInPlayer")
             )
             Text(
-                text = "song name",
+                text = song[1] ?: "radio name",
                 fontSize = 21.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.testTag("SongTitleInPlayer")
@@ -172,7 +206,7 @@ fun PlayerTopAppBar(navigationController: NavHostController) {
             )
         },
         navigationIcon = {
-            IconButton(onClick = { navigationController.navigate(Routes.HomeScreen.route) }) {
+            IconButton(onClick = {  navigationController.navigate(Routes.HomeScreen.route) }) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "Arrow Back to Home"

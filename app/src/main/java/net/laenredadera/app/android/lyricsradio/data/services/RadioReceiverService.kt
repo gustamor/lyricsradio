@@ -5,9 +5,11 @@ import android.content.Intent
 import android.net.Uri
 import android.os.IBinder
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LiveData
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Metadata
 import androidx.media3.common.util.UnstableApi
@@ -34,6 +36,9 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
     private val _isPlaying = mutableStateOf(false)
     var isPlaying = _isPlaying
 
+    private val _stationName = mutableStateOf("Shoutcast Station")
+    var stationName = _stationName
+
     private val _artistName = mutableStateOf(" ")
     var artistName = _artistName
 
@@ -42,7 +47,7 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         if (intent.action == Intent.ACTION_MEDIA_BUTTON) {
-        //    mediaSessionComponent.handleMediaButtonIntent(intent)
+            //    mediaSessionComponent.handleMediaButtonIntent(intent)
         }
         return START_NOT_STICKY
     }
@@ -62,7 +67,7 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
      * Prepare the player
      *
      */
-    fun prepare(){
+    fun prepare() {
         if (BuildConfig.DEBUG) player.addAnalyticsListener(EventLogger())
         player.prepare()
     }
@@ -71,10 +76,10 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
      * Plays the player
      *
      */
-    fun play(){
+    fun play() {
         prepare()
-      //  player.play()
-       player.playWhenReady = true
+        //  player.play()
+        player.playWhenReady = true
         _isPlaying.value = true
     }
 
@@ -82,7 +87,7 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
      * Pause the player
      *
      */
-    fun pause(){
+    fun pause() {
         player.pause()
         _isPlaying.value = false
 
@@ -92,7 +97,7 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
      * Stop the player
      *
      */
-    fun stop(){
+    fun stop() {
         player.stop()
         _isPlaying.value = false
 
@@ -103,7 +108,7 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
      *
      * @param uri
      */
-    fun addMedia(uri: Uri){
+    fun addMedia(uri: Uri) {
         if (player.mediaItemCount > 0) player.clearMediaItems()
         player.addMediaItem(MediaItem.fromUri(uri))
     }
@@ -112,7 +117,7 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
      * Release
      *
      */
-    fun release(){
+    fun release() {
         player.stop()
         player.release()
 
@@ -126,31 +131,31 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
             ) {
                 super.onMetadata(eventTime, metadata)
                 for (i in 0 until metadata.length()) {
-                    val entry = metadata[i]
-                    Log.i("GusMorEntry", metadata.toString())
+                    val info = metadata[i]
 
-                    // Comprueba si el tipo de metadatos es el que buscas Icyinfo
-                    if (entry is IcyInfo) {
-                        val _artistTitle: String = entry.title.orEmpty()
-                        if (_artistTitle.isNotEmpty()) {
-                           val partes = _artistTitle.split(" - ")
-                            if (partes.size >= 2) {
-                                _artistName.value = partes[0]
-                                _songName.value = partes[1]
-                            } else {
-                                _artistName.value = " "
-                                _songName.value = " "
+                    Log.i("GusMorRadio", info.toString())
 
-                            }
-
+                    if (info is IcyInfo) {
+                        val _artistTitle: String = info.title.orEmpty()
+                        val partes = _artistTitle.split(" - ")
+                        if (partes.size >= 2) {
+                            _artistName.value = partes[0]
+                            _songName.value = partes[1]
+                        } else {
+                            _artistName.value = " "
+                            _songName.value = " "
                         }
-
+                    } else {
+                        _artistName.value = " "
+                        _songName.value = " "
                     }
-                }
+
+
             }
+        }
 
+    })
 
-        })
-    }
+}
 
 }

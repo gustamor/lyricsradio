@@ -5,16 +5,21 @@ import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
@@ -31,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -67,44 +73,53 @@ fun PlayerScreen(navigationController: NavHostController, playerViewModel: Playe
 }
 
 @Composable
-fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()){
+fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
+    val heightSize = screenWidth + 300.dp
     val station = playerViewModel.station.observeAsState()
     val playerStateFlow = playerViewModel.uiIsPlying.observeAsState(false)
     val song by playerViewModel.song.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
-            .padding(8.dp)
+            .padding(top = 64.dp, start = 16.dp)
             .fillMaxSize()
-            .background(Color.White),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .border(1.dp, Color.Red),
     ) {
-        Column(Modifier.weight(6f)) {
+        Box(Modifier.weight(1.4f)) {
             Space(64)
-
             SubcomposeAsyncImage(
                 model = station.value?.cover ?: "",
                 contentDescription = "albumCover",
-                contentScale = ContentScale.Fit,
-                modifier = Modifier.width(screenWidth).scale(1f)
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .width(screenWidth)
+                    .height(screenWidth)
+                    .scale(1f)
+                    .clip(RoundedCornerShape(64.dp))
             ) {
                 val state = painter.state
                 when (state) {
                     is AsyncImagePainter.State.Loading -> {
                         CircularProgressIndicator(
-                            color = Color.Red, modifier = Modifier
+                            color = Color.Red,
+                            modifier = Modifier
                                 .fillMaxSize()
                                 .padding(4.dp)
+                                .clip(RoundedCornerShape(16.dp)),
                         )
                     }
-
                     is AsyncImagePainter.State.Error, is AsyncImagePainter.State.Empty -> {
-                        val blur = AppCompatResources.getDrawable(LocalContext.current, R.drawable.blur)
+                        val blur = AppCompatResources.getDrawable(
+                            LocalContext.current,
+                            R.drawable.blur
+                        )
                         Image(
                             painter = rememberDrawablePainter(drawable = blur),
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(16.dp)),
                             contentDescription = "imagenBlur"
                         )
                     }
@@ -116,52 +131,52 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()){
             }
 
         }
-        Column(Modifier.weight(4f)) {
-            Space(16)
+
+        Column(Modifier.weight(1f)  ,
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Space(2)
             Text(
                 text = station.value?.name ?: " Radio Name forever",
-                fontSize = 28.sp,
+                fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.testTag("StationNameInPlayer")
             )
-            Space(4)
+            Space(1)
             Text(
                 text = song[0] ?: "Radio name",
-                fontSize = 21.sp,
+                fontSize = 19.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.testTag("ArtistNameInPlayer")
             )
             Text(
                 text = song[1] ?: "radio name",
-                fontSize = 21.sp,
+                fontSize = 19.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.testTag("SongTitleInPlayer")
             )
 
-            Space(32)
+            Space(4)
 
-            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-                    IconButton(
-                    modifier = Modifier.size(96.dp),
+            Row(horizontalArrangement = Arrangement.Center , modifier = Modifier.fillMaxWidth().height(120.dp).border(1.dp, Color.Green)) {
+                IconButton(
+                    modifier = Modifier.size(112.dp).padding(bottom = 16.dp, top= 12.dp),
                     onClick = {
                         Log.i("GusMor", playerStateFlow.value.toString())
 
-                        if (playerStateFlow.value == false) {
+                        if (!playerStateFlow.value) {
                             playerViewModel.prepare()
                             playerViewModel.play().apply {
                                 Log.i("GusMor1", playerViewModel.uiIsPlying.value.toString())
-
                             }
-
                         } else {
                             playerViewModel.stop().apply {
                                 Log.i("GusMor2", playerViewModel.uiIsPlying.value.toString())
-
                             }
 
                         }
                     }) {
-                    if (playerStateFlow.value == false) {
+                    if (!playerStateFlow.value) {
                         Image(
                             painter = (painterResource(R.drawable.ic_play)),
                             modifier = Modifier.fillMaxSize(),
@@ -178,8 +193,6 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()){
                 }
             }
         }
-
-
     }
 }
 
@@ -207,7 +220,7 @@ fun PlayerTopAppBar(navigationController: NavHostController) {
             )
         },
         navigationIcon = {
-            IconButton(onClick = {  navigationController.navigate(Routes.HomeScreen.route) }) {
+            IconButton(onClick = { navigationController.navigate(Routes.HomeScreen.route) }) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "Arrow Back to Home"

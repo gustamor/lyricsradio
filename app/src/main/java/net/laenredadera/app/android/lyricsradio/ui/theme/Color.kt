@@ -10,6 +10,8 @@ val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
+val Softblack = Color(0xFF1C1C1C)
+
 val RadioGreen = Color (0xFF1EB980)
 val RadioDarKGreen = Color (0xFF45D56)
 val RadioOrange = Color (0xFFFF6859)

@@ -1,0 +1,13 @@
+Index: app/src/main/java/net/laenredadera/app/android/lyricsradio/data/MediaServiceRepository.kt
+===================================================================
+diff --git a/app/src/main/java/net/laenredadera/app/android/lyricsradio/data/MediaServiceRepository.kt b/app/src/main/java/net/laenredadera/app/android/lyricsradio/data/MediaServiceRepository.kt
+--- a/app/src/main/java/net/laenredadera/app/android/lyricsradio/data/MediaServiceRepository.kt	
++++ b/app/src/main/java/net/laenredadera/app/android/lyricsradio/data/MediaServiceRepository.kt	
+@@ -12,7 +12,6 @@
+         service.initPlayer()
+     }
+ 
+-
+     fun play() {
+         service.play()
+     }

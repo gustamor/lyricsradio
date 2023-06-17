@@ -1,0 +1,17 @@
+Index: app/src/main/java/net/laenredadera/app/android/lyricsradio/data/RadioStationsRepository.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package net.laenredadera.app.android.lyricsradio.data\n\nimport dagger.Module\nimport net.laenredadera.app.android.lyricsradio.data.network.model.RadioStationItem\nimport net.laenredadera.app.android.lyricsradio.data.network.RadioStationsApiClient\nimport net.laenredadera.app.android.lyricsradio.data.network.RetrofitService\nimport net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModel\nimport net.laenredadera.app.android.lyricsradio.ui.model.toData\nimport javax.inject.Inject\n\nclass RadioStationsRepository @Inject constructor(private val retrofitService: RetrofitService) {\n\n    suspend fun getAllRadioStations(): List<RadioStationModel>? {\n        val response: List<RadioStationItem> = retrofitService.getAllRadioStations()\n        return response.map { it.toData() }\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/net/laenredadera/app/android/lyricsradio/data/RadioStationsRepository.kt b/app/src/main/java/net/laenredadera/app/android/lyricsradio/data/RadioStationsRepository.kt
+--- a/app/src/main/java/net/laenredadera/app/android/lyricsradio/data/RadioStationsRepository.kt	(revision 3c72c109ecc298770892a0f3ed65d8a18264f7c7)
++++ b/app/src/main/java/net/laenredadera/app/android/lyricsradio/data/RadioStationsRepository.kt	(date 1685926685988)
+@@ -14,4 +14,4 @@
+         val response: List<RadioStationItem> = retrofitService.getAllRadioStations()
+         return response.map { it.toData() }
+     }
+-}
+\ No newline at end of file
++}

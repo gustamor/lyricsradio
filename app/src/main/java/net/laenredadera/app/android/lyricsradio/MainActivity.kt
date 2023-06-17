@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 
 
 import dagger.hilt.android.AndroidEntryPoint
+import net.laenredadera.app.android.lyricsradio.ui.MainScreen
 import net.laenredadera.app.android.lyricsradio.ui.PlayerScreen
 import net.laenredadera.app.android.lyricsradio.ui.PlayerViewModel
 import net.laenredadera.app.android.lyricsradio.ui.RadioHomeScreen
@@ -35,15 +36,15 @@ class MainActivity : ComponentActivity() {
             LyricsRadioTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = Color(0xFF1C1C1C)
                 ) {
-
-                    val navigationController = rememberNavController()
+        MainScreen()
+                  /*  val navigationController = rememberNavController()
                     NavHost(navController = navigationController, startDestination = Routes.HomeScreen.route){
                         composable(Routes.HomeScreen.route) { RadioHomeScreen(navigationController,radioStationsViewModel,playerViewModel)}
                         composable(Routes.PlayerScreen.route) {PlayerScreen(navigationController,playerViewModel)}
 
-                    }
+                    }*/
 
                 }
             }

@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -70,6 +71,7 @@ fun MainBody() {
                 .height(128.dp)
                 .horizontalScroll(rememberScrollState())
         ) {
+
             RoundedBordersSquareImage(
                 painter = painterResource(id = R.drawable.blur),
                 width = 176.dp,
@@ -148,10 +150,13 @@ fun MainBody() {
         Space(4)
         TitleHeaderMain("Now Playing", 24)
         Space(4)
-        ItemNowPlaying()
-        ItemNowPlaying()
-        ItemNowPlaying()
-        ItemNowPlaying()
+        Column(Modifier.verticalScroll(rememberScrollState())) {
+            ItemNowPlaying()
+            ItemNowPlaying()
+            ItemNowPlaying()
+            ItemNowPlaying()
+        }
+
 
 
     }
@@ -173,11 +178,14 @@ fun SubHeaderMain(title: String, textButton: String?) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         TitleHeaderMain(title, 21)
         if (textButton != null) {
+
             Button(
                 onClick = { /* Your onClick code here */ },
                 colors = ButtonDefaults.buttonColors(Color.Magenta),
                 shape = RoundedCornerShape(32.dp),
-                modifier = Modifier.height(32.dp).padding(end=16.dp),
+                modifier = Modifier
+                    .height(32.dp)
+                    .padding(end = 16.dp),
             ) {
                 Text(text = textButton)
             }
@@ -226,8 +234,8 @@ fun RoundedBordersRectangleImage(
         contentScale = ContentScale.FillBounds,
          modifier = modifier
              .height(height)
-            .width(w.dp)
-            .clip(RoundedCornerShape(32.dp))
+             .width(w.dp)
+             .clip(RoundedCornerShape(32.dp))
     )
 }
 

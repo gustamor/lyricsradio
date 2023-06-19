@@ -5,24 +5,15 @@ import android.content.Intent
 import android.net.Uri
 import android.os.IBinder
 import android.util.Log
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LiveData
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Metadata
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.analytics.AnalyticsListener
 import androidx.media3.exoplayer.util.EventLogger
-import androidx.media3.extractor.metadata.icy.IcyHeaders
 import androidx.media3.extractor.metadata.icy.IcyInfo
-import androidx.media3.session.MediaSession
-import androidx.media3.session.MediaSessionService
-import kotlinx.coroutines.coroutineScope
 import net.laenredadera.app.android.lyricsradio.BuildConfig
-import net.laenredadera.app.android.lyricsradio.domain.GetMediaPrepareUseCase
 import javax.inject.Inject
 
 /**
@@ -157,5 +148,10 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
     })
 
 }
+
+    fun setVolume(vol: Float) {
+        player.volume = vol
+
+    }
 
 }

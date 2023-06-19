@@ -74,7 +74,6 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
     val station = playerViewModel.station.observeAsState()
     val playerStateFlow = playerViewModel.uiIsPlying.observeAsState(false)
     val song by playerViewModel.song.collectAsStateWithLifecycle()
-    var position = rememberSaveable { mutableStateOf(0f) }
 
     Column(
         modifier = Modifier
@@ -226,21 +225,9 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
                         .background(Color.Black),
                     contentDescription = "volumenStop"
                 )
-                Slider(
-                    colors = SliderDefaults.colors(
-                        thumbColor = Color.Magenta,
-                        activeTrackColor = Color.Magenta,
-                        inactiveTrackColor = Color.DarkGray
-                    ),
-                    modifier = Modifier.weight(1f).testTag("NowPlayingSlider"),
-                    value = position.value,
-                    onValueChange = { position.value = it },
-                    valueRange = 0f..10f,
-                    onValueChangeFinished = {
-                        // do something
-                    },
-                    steps = 5,
-                )
+                 VolumeSlider(Modifier
+                     .weight(1f)
+                     .testTag("NowPlayingSlider"),)
 
                 Image(
                     painter = rememberDrawablePainter(drawable = stop),
@@ -260,6 +247,29 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
     }
 }
 
+@Composable
+fun VolumeSlider(modifier: Modifier) {
+    val playerViewModel = hiltViewModel<PlayerViewModel>()
+    var position = rememberSaveable { mutableStateOf(1f) }
+
+    Slider(
+        colors = SliderDefaults.colors(
+            thumbColor = Color.Magenta,
+            activeTrackColor = Color.Magenta,
+            inactiveTrackColor = Color.DarkGray
+        ),
+        modifier = modifier,
+        value = position.value,
+
+        onValueChange = {
+            position.value = it;
+            playerViewModel.setVolume(position.value)
+        },
+        valueRange = 0f..1f,
+
+        )
+}
+
 /**
  * Insert vertical space to the layout
  *
@@ -275,7 +285,9 @@ fun Space(size: Int) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerTopAppBar(navigationController: NavHostController) {
-    Row(modifier = Modifier.background(Color(0xFF1C1C1C)).testTag("NowPlayingHeaderRow")  )
+    Row(modifier = Modifier
+        .background(Color(0xFF1C1C1C))
+        .testTag("NowPlayingHeaderRow"))
 
     {
         IconButton(onClick = { navigationController.navigate(Routes.MainScreen.route) }) {
@@ -284,14 +296,13 @@ fun PlayerTopAppBar(navigationController: NavHostController) {
                 contentDescription = "Arrow Back to Main"
             )
         }
-       /* Text(
-            "En reproduccion",
-            maxLines = 1,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.testTag("NowPlayingHeaderText")        )*/
+        /* Text(
+             "En reproduccion",
+             maxLines = 1,
+             fontSize = 24.sp,
+             fontWeight = FontWeight.Bold,
+             modifier = Modifier.testTag("NowPlayingHeaderText")        )*/
     }
-
 
 
 }

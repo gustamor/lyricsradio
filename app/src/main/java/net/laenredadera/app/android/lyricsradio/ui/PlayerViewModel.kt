@@ -20,6 +20,7 @@ import net.laenredadera.app.android.lyricsradio.domain.GetMediaPauseUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaPlayUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaPrepareUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaQueryIsPlayingUseCase
+import net.laenredadera.app.android.lyricsradio.domain.GetMediaSetVolumeUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaStopUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetStationDataUseCase
 import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModel
@@ -36,6 +37,7 @@ class PlayerViewModel @Inject constructor(
     private val getMediaPrepareUseCase: GetMediaPrepareUseCase,
     private val getMediaAddItemUseCase: GetMediaAddItemUseCase,
     private val getStationDataUseCase: GetStationDataUseCase,
+    private val getMediaSetVolumeUseCase: GetMediaSetVolumeUseCase
 ) : ViewModel() {
 
     var newItem: Boolean = true
@@ -129,6 +131,14 @@ class PlayerViewModel @Inject constructor(
         }.apply {
             updateServiceIsPlaying()
         }
+    }
+
+    fun setVolume(vol: Float) {
+        viewModelScope.launch {
+            getMediaSetVolumeUseCase(vol)
+
+        }
+
     }
 
 

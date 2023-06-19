@@ -30,4 +30,8 @@ class MediaServiceRepository @Inject constructor(private val service: RadioRecei
     fun release() {
         service.release()
     }
+
+    fun setVolume(vol: Float) {
+        service.setVolume(vol)
+    }
 }

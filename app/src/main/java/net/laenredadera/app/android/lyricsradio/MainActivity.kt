@@ -4,16 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -36,6 +30,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             LyricsRadioTheme {
                 Surface(
@@ -43,16 +38,15 @@ class MainActivity : ComponentActivity() {
                     color = Color(0xFF1C1C1C)
                 ) {
                     val navigationController = rememberNavController()
-                    NavHost(navController = navigationController, startDestination = Routes.PreviouslyPlayedScreen.route){
+                    NavHost(navController = navigationController, startDestination = Routes.MainScreen.route){
                         composable(Routes.HomeScreen.route) { RadioHomeScreen(navigationController,radioStationsViewModel,playerViewModel)}
                         composable(Routes.PlayerScreen.route) {PlayerScreen(navigationController,playerViewModel)}
-                        composable(Routes.MainScreen.route) {MainScreen()}
+                        composable(Routes.MainScreen.route) {MainScreen(navigationController,radioStationsViewModel,playerViewModel)}
                         composable(Routes.PreviouslyPlayedScreen.route) {PreviouslyPlayedScreen()}
                     }
                 }
             }
         }
     }
-
 }
 

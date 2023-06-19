@@ -1,10 +1,11 @@
 package net.laenredadera.app.android.lyricsradio.ui
 
+import android.net.Uri
+import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,13 +18,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,94 +42,73 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import coil.compose.AsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import net.laenredadera.app.android.lyricsradio.R
+import net.laenredadera.app.android.lyricsradio.Routes
+import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModel
 
-@Preview
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    navigationController: NavHostController,
+    radioStationsViewModel: RadioStationViewModel,
+    playerViewModel: PlayerViewModel
+) {
+    radioStationsViewModel.getStations()
+
     Column(
         Modifier
             .fillMaxSize()
             .padding(horizontal = 4.dp)
             .background(Color(0xFF1C1C1C))
     ) {
-        MainBody()
+        MainBody(radioStationsViewModel,navigationController,playerViewModel)
     }
 }
 
 @Composable
-fun MainBody() {
+fun MainBody(
+    radioStationsViewModel: RadioStationViewModel,
+    navigationController: NavHostController,
+    playerViewModel: PlayerViewModel
+) {
+    val stations: List<RadioStationModel>? by radioStationsViewModel.stations.observeAsState()
+    Log.i("GusMor", radioStationsViewModel.stations.value.toString())
+
     Column(
         Modifier.background(Color(0xFF1C1C1C))
 
     ) {
-        SubHeaderMain("Welcome the destroyer", "Explore")
 
-        Space(8)
-        Row(
-            Modifier
+        SubHeaderMain("Welcome the destroyer", "Explore", navigationController)
+
+        Space(18)
+
+            LazyRow( Modifier
                 .fillMaxWidth()
-                .height(128.dp)
-                .horizontalScroll(rememberScrollState())
-        ) {
+                .height(128.dp)) {
+                items(stations.orEmpty(), key = { it.id }) { st ->
+                    if (st.enabled)
+                        RoundedBordersSquareImage(
+                            station = st,
+                            nav = navigationController,
+                            playerViewModel = playerViewModel,
+                            width = 176.dp,
+                            height = 176.dp,
+                            modifier = Modifier
+                                .padding(horizontal = 6.dp)
+                        )
+                }
 
-            RoundedBordersSquareImage(
-                painter = painterResource(id = R.drawable.blur),
-                width = 176.dp,
-                height = 176.dp,
-                "Radio1",
-                Modifier
-                    .padding(horizontal = 6.dp)
-            )
-            RoundedBordersSquareImage(
-                painter = painterResource(id = R.drawable.blur),
-                width = 176.dp,
-                height = 176.dp,
-                "Metal 2",
-
-                Modifier
-                    .padding(horizontal = 6.dp)
-            )
-            RoundedBordersSquareImage(
-                    painter = painterResource(id = R.drawable.blur),
-            width = 176.dp,
-            height = 176.dp,
-            "You e",
-            Modifier
-                .padding(horizontal = 6.dp)
-            )
-            RoundedBordersSquareImage(
-                painter = painterResource(id = R.drawable.blur),
-                width = 176.dp,
-                height = 176.dp,
-                "You e",
-                Modifier
-                    .padding(horizontal = 6.dp)
-            )
-            RoundedBordersSquareImage(
-                painter = painterResource(id = R.drawable.blur),
-                width = 176.dp,
-                height = 176.dp,
-                "You e",
-                Modifier
-                    .padding(horizontal = 6.dp)
-            )
-            RoundedBordersSquareImage(
-                painter = painterResource(id = R.drawable.blur),
-                width = 176.dp,
-                height = 176.dp,
-                "You e",
-                Modifier
-                    .padding(horizontal = 6.dp)
-            )
         }
         Space(16)
-        SubHeaderMain("Favs", "View")
+        SubHeaderMain("Favs", "View", navigationController)
         Row(
 
             Modifier
@@ -158,7 +143,6 @@ fun MainBody() {
         }
 
 
-
     }
 }
 
@@ -174,13 +158,13 @@ fun TitleHeaderMain(title: String, fontSize: Int) {
 }
 
 @Composable
-fun SubHeaderMain(title: String, textButton: String?) {
+fun SubHeaderMain(title: String, textButton: String?, nav: NavHostController) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         TitleHeaderMain(title, 21)
         if (textButton != null) {
 
             Button(
-                onClick = { /* Your onClick code here */ },
+                onClick = { nav.navigate(Routes.HomeScreen.route) },
                 colors = ButtonDefaults.buttonColors(Color.Magenta),
                 shape = RoundedCornerShape(32.dp),
                 modifier = Modifier
@@ -195,26 +179,47 @@ fun SubHeaderMain(title: String, textButton: String?) {
 
 @Composable
 fun RoundedBordersSquareImage(
-    painter: Painter,
+    station: RadioStationModel,
+    nav: NavHostController,
+    playerViewModel: PlayerViewModel,
     width: Dp,
     height: Dp,
-    contentDescription: String?,
     modifier: Modifier = Modifier,
 ) {
+    val cover = Uri.parse(station.cover)
+    val uri = Uri.parse(station.address.icy_url)
 
-    Image(
-        painter = painter,
-        contentDescription = contentDescription,
+    SubcomposeAsyncImage(
+        model = cover,
+        contentDescription = "stationCoverImage",
         contentScale = ContentScale.FillBounds,
-
         modifier = modifier
             .aspectRatio(1f)
             .height(height)
             .width(width)
             .clip(RoundedCornerShape(32.dp))
-    )
+            .clickable {
+                playerViewModel.addStationModel(station)
+                playerViewModel.addMediaItem(uri)
+                nav.navigate(Routes.PlayerScreen.route)
+            }
+    ) {
+        val state = painter.state
+        if (state is AsyncImagePainter.State.Loading) {
+            CircularProgressIndicator(color = Color.Red, modifier = Modifier
+                .fillMaxSize()
+                .padding(4.dp))
+        }
+        else if (state is AsyncImagePainter.State.Error || state is AsyncImagePainter.State.Empty){
+            val drawable = AppCompatResources.getDrawable(LocalContext.current, R.drawable.blur)
+            Image(painter = rememberDrawablePainter(drawable = drawable),
+                modifier = Modifier.fillMaxSize(), contentDescription = "imagenBlur")
+        }
+        else  {
+            SubcomposeAsyncImageContent()
+        }
+    }
 }
-
 
 @Composable
 fun RoundedBordersRectangleImage(

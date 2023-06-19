@@ -205,9 +205,7 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
                             painter = rememberDrawablePainter(drawable = pause),
                             contentDescription = "pauseButton"
                         )
-
                     }
-
                 }
             }
             Row(
@@ -259,8 +257,6 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
                     contentDescription = "volumenMax"
                 )
             }
-
-
             Box(
                 Modifier
                     .height(56.dp)

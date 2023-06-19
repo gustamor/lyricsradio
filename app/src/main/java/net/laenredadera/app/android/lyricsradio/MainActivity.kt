@@ -26,6 +26,7 @@ import net.laenredadera.app.android.lyricsradio.ui.PlayerViewModel
 import net.laenredadera.app.android.lyricsradio.ui.RadioHomeScreen
 import net.laenredadera.app.android.lyricsradio.ui.RadioStationViewModel
 import net.laenredadera.app.android.lyricsradio.ui.theme.LyricsRadioTheme
+import net.laenredadera.app.android.lyricsradio.ui.theme.PreviouslyPlayedScreen
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -42,13 +43,12 @@ class MainActivity : ComponentActivity() {
                     color = Color(0xFF1C1C1C)
                 ) {
                     val navigationController = rememberNavController()
-                    NavHost(navController = navigationController, startDestination = Routes.HomeScreen.route){
+                    NavHost(navController = navigationController, startDestination = Routes.PreviouslyPlayedScreen.route){
                         composable(Routes.HomeScreen.route) { RadioHomeScreen(navigationController,radioStationsViewModel,playerViewModel)}
                         composable(Routes.PlayerScreen.route) {PlayerScreen(navigationController,playerViewModel)}
                         composable(Routes.MainScreen.route) {MainScreen()}
-
+                        composable(Routes.PreviouslyPlayedScreen.route) {PreviouslyPlayedScreen()}
                     }
-
                 }
             }
         }

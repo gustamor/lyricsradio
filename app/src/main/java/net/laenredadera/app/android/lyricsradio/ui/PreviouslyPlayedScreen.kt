@@ -3,7 +3,6 @@ package net.laenredadera.app.android.lyricsradio.ui.theme
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -124,16 +123,24 @@ fun PlayedItem() {
             )
             Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
                 Text(
-                    text = "Header",
-                    fontSize = 21.sp,
+                    text = "Header Header",
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
                     modifier = Modifier.testTag("ListenedItemHeaderText")
                 )
-                Space(4)
+
                 Text(
                     text = "Sub header",
-                    fontSize = 18.sp,
+                    fontSize = 16.sp,
+                    color = Color.White,
+                    modifier = Modifier.testTag("ListenedItemBodyText")
+                )
+                Space(12)
+
+                Text(
+                    text = "18 Ago 23",
+                    fontSize = 14.sp,
                     color = Color.White,
                     modifier = Modifier.testTag("ListenedItemBodyText")
                 )

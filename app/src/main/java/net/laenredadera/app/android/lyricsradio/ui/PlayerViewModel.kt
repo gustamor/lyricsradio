@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import net.laenredadera.app.android.lyricsradio.domain.GetAlbumCoverUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetExoPlayerUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaAddItemUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaPauseUseCase
@@ -37,7 +38,8 @@ class PlayerViewModel @Inject constructor(
     private val getMediaPrepareUseCase: GetMediaPrepareUseCase,
     private val getMediaAddItemUseCase: GetMediaAddItemUseCase,
     private val getStationDataUseCase: GetStationDataUseCase,
-    private val getMediaSetVolumeUseCase: GetMediaSetVolumeUseCase
+    private val getMediaSetVolumeUseCase: GetMediaSetVolumeUseCase,
+    private val getAlbumCoverUseCase: GetAlbumCoverUseCase
 ) : ViewModel() {
 
     var newItem: Boolean = true
@@ -136,10 +138,19 @@ class PlayerViewModel @Inject constructor(
     fun setVolume(vol: Float) {
         viewModelScope.launch {
             getMediaSetVolumeUseCase(vol)
-
         }
 
     }
 
+    fun albumCover() {
+        viewModelScope.launch {
+            if (_song.value.isNotEmpty() && (_song.value[0] != null) && (_song.value[1] != null)) {
+           //     getAlbumCoverUseCase(_song.value[0]!!, _song.value[1]!!)
+                getAlbumCoverUseCase("Kreator", "Outcast")
+
+            }
+
+        }
+    }
 
 }

@@ -40,8 +40,8 @@ class MainActivity : ComponentActivity() {
                     val navigationController = rememberNavController()
                     NavHost(navController = navigationController, startDestination = Routes.MainScreen.route){
                         composable(Routes.HomeScreen.route) { RadioHomeScreen(navigationController,radioStationsViewModel,playerViewModel)}
-                        composable(Routes.PlayerScreen.route) {PlayerScreen(navigationController,playerViewModel)}
-                        composable(Routes.MainScreen.route) {MainScreen(navigationController,radioStationsViewModel,playerViewModel)}
+                        composable(Routes.PlayerScreen.route) {PlayerScreen(navigationController, playerViewModel)}
+                        composable(Routes.MainScreen.route) {MainScreen(navigationController,radioStationsViewModel, playerViewModel)}
                         composable(Routes.PreviouslyPlayedScreen.route) {PreviouslyPlayedScreen()}
                     }
                 }

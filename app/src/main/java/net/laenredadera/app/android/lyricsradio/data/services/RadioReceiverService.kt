@@ -45,7 +45,6 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
 
     override fun onBind(intent: Intent): IBinder? = null
 
-
     /**
      * use this function to prepare de player
      *

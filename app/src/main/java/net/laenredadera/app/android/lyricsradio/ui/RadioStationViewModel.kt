@@ -27,7 +27,6 @@ class RadioStationViewModel @Inject constructor(private val getRadioStationsUseC
        viewModelScope.launch {
             _stations.value = getRadioStationsUseCase()
            Log.i("GusMor", _stations.value.toString())
-
         }
     }
 }

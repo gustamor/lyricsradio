@@ -18,8 +18,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class StationsListNetworkModule {
-
-
     @Singleton
     @Provides
     @Named("StationsClient")
@@ -30,8 +28,6 @@ class StationsListNetworkModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
-
-
     @Provides
     @Singleton
         fun providesStationsApiClient(@Named("StationsClient") retrofit: Retrofit): RadioStationsApiClient {
@@ -58,3 +54,5 @@ class LyricsNetworkModule {
         return retrofit.create(LyricsApiClient::class.java)
     }
 }
+
+

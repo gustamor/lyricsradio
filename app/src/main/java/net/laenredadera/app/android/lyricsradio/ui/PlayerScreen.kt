@@ -74,7 +74,7 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
     val station = playerViewModel.station.observeAsState()
     val playerStateFlow = playerViewModel.uiIsPlying.observeAsState(false)
     val song by playerViewModel.song.collectAsStateWithLifecycle()
-
+    playerViewModel.albumCover()
     Column(
         modifier = Modifier
             .padding(top = 64.dp, start = 16.dp, end = 16.dp)
@@ -225,9 +225,9 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
                         .background(Color.Black),
                     contentDescription = "volumenStop"
                 )
-                 VolumeSlider(Modifier
+                 VolumeSlider( Modifier
                      .weight(1f)
-                     .testTag("NowPlayingSlider"),)
+                     .testTag("NowPlayingSlider"), playerViewModel)
 
                 Image(
                     painter = rememberDrawablePainter(drawable = stop),
@@ -248,8 +248,7 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun VolumeSlider(modifier: Modifier) {
-    val playerViewModel = hiltViewModel<PlayerViewModel>()
+fun VolumeSlider(modifier: Modifier, playerViewModel: PlayerViewModel) {
     var position = rememberSaveable { mutableStateOf(1f) }
 
     Slider(

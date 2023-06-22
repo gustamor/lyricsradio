@@ -52,7 +52,7 @@ import coil.compose.SubcomposeAsyncImageContent
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import net.laenredadera.app.android.lyricsradio.R
 import net.laenredadera.app.android.lyricsradio.Routes
-import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModel
+import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModelUI
 
 @Composable
 fun MainScreen(
@@ -78,7 +78,7 @@ fun MainBody(
     navigationController: NavHostController,
     playerViewModel: PlayerViewModel
 ) {
-    val stations: List<RadioStationModel>? by radioStationsViewModel.stations.observeAsState()
+    val stations: List<RadioStationModelUI>? by radioStationsViewModel.stations.observeAsState()
     Log.i("GusMor", radioStationsViewModel.stations.value.toString())
 
     Column(
@@ -179,7 +179,7 @@ fun SubHeaderMain(title: String, textButton: String?, nav: NavHostController) {
 
 @Composable
 fun RoundedBordersSquareImage(
-    station: RadioStationModel,
+    station: RadioStationModelUI,
     nav: NavHostController,
     playerViewModel: PlayerViewModel,
     width: Dp,

@@ -1,4 +1,4 @@
-package net.laenredadera.app.android.lyricsradio.data
+package net.laenredadera.app.android.lyricsradio.data.repositories
 
 import androidx.media3.exoplayer.ExoPlayer
 import javax.inject.Inject

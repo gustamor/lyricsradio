@@ -1,9 +1,8 @@
 package net.laenredadera.app.android.lyricsradio.domain
 
-import androidx.lifecycle.MutableLiveData
-import net.laenredadera.app.android.lyricsradio.data.RadioStationsRepository
-import net.laenredadera.app.android.lyricsradio.data.services.network.model.RadioStationItem
-import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModel
+import net.laenredadera.app.android.lyricsradio.data.repositories.RadioStationsRepository
+import net.laenredadera.app.android.lyricsradio.domain.model.RadioStationModel
+import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModelUI
 import javax.inject.Inject
 
 class GetRadioStationsUseCase @Inject constructor(private val repository: RadioStationsRepository)  {

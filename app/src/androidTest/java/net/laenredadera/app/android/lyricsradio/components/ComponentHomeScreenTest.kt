@@ -6,20 +6,20 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import net.laenredadera.app.android.lyricsradio.ui.ItemStation
 import net.laenredadera.app.android.lyricsradio.ui.StationCover
-import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModel
-import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationsAddress
+import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModelUI
+import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationsAddressUI
 import org.junit.Rule
 import org.junit.Test
 
 class ComponentHomeScreenTest {
-    val station: RadioStationModel = RadioStationModel(
+    val station: RadioStationModelUI = RadioStationModelUI(
         1,
         true,
         "Radio Name",
         "https://www.easylinedrawing.com/wp-content/uploads/2021/07/log_drawing.png",
         "urlradio",
         "",
-        RadioStationsAddress("", "", "", "")
+        RadioStationsAddressUI("", "", "", "")
     )
 
     @get: Rule

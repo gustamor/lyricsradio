@@ -1,4 +1,4 @@
-package net.laenredadera.app.android.lyricsradio.data
+package net.laenredadera.app.android.lyricsradio.data.repositories
 
 import net.laenredadera.app.android.lyricsradio.data.services.LastFMService
 import net.laenredadera.app.android.lyricsradio.data.services.network.model.Wiki

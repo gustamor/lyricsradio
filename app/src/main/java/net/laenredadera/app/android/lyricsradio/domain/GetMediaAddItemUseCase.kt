@@ -1,8 +1,7 @@
 package net.laenredadera.app.android.lyricsradio.domain
 
 import android.net.Uri
-import net.laenredadera.app.android.lyricsradio.data.MediaServiceRepository
-import net.laenredadera.app.android.lyricsradio.data.services.RadioReceiverService
+import net.laenredadera.app.android.lyricsradio.data.repositories.MediaServiceRepository
 import javax.inject.Inject
 
 

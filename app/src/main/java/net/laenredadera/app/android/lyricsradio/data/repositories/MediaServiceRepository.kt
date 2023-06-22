@@ -1,4 +1,4 @@
-package net.laenredadera.app.android.lyricsradio.data
+package net.laenredadera.app.android.lyricsradio.data.repositories
 
 import android.net.Uri
 import net.laenredadera.app.android.lyricsradio.data.services.RadioReceiverService

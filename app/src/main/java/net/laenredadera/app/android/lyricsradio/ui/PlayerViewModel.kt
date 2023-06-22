@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 
@@ -26,7 +25,7 @@ import net.laenredadera.app.android.lyricsradio.domain.GetMediaQueryIsPlayingUse
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaSetVolumeUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaStopUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetStationDataUseCase
-import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModel
+import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModelUI
 import javax.inject.Inject
 
 
@@ -45,8 +44,8 @@ class PlayerViewModel @Inject constructor(
 ) : ViewModel() {
 
     var newItem: Boolean = true
-    private var _station: RadioStationModel? = null
-    var station = MutableLiveData<RadioStationModel?>()
+    private var _station: RadioStationModelUI? = null
+    var station = MutableLiveData<RadioStationModelUI?>()
 
     private val _song = MutableStateFlow<List<String?>>(emptyList())
     var song: StateFlow<List<String?>> = _song.asStateFlow()
@@ -108,7 +107,7 @@ class PlayerViewModel @Inject constructor(
             getMediaAddItemUseCase(uri)
         }
     }
-    fun addStationModel(radioStationModel: RadioStationModel) {
+    fun addStationModel(radioStationModel: RadioStationModelUI) {
         _station = radioStationModel
     }
 

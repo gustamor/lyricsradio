@@ -1,11 +1,10 @@
-package net.laenredadera.app.android.lyricsradio.data
+package net.laenredadera.app.android.lyricsradio.data.repositories
 
-import dagger.Module
 import net.laenredadera.app.android.lyricsradio.data.services.RetrofitService
 import net.laenredadera.app.android.lyricsradio.data.services.network.model.RadioStationItem
+import net.laenredadera.app.android.lyricsradio.domain.model.RadioStationModel
+import net.laenredadera.app.android.lyricsradio.domain.model.toData
 
-import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModel
-import net.laenredadera.app.android.lyricsradio.ui.model.toData
 import javax.inject.Inject
 
 class RadioStationsRepository @Inject constructor(private val retrofitService: RetrofitService) {

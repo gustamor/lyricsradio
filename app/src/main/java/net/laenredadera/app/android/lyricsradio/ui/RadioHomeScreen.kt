@@ -34,7 +34,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,7 +44,7 @@ import coil.compose.SubcomposeAsyncImageContent
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import net.laenredadera.app.android.lyricsradio.R
 import net.laenredadera.app.android.lyricsradio.Routes
-import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModel
+import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModelUI
 
 
 @Composable
@@ -70,7 +69,7 @@ fun RadioStationsList(
     playerViewModel: PlayerViewModel
 ) {
 
-    val stations: List<RadioStationModel>? by radioStationsViewModel.stations.observeAsState()
+    val stations: List<RadioStationModelUI>? by radioStationsViewModel.stations.observeAsState()
     Log.i("GusMor", radioStationsViewModel.stations.value.toString())
 
     Box(
@@ -85,7 +84,7 @@ fun RadioStationsList(
 }
 
 @Composable
-fun ItemStation(station: RadioStationModel, navigationController: NavHostController,playerViewModel: PlayerViewModel) {
+fun ItemStation(station: RadioStationModelUI, navigationController: NavHostController, playerViewModel: PlayerViewModel) {
 
     val uri = Uri.parse(station.address.icy_url)
     Card(

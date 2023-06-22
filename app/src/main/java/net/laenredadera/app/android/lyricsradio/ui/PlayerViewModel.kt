@@ -1,10 +1,12 @@
 package net.laenredadera.app.android.lyricsradio.ui
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 
@@ -56,9 +58,10 @@ class PlayerViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             while (true) {
-                    delay(50)
-                if (getExoPlayerUseCase().isPlaying)
-                  _song.value = getStationDataUseCase()
+                    delay(100)
+                if (_uiIsPlaying.value!!) {
+                    _song.value = getStationDataUseCase()
+                }
                 else
                     _song.value = listOf("","")
                 station.value = _station
@@ -113,9 +116,13 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch {
             getMediaPlayUseCase()
             while (uiIsPlying.value != true) {
-                delay(50)
+                delay(100)
                 updateServiceIsPlaying()
             }
+
+        }.apply {
+
+
         }
     }
 
@@ -144,13 +151,21 @@ class PlayerViewModel @Inject constructor(
 
     fun albumCover() {
         viewModelScope.launch {
-            if (_song.value.isNotEmpty() && (_song.value[0] != null) && (_song.value[1] != null)) {
-           //     getAlbumCoverUseCase(_song.value[0]!!, _song.value[1]!!)
-                getAlbumCoverUseCase("Kreator", "Outcast")
+            try {
+                while (true) {
+                    delay(1000)
+                    var cover = getAlbumCoverUseCase(_song.value[0]!!, _song.value[1]!!)
+                    Log.i("GusMor coverUrl" , cover)
+
+                }
+
+
+            }catch (e: Exception) {}
+             //   getAlbumCoverUseCase("Kreator", "Outcast")
 
             }
 
-        }
+
     }
 
 }

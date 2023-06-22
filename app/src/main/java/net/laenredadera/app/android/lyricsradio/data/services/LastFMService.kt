@@ -21,15 +21,16 @@ class LastFMService @Inject constructor(private val api: LastFMApiClient, @Appli
 
 
         var trackInfo = api.getTrackInfo(getApiKey(), artistName, trackName)
-        Log.i("GusMor Conver", trackInfo.toString())
-
-
         return if ( trackInfo.isSuccessful) {
+            Log.i("GusMor lsftfm service", "$trackInfo")
+
             var cover = trackInfo.body()!!.track.album.image[3].text
-            Log.i("GusMor Conver", cover.toString())
+            if (cover == null)   cover = trackInfo.body()!!.track.album.image[2].text
+
+            Log.i("GusMor lsftfm service: cover  ", "$cover")
+
             return cover
         } else {
-            Log.i("GusMor Conver","nada")
             return ""
         }
     }

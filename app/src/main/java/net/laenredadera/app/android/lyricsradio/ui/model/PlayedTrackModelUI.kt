@@ -5,7 +5,7 @@ import java.util.Date
 
 data class PlayedTrackModelUI(
     private val mbId: String,
-    private val songName: String,
+    private val name: String,
     private val albumName: String,
     private val artistName: String,
     private val radioStationName: String,

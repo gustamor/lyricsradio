@@ -1,5 +1,6 @@
 package net.laenredadera.app.android.lyricsradio.ui
 
+import android.database.sqlite.SQLiteConstraintException
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -14,8 +15,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import net.laenredadera.app.android.lyricsradio.domain.GetAlbumCoverUseCase
+
 import net.laenredadera.app.android.lyricsradio.domain.GetExoPlayerUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaAddItemUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaPauseUseCase
@@ -25,6 +28,7 @@ import net.laenredadera.app.android.lyricsradio.domain.GetMediaQueryIsPlayingUse
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaSetVolumeUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaStopUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetStationDataUseCase
+
 import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModelUI
 import javax.inject.Inject
 
@@ -40,7 +44,8 @@ class PlayerViewModel @Inject constructor(
     private val getMediaAddItemUseCase: GetMediaAddItemUseCase,
     private val getStationDataUseCase: GetStationDataUseCase,
     private val getMediaSetVolumeUseCase: GetMediaSetVolumeUseCase,
-    private val getAlbumCoverUseCase: GetAlbumCoverUseCase
+    private val getAlbumCoverUseCase: GetAlbumCoverUseCase,
+
 ) : ViewModel() {
 
     var newItem: Boolean = true
@@ -84,10 +89,8 @@ class PlayerViewModel @Inject constructor(
     }
 
     private fun updateServiceIsPlaying() {
-        viewModelScope.launch {
-            _uiIsPlaying.value = getMediaQueryIsPlayingUseCase()
-
-
+       viewModelScope.launch {
+           _uiIsPlaying.value = getMediaQueryIsPlayingUseCase()
         }
     }
 

@@ -3,13 +3,12 @@ package net.laenredadera.app.android.lyricsradio.data.db
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.Date
 
 @Entity
 data class TrackEntity(
     @PrimaryKey
     var MbID: String,
-    var songName: String,
+    var name: String,
     var artistMbID: String,
     var albumMbID: String,
     var radioStationName: String,
@@ -48,13 +47,14 @@ data class PlayedTrackEntity(
     var trackMbID: String,
     var playedAt: String,
 )
-
+@Entity
 data class PlayedTrackDataEntity(
     @PrimaryKey
     var MbID: String,
-    var songName: String,
-    var albumName: String,
+    var name: String,
     var artistName: String,
+    var albumName: String,
+    var cover: String,
     var radioStationName: String,
-    var playedAt: String
+    val playedAt: String
 )

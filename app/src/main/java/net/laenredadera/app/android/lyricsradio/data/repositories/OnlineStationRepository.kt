@@ -6,7 +6,6 @@ import javax.inject.Inject
 
 class OnlineStationRepository @Inject constructor(
     private val service: RadioReceiverService,
-    private val getExoPlayerUseCase: GetExoPlayerUseCase
 ) {
 
     suspend fun getStation() {}

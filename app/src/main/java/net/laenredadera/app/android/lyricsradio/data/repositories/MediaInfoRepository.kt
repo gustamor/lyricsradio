@@ -14,8 +14,11 @@ class MediaInfoRepository @Inject constructor(private val lastFM: LastFMService)
             return lastFM.getAlbumCover(artistName,trackName)
     }
 
-    suspend fun getAlbumInfoWiki(mbid: String): Wiki {
+    suspend fun getArtistMbId(artistName: String, trackName: String): String {
+        return lastFM.getArtistMbId(artistName, trackName)
+    }
 
+    suspend fun getAlbumInfoWiki(mbid: String): Wiki {
         return lastFM.getAlbumInfoWiki(mbid)
     }
 

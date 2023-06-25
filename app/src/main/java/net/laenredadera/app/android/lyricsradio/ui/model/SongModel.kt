@@ -11,7 +11,9 @@ data class SongModelUI(
 
 data class AlbumModelUI(
     @SerializedName("mbid") val mbid: String,
-    @SerializedName("name") val name: Int,
+    @SerializedName("name") val name: String,
+    @SerializedName("artist") val artist: String,
     @SerializedName("cover") val cover: String?,
+    @SerializedName("wiki") val wikiId: String
 )
 

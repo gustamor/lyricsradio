@@ -13,6 +13,8 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.analytics.AnalyticsListener
 import androidx.media3.exoplayer.util.EventLogger
 import androidx.media3.extractor.metadata.icy.IcyInfo
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import net.laenredadera.app.android.lyricsradio.BuildConfig
 import javax.inject.Inject
 
@@ -24,17 +26,17 @@ import javax.inject.Inject
  */
 class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : Service() {
 
-    private val _isPlaying = mutableStateOf(false)
-    var isPlaying = _isPlaying
+    private val _isPlaying = MutableStateFlow(false)
+    var isPlaying = _isPlaying.asStateFlow()
 
-    private val _stationName = mutableStateOf("Shoutcast Station")
-    var stationName = _stationName
+    private val _stationName = MutableStateFlow("Shoutcast Station")
+    var stationName = _stationName.asStateFlow()
 
-    private val _artistName = mutableStateOf(" ")
-    var artistName = _artistName
+    private val _artistName = MutableStateFlow(" ")
+    var artistName = _artistName.asStateFlow()
 
-    private val _songName = mutableStateOf("")
-    var songName = _songName
+    private val _songName = MutableStateFlow("")
+    var songName = _songName.asStateFlow()
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         if (intent.action == Intent.ACTION_MEDIA_BUTTON) {
@@ -80,6 +82,8 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
     fun pause() {
         player.pause()
         _isPlaying.value = false
+        _artistName.value = " "
+        _songName.value = " "
 
     }
 
@@ -89,6 +93,8 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
      */
     fun stop() {
         player.stop()
+        _artistName.value = " "
+        _songName.value = " "
         _isPlaying.value = false
 
     }
@@ -110,6 +116,8 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
     fun release() {
         player.stop()
         player.release()
+        _artistName.value = " "
+        _songName.value = " "
 
     }
 
@@ -122,9 +130,6 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
                 super.onMetadata(eventTime, metadata)
                 for (i in 0 until metadata.length()) {
                     val info = metadata[i]
-
-                    Log.i("GusMorRadio", info.toString())
-
                     if (info is IcyInfo) {
                         val _artistTitle: String = info.title.orEmpty()
                         val partes = _artistTitle.split(" - ")

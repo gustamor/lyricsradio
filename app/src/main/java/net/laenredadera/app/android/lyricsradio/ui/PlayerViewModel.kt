@@ -1,6 +1,5 @@
 package net.laenredadera.app.android.lyricsradio.ui
 
-import android.database.sqlite.SQLiteConstraintException
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -12,13 +11,12 @@ import androidx.media3.common.Player
 
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import net.laenredadera.app.android.lyricsradio.domain.GetAlbumCoverUseCase
-
 import net.laenredadera.app.android.lyricsradio.domain.GetExoPlayerUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaAddItemUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaPauseUseCase
@@ -28,8 +26,7 @@ import net.laenredadera.app.android.lyricsradio.domain.GetMediaQueryIsPlayingUse
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaSetVolumeUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaStopUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetStationDataUseCase
-
-import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModelUI
+import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModel
 import javax.inject.Inject
 
 
@@ -44,31 +41,28 @@ class PlayerViewModel @Inject constructor(
     private val getMediaAddItemUseCase: GetMediaAddItemUseCase,
     private val getStationDataUseCase: GetStationDataUseCase,
     private val getMediaSetVolumeUseCase: GetMediaSetVolumeUseCase,
-    private val getAlbumCoverUseCase: GetAlbumCoverUseCase,
-
+    private val getAlbumCoverUseCase: GetAlbumCoverUseCase
 ) : ViewModel() {
 
     var newItem: Boolean = true
-    private var _station: RadioStationModelUI? = null
-    var station = MutableLiveData<RadioStationModelUI?>()
+    private var _station: RadioStationModel? = null
+    var station = MutableLiveData<RadioStationModel?>()
 
-    private val _song = MutableStateFlow<List<String?>>(emptyList())
+    private val _song = MutableStateFlow<List<String?>>(listOf(" ", " "))
     var song: StateFlow<List<String?>> = _song.asStateFlow()
 
-    private val _uiIsPlaying = MutableLiveData(false)
-    val uiIsPlying: LiveData<Boolean> = _uiIsPlaying
+    private val _uiIsPlaying = MutableStateFlow(false)
+    val uiIsPlaying: StateFlow<Boolean> = _uiIsPlaying.asStateFlow()
 
 
     init {
         viewModelScope.launch {
             while (true) {
-                    delay(100)
+                delay(100)
                 if (_uiIsPlaying.value!!) {
                     _song.value = getStationDataUseCase()
-                }
-                else
-                    _song.value = listOf("","")
-                station.value = _station
+                } else
+                    station.value = _station
                 addListener()
             }
         }
@@ -77,7 +71,6 @@ class PlayerViewModel @Inject constructor(
     private fun addListener() {
         getExoPlayerUseCase().addListener(
             object : Player.Listener {
-
                 override fun onMediaItemTransition(
                     mediaItem: MediaItem?,
                     reason: Int
@@ -89,41 +82,43 @@ class PlayerViewModel @Inject constructor(
     }
 
     private fun updateServiceIsPlaying() {
-       viewModelScope.launch {
-           _uiIsPlaying.value = getMediaQueryIsPlayingUseCase()
+        viewModelScope.launch {
+            _uiIsPlaying.value = getMediaQueryIsPlayingUseCase()
+
+
         }
     }
 
     fun prepare() {
         viewModelScope.launch {
-            _song.value = listOf(" ", " ")
+            //     _song.value = listOf(" ", " ")
             getMediaPrepareUseCase()
         }.apply {
             addListener()
         }
     }
 
-    fun addMediaItem(uri: Uri) {
+    suspend fun addMediaItem(uri: Uri) {
         stop()
-        _song.value = listOf(" ", " ")
+      //  _song.value = listOf(" ", " ")
         viewModelScope.launch {
             getMediaAddItemUseCase(uri)
         }
     }
-    fun addStationModel(radioStationModel: RadioStationModelUI) {
+
+    fun addStationModel(radioStationModel: RadioStationModel) {
         _station = radioStationModel
     }
 
-    fun play() {
+    suspend fun play() {
         viewModelScope.launch {
             getMediaPlayUseCase()
-            while (uiIsPlying.value != true) {
+            while (!_uiIsPlaying.value) {
                 delay(100)
                 updateServiceIsPlaying()
             }
 
         }.apply {
-
 
         }
     }
@@ -141,12 +136,24 @@ class PlayerViewModel @Inject constructor(
             getMediaStopUseCase()
         }.apply {
             updateServiceIsPlaying()
+            _song.value = listOf(" ", " ")
         }
     }
 
     fun setVolume(vol: Float) {
         viewModelScope.launch {
             getMediaSetVolumeUseCase(vol)
+        }
+    }
+
+    fun getTrackInfo() {
+        viewModelScope.launch {
+            try {
+                _song.value = getStationDataUseCase()
+            } catch (e: Exception) {
+            }
+
+
         }
 
     }
@@ -155,19 +162,14 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 while (true) {
-                    delay(1000)
+                    delay(500)
                     var cover = getAlbumCoverUseCase(_song.value[0]!!, _song.value[1]!!)
-                    Log.i("GusMor coverUrl" , cover)
-
+                    Log.i("GusMor coverUrl", cover)
                 }
-
-
-            }catch (e: Exception) {}
-             //   getAlbumCoverUseCase("Kreator", "Outcast")
-
+            } catch (e: Exception) {
             }
-
-
+            //   getAlbumCoverUseCase("Kreator", "Outcast")
+        }
     }
 
 }

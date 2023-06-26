@@ -30,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,6 +51,9 @@ import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.laenredadera.app.android.lyricsradio.R
 import net.laenredadera.app.android.lyricsradio.Routes
 import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModelUI
@@ -188,6 +192,7 @@ fun RoundedBordersSquareImage(
 ) {
     val cover = Uri.parse(station.cover)
     val uri = Uri.parse(station.address.icy_url)
+    val coroutineScope = rememberCoroutineScope()
 
     SubcomposeAsyncImage(
         model = cover,
@@ -199,9 +204,16 @@ fun RoundedBordersSquareImage(
             .width(width)
             .clip(RoundedCornerShape(32.dp))
             .clickable {
-                playerViewModel.addStationModel(station)
-                playerViewModel.addMediaItem(uri)
-                nav.navigate(Routes.PlayerScreen.route)
+                coroutineScope.launch() {
+                    withContext(Dispatchers.IO) {
+                        playerViewModel.addStationModel(station)
+                        playerViewModel.addMediaItem(uri)
+                    }
+                    nav.navigate(Routes.PlayerScreen.route)
+
+
+                }
+
             }
     ) {
         val state = painter.state

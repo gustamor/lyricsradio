@@ -14,19 +14,13 @@ class OnlineStationRepository @Inject constructor(
     }
 
     suspend fun getArtist(): String {
-
             service.icyMetadata()
-
             return service.artistName.value
 
     }
 
     suspend fun getTitle(): String {
-
             service.icyMetadata()
             return service.songName.value
-
-
-
     }
 }

@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,6 +50,10 @@ import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.laenredadera.app.android.lyricsradio.R
 import net.laenredadera.app.android.lyricsradio.Routes
 
@@ -66,14 +71,18 @@ fun PlayerScreen(navigationController: NavHostController, playerViewModel: Playe
 
 }
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val heightSize = screenWidth + 300.dp
     val station = playerViewModel.station.observeAsState()
-    val playerStateFlow = playerViewModel.uiIsPlying.observeAsState(false)
+    val playerStateFlow = playerViewModel.uiIsPlaying
     val song by playerViewModel.song.collectAsStateWithLifecycle()
+    val coroutineScope = rememberCoroutineScope()
+
+
     playerViewModel.albumCover()
     Column(
         modifier = Modifier
@@ -104,7 +113,6 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
                                 .clip(RoundedCornerShape(16.dp)),
                         )
                     }
-
                     is AsyncImagePainter.State.Error, is AsyncImagePainter.State.Empty -> {
                         val blur = AppCompatResources.getDrawable(
                             LocalContext.current,
@@ -118,15 +126,12 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
                             contentDescription = "imagenBlur"
                         )
                     }
-
                     else -> {
                         SubcomposeAsyncImageContent()
                     }
                 }
             }
-
         }
-
         Column(
             Modifier.weight(1f),
             verticalArrangement = Arrangement.SpaceBetween
@@ -151,9 +156,7 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.testTag("SongTitleInPlayer")
             )
-
             Space(4)
-
             Row(
                 horizontalArrangement = Arrangement.Center, modifier = Modifier
                     .fillMaxWidth()
@@ -165,18 +168,21 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
                         .size(112.dp)
                         .padding(bottom = 16.dp, top = 12.dp),
                     onClick = {
-                        Log.i("GusMor", playerStateFlow.value.toString())
-
                         if (!playerStateFlow.value) {
-                            playerViewModel.prepare()
-                            playerViewModel.play().apply {
-                                Log.i("GusMor1", playerViewModel.uiIsPlying.value.toString())
+                         //   playerViewModel.prepare()
+                            coroutineScope.launch {
+                                withContext(Dispatchers.IO) {
+                                    playerViewModel.play().apply {
+                                        playerViewModel.getTrackInfo()
+                                    }
+                                }
                             }
                         } else {
-                            playerViewModel.stop().apply {
-                                Log.i("GusMor2", playerViewModel.uiIsPlying.value.toString())
+                            coroutineScope.launch {
+                                withContext(Dispatchers.IO) {
+                                    playerViewModel.stop()
+                                }
                             }
-
                         }
                     }) {
                     if (!playerStateFlow.value) {
@@ -225,9 +231,11 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
                         .background(Color.Black),
                     contentDescription = "volumenStop"
                 )
-                 VolumeSlider( Modifier
-                     .weight(1f)
-                     .testTag("NowPlayingSlider"), playerViewModel)
+                VolumeSlider(
+                    Modifier
+                        .weight(1f)
+                        .testTag("NowPlayingSlider"), playerViewModel
+                )
 
                 Image(
                     painter = rememberDrawablePainter(drawable = stop),
@@ -284,9 +292,11 @@ fun Space(size: Int) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerTopAppBar(navigationController: NavHostController) {
-    Row(modifier = Modifier
-        .background(Color(0xFF1C1C1C))
-        .testTag("NowPlayingHeaderRow"))
+    Row(
+        modifier = Modifier
+            .background(Color(0xFF1C1C1C))
+            .testTag("NowPlayingHeaderRow")
+    )
 
     {
         IconButton(onClick = { navigationController.navigate(Routes.MainScreen.route) }) {

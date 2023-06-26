@@ -19,25 +19,19 @@ class LastFMService @Inject constructor(private val api: LastFMApiClient, @Appli
 
     suspend fun getAlbumCover(artistName: String, trackName: String): String {
 
-
         var trackInfo = api.getTrackInfo(getApiKey(), artistName, trackName)
         return if ( trackInfo.isSuccessful) {
             Log.i("GusMor lsftfm service", "$trackInfo")
-
             var cover = trackInfo.body()!!.track.album.image[3].text
             if (cover == null)   cover = trackInfo.body()!!.track.album.image[2].text
-
             Log.i("GusMor lsftfm service: cover  ", "$cover")
-
             return cover
         } else {
             return ""
         }
     }
-
     suspend fun getAlbumMbId(artistName: String, trackName: String): String  {
         var trackInfo = api.getTrackInfo(getApiKey(), artistName, trackName)
-
         return if ( trackInfo.isSuccessful) {
             var mbid = trackInfo.body()!!.track.album.mbid
             return mbid

@@ -43,6 +43,8 @@ import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import net.laenredadera.app.android.lyricsradio.R
 import net.laenredadera.app.android.lyricsradio.Routes
 import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModel
@@ -87,16 +89,23 @@ fun RadioStationsList(
 @Composable
 fun ItemStation(station: RadioStationModel, navigationController: NavHostController,playerViewModel: PlayerViewModel) {
 
+    val coroutineScope = rememberCoroutineScope()
+
     val uri = Uri.parse(station.address.icy_url)
+
     Card(
         modifier = Modifier
             .shadow(4.dp)
             .testTag("ItemCard")
             .background(MaterialTheme.colorScheme.background)
             .clickable {
-                playerViewModel.addStationModel(station)
-                playerViewModel.addMediaItem(uri)
-                navigationController.navigate(Routes.PlayerScreen.route) },
+                coroutineScope.launch(Dispatchers.IO) {
+                    playerViewModel.addStationModel(station)
+                    playerViewModel.addMediaItem(uri)
+                }
+                navigationController.navigate(Routes.PlayerScreen.route)
+
+            },
         ) {
         Row(
             Modifier

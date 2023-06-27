@@ -51,7 +51,6 @@ import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.laenredadera.app.android.lyricsradio.R
@@ -78,8 +77,10 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
     val screenWidth = configuration.screenWidthDp.dp
     val heightSize = screenWidth + 300.dp
     val station = playerViewModel.station.observeAsState()
-    val playerStateFlow = playerViewModel.uiIsPlaying
+    val playerStateFlow = playerViewModel.uiIsPlaying.collectAsStateWithLifecycle()
     val song by playerViewModel.song.collectAsStateWithLifecycle()
+    val albumCover by playerViewModel.cover.observeAsState()
+    Log.i("GusMor converScreen", albumCover.toString())
     val coroutineScope = rememberCoroutineScope()
 
 
@@ -94,7 +95,7 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
         Box(Modifier.weight(1.4f)) {
             Space(64)
             SubcomposeAsyncImage(
-                model = station.value?.cover ?: "",
+                model = if (albumCover == "")  station.value?.cover else albumCover,
                 contentDescription = "albumCover",
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier

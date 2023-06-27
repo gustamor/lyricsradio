@@ -1,5 +1,6 @@
 package net.laenredadera.app.android.lyricsradio.domain
 
+import androidx.lifecycle.MutableLiveData
 import net.laenredadera.app.android.lyricsradio.data.MediaInfoRepository
 import javax.inject.Inject
 

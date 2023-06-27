@@ -44,6 +44,9 @@ class PlayerViewModel @Inject constructor(
     private val getAlbumCoverUseCase: GetAlbumCoverUseCase
 ) : ViewModel() {
 
+    private  var _cover = MutableLiveData("")
+    var cover: LiveData<String> = _cover
+
     var newItem: Boolean = true
     private var _station: RadioStationModel? = null
     var station = MutableLiveData<RadioStationModel?>()
@@ -65,6 +68,8 @@ class PlayerViewModel @Inject constructor(
                     station.value = _station
                 addListener()
             }
+            albumCover()
+
         }
     }
 
@@ -83,7 +88,7 @@ class PlayerViewModel @Inject constructor(
 
     private fun updateServiceIsPlaying() {
         viewModelScope.launch {
-            _uiIsPlaying.value = getMediaQueryIsPlayingUseCase()
+       //     _uiIsPlaying.value = getMediaQueryIsPlayingUseCase()
 
 
         }
@@ -115,7 +120,8 @@ class PlayerViewModel @Inject constructor(
             getMediaPlayUseCase()
             while (!_uiIsPlaying.value) {
                 delay(100)
-                updateServiceIsPlaying()
+               // updateServiceIsPlaying()
+                _uiIsPlaying.value = true
             }
 
         }.apply {
@@ -134,8 +140,11 @@ class PlayerViewModel @Inject constructor(
     fun stop() {
         viewModelScope.launch {
             getMediaStopUseCase()
+
+
         }.apply {
-            updateServiceIsPlaying()
+          //  updateServiceIsPlaying()
+            _uiIsPlaying.value = false
             _song.value = listOf(" ", " ")
         }
     }
@@ -152,8 +161,6 @@ class PlayerViewModel @Inject constructor(
                 _song.value = getStationDataUseCase()
             } catch (e: Exception) {
             }
-
-
         }
 
     }
@@ -162,12 +169,18 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 while (true) {
-                    delay(500)
-                    var cover = getAlbumCoverUseCase(_song.value[0]!!, _song.value[1]!!)
-                    Log.i("GusMor coverUrl", cover)
+                    delay(2000)
+                    if (_uiIsPlaying.value) {
+                        _cover.value = getAlbumCoverUseCase(_song.value[0]?:"", _song.value[1]?:"")
+
+                    } else {
+                        delay(1000)
+                        _cover.value = ""
+                    }
+                    Log.i("GusMor coverUrl", cover.value.toString())
                 }
-            } catch (e: Exception) {
-            }
+                }
+ catch (e: Exception) {}
             //   getAlbumCoverUseCase("Kreator", "Outcast")
         }
     }

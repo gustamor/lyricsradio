@@ -1,5 +1,7 @@
 package net.laenredadera.app.android.lyricsradio.data.repositories
 
+import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import net.laenredadera.app.android.lyricsradio.data.services.LastFMService
 import net.laenredadera.app.android.lyricsradio.data.services.network.model.Wiki
 import javax.inject.Inject
@@ -11,7 +13,9 @@ class MediaInfoRepository @Inject constructor(private val lastFM: LastFMService)
     }
 
     suspend fun getAlbumCover(artistName: String, trackName: String): String {
-            return lastFM.getAlbumCover(artistName,trackName)
+            var a = lastFM.getAlbumCover(artistName,trackName)
+        Log.i("GusMor medioinfo: ", a)
+            return  a
     }
 
     suspend fun getArtistMbId(artistName: String, trackName: String): String {

@@ -169,7 +169,7 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 while (true) {
-                    delay(2000)
+                    delay(3000)
                     if (_uiIsPlaying.value) {
                         _cover.value = getAlbumCoverUseCase(_song.value[0]?:"", _song.value[1]?:"")
 

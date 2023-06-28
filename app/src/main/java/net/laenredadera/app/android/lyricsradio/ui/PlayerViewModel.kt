@@ -26,7 +26,7 @@ import net.laenredadera.app.android.lyricsradio.domain.GetMediaQueryIsPlayingUse
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaSetVolumeUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaStopUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetStationDataUseCase
-import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModel
+import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModelUI
 import javax.inject.Inject
 
 
@@ -48,8 +48,8 @@ class PlayerViewModel @Inject constructor(
     var cover: LiveData<String> = _cover
 
     var newItem: Boolean = true
-    private var _station: RadioStationModel? = null
-    var station = MutableLiveData<RadioStationModel?>()
+    private var _station: RadioStationModelUI? = null
+    var station = MutableLiveData<RadioStationModelUI?>()
 
     private val _song = MutableStateFlow<List<String?>>(listOf(" ", " "))
     var song: StateFlow<List<String?>> = _song.asStateFlow()
@@ -111,7 +111,7 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    fun addStationModel(radioStationModel: RadioStationModel) {
+    fun addStationModel(radioStationModel: RadioStationModelUI) {
         _station = radioStationModel
     }
 

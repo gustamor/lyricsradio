@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,6 +50,9 @@ import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.laenredadera.app.android.lyricsradio.R
 import net.laenredadera.app.android.lyricsradio.Routes
 
@@ -58,22 +62,26 @@ fun PlayerScreen(navigationController: NavHostController, playerViewModel: Playe
 
     Box(
         modifier = Modifier.background(Color(0xFF1C1C1C)),
-    )
-    {
+    ) {
         PlayerTopAppBar(navigationController)
         PlayerBody(playerViewModel)
     }
 
 }
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val heightSize = screenWidth + 300.dp
     val station = playerViewModel.station.observeAsState()
-    val playerStateFlow = playerViewModel.uiIsPlying.observeAsState(false)
+    val playerStateFlow = playerViewModel.uiIsPlaying.collectAsStateWithLifecycle()
     val song by playerViewModel.song.collectAsStateWithLifecycle()
+    val albumCover by playerViewModel.cover.observeAsState()
+    val coroutineScope = rememberCoroutineScope()
+
+
     playerViewModel.albumCover()
     Column(
         modifier = Modifier
@@ -85,7 +93,7 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
         Box(Modifier.weight(1.4f)) {
             Space(64)
             SubcomposeAsyncImage(
-                model = station.value?.cover ?: "",
+                model = if (albumCover == "") station.value?.cover else albumCover,
                 contentDescription = "albumCover",
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier
@@ -107,8 +115,7 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
 
                     is AsyncImagePainter.State.Error, is AsyncImagePainter.State.Empty -> {
                         val blur = AppCompatResources.getDrawable(
-                            LocalContext.current,
-                            R.drawable.blur
+                            LocalContext.current, R.drawable.blur
                         )
                         Image(
                             painter = rememberDrawablePainter(drawable = blur),
@@ -124,12 +131,9 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
                     }
                 }
             }
-
         }
-
         Column(
-            Modifier.weight(1f),
-            verticalArrangement = Arrangement.SpaceBetween
+            Modifier.weight(1f), verticalArrangement = Arrangement.SpaceBetween
         ) {
             Space(2)
             Text(
@@ -151,48 +155,48 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.testTag("SongTitleInPlayer")
             )
-
             Space(4)
-
             Row(
-                horizontalArrangement = Arrangement.Center, modifier = Modifier
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
                     .fillMaxWidth()
                     .height(96.dp)
                     .border(1.dp, Color.Green)
             ) {
-                IconButton(
-                    modifier = Modifier
-                        .size(112.dp)
-                        .padding(bottom = 16.dp, top = 12.dp),
+                IconButton(modifier = Modifier
+                    .size(112.dp)
+                    .padding(bottom = 16.dp, top = 12.dp),
                     onClick = {
-                        Log.i("GusMor", playerStateFlow.value.toString())
-
                         if (!playerStateFlow.value) {
-                            playerViewModel.prepare()
-                            playerViewModel.play().apply {
-                                Log.i("GusMor1", playerViewModel.uiIsPlying.value.toString())
+                            //   playerViewModel.prepare()
+                            coroutineScope.launch {
+                                withContext(Dispatchers.IO) {
+                                    playerViewModel.play().apply {
+                                        playerViewModel.getTrackInfo()
+                                    }
+                                }
                             }
                         } else {
-                            playerViewModel.stop().apply {
-                                Log.i("GusMor2", playerViewModel.uiIsPlying.value.toString())
+                            coroutineScope.launch {
+                                withContext(Dispatchers.IO) {
+                                    playerViewModel.stop()
+                                }
                             }
-
                         }
                     }) {
                     if (!playerStateFlow.value) {
                         val play = AppCompatResources.getDrawable(
-                            LocalContext.current,
-                            androidx.media3.ui.R.drawable.exo_icon_play
+                            LocalContext.current, androidx.media3.ui.R.drawable.exo_icon_play
                         )
-                        Image(
+                        Icon(
                             painter = rememberDrawablePainter(drawable = play),
+                            tint = Color.White,
                             modifier = Modifier.size(64.dp),
                             contentDescription = "playButton"
                         )
                     } else {
                         val pause = AppCompatResources.getDrawable(
-                            LocalContext.current,
-                            androidx.media3.ui.R.drawable.exo_icon_pause
+                            LocalContext.current, androidx.media3.ui.R.drawable.exo_icon_pause
                         )
                         Image(
                             painter = rememberDrawablePainter(drawable = pause),
@@ -209,33 +213,37 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
                 horizontalArrangement = Arrangement.Center
             ) {
 
-                val play = AppCompatResources.getDrawable(
-                    LocalContext.current,
-                    androidx.media3.ui.R.drawable.exo_icon_play
+                val volumeMute = AppCompatResources.getDrawable(
+                    LocalContext.current, R.drawable.ic_volume_mute
                 )
-                val stop = AppCompatResources.getDrawable(
-                    LocalContext.current,
-                    androidx.media3.ui.R.drawable.exo_icon_play
+                val volumeDown = AppCompatResources.getDrawable(
+                    LocalContext.current, R.drawable.ic_volume_down
                 )
-                Image(
-                    painter = rememberDrawablePainter(drawable = play),
-                    modifier = Modifier
-                        .size(48.dp)
-                        .padding(top = 16.dp, end = 8.dp)
-                        .background(Color.Black),
-                    contentDescription = "volumenStop"
-                )
-                 VolumeSlider( Modifier
-                     .weight(1f)
-                     .testTag("NowPlayingSlider"), playerViewModel)
 
-                Image(
-                    painter = rememberDrawablePainter(drawable = stop),
+                val volumeUp = AppCompatResources.getDrawable(
+                    LocalContext.current, R.drawable.ic_volume_up
+                )
+                Icon(
+                    painter = rememberDrawablePainter(drawable = volumeDown),
+                    tint = Color.White,
                     modifier = Modifier
-                        .size(48.dp)
-                        .padding(top = 16.dp, start = 8.dp)
-                        .background(Color.Black),
-                    contentDescription = "volumenMax"
+                        .size(28.dp)
+                        .padding(top = 16.dp, end = 4.dp),
+                    contentDescription = "volumeDown"
+                )
+                VolumeSlider(
+                    Modifier
+                        .weight(1f)
+                        .testTag("NowPlayingSlider"), playerViewModel
+                )
+
+                Icon(
+                    painter = rememberDrawablePainter(drawable = volumeUp),
+                    tint = Color.White,
+                    modifier = Modifier
+                        .size(32.dp)
+                        .padding(top = 16.dp, start = 4.dp),
+                    contentDescription = "volumeUp"
                 )
             }
             Box(
@@ -284,18 +292,18 @@ fun Space(size: Int) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerTopAppBar(navigationController: NavHostController) {
-    Row(modifier = Modifier
-        .background(Color(0xFF1C1C1C))
-        .testTag("NowPlayingHeaderRow"))
+    Row(
+        modifier = Modifier
+            .background(Color(0xFF1C1C1C))
+            .testTag("NowPlayingHeaderRow")
+    )
 
     {
         IconButton(onClick = { navigationController.navigate(Routes.MainScreen.route) }) {
             Icon(
-                imageVector = Icons.Filled.ArrowBack,
-                contentDescription = "Arrow Back to Main"
+                imageVector = Icons.Filled.ArrowBack, contentDescription = "Arrow Back to Main"
             )
-        }
-        /* Text(
+        }/* Text(
              "En reproduccion",
              maxLines = 1,
              fontSize = 24.sp,

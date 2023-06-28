@@ -37,6 +37,15 @@ class LastFMService @Inject constructor(private val api: LastFMApiClient, @Appli
             return ""
         }
     }
+    suspend fun getArtistMbId(artistName: String, trackName: String): String  {
+        var trackInfo = api.getTrackInfo(getApiKey(), artistName, trackName)
+        return if ( trackInfo.isSuccessful) {
+            var mbid = trackInfo.body()!!.track.artist.mbid
+            return mbid
+        } else {
+            return ""
+        }
+    }
 
     suspend fun getAlbumInfoWiki(mbid: String): Wiki {
         var albumInfo = api.getAlbumInfo(getApiKey(), mbid)

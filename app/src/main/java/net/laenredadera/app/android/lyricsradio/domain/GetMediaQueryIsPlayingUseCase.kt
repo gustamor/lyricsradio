@@ -6,3 +6,4 @@ class GetMediaQueryIsPlayingUseCase @Inject constructor(private val getExoPlayer
     operator fun invoke() = getExoPlayerUseCase().isPlaying
 
 }
+

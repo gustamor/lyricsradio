@@ -1,7 +1,6 @@
 package net.laenredadera.app.android.lyricsradio.data.di
 
 import android.content.Context
-import android.content.res.Resources
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,7 +20,6 @@ class StationsListNetworkModule {
     @Singleton
     @Provides
     @Named("StationsClient")
-
     fun providesRetrofitRadiosList(@ApplicationContext context: Context): Retrofit {
         return Retrofit.Builder()
             .baseUrl(context.getString(R.string.api_radiostations))
@@ -37,7 +35,6 @@ class StationsListNetworkModule {
 @Module
 @InstallIn(SingletonComponent::class)
 class LyricsNetworkModule {
-
     @Provides
     @Named("LyricsClient")
     @Singleton

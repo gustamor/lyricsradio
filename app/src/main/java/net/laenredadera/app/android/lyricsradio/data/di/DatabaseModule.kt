@@ -18,8 +18,6 @@ class DatabaseModule {
     fun providesTaskDao(tracksDataBase: TracksDataBase): TracksDao{
         return tracksDataBase.tracksDao()
     }
-
-
     @Provides
     @Singleton
     fun provideTracksDatabase(@ApplicationContext appContext: Context): TracksDataBase {

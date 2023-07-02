@@ -1,11 +1,8 @@
 package net.laenredadera.app.android.lyricsradio.data.di
 
 import android.content.Context
-import android.util.Log
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
-import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import dagger.Module
@@ -19,7 +16,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object PlayerModule {
-
     @Provides
     @Singleton
     fun provideAudioAttributes(): AudioAttributes =
@@ -41,11 +37,9 @@ object PlayerModule {
             }
     }
 
-
     @Provides
     @Singleton
     fun provideMediaSession(@ApplicationContext context: Context) : MediaSession =
         MediaSession.Builder(context, provideExoPlayer(context))
             .build()
-
 }

@@ -6,8 +6,5 @@ import javax.inject.Inject
 
 
 class GetMediaAddItemUseCase @Inject constructor(private val media: MediaServiceRepository){
-
-    operator fun invoke(uri: Uri) {
-        return media.addMedia(uri)
-    }
+    operator fun invoke(uri: Uri) = media.addMedia(uri)
 }

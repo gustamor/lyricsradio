@@ -1,8 +1,6 @@
 package net.laenredadera.app.android.lyricsradio.ui.model
 
 import java.util.Date
-
-
 data class PlayedTrackModelUI(
     private val mbId: String,
     private val name: String,

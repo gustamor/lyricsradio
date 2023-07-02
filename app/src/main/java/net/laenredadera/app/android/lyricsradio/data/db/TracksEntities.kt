@@ -39,7 +39,6 @@ data class WikiEntity(
     var summary: String,
     var content: String
 )
-
 @Entity
 data class PlayedTrackEntity(
     @PrimaryKey (autoGenerate = true)
@@ -58,3 +57,14 @@ data class PlayedTrackDataEntity(
     var radioStationName: String,
     val playedAt: String
 )
+
+@Entity
+data class MostPlayedStationEntity(
+    @PrimaryKey
+    var id: Int,
+    var enabled: Boolean = true,
+    var name: String,
+    var lastTimePlayed: Long?,
+    var numTimesPlayed: Int?,
+)
+

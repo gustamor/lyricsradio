@@ -3,13 +3,13 @@ package net.laenredadera.app.android.lyricsradio.data.services
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.laenredadera.app.android.lyricsradio.data.services.network.RadioStationsApiClient
-import net.laenredadera.app.android.lyricsradio.data.services.network.model.RadioStationItem
+import net.laenredadera.app.android.lyricsradio.data.services.network.model.RadioStationItemResponse
 import javax.inject.Inject
 
 
 class RetrofitService @Inject constructor(private val api: RadioStationsApiClient) {
 
-    suspend fun getAllRadioStations(): List<RadioStationItem> {
+    suspend fun getAllRadioStations(): List<RadioStationItemResponse> {
         return withContext(Dispatchers.IO) {
             val response = api.getRadioStations()
             if (response.isSuccessful) {

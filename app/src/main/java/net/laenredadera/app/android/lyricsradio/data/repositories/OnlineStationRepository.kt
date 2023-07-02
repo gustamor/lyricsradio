@@ -1,7 +1,6 @@
 package net.laenredadera.app.android.lyricsradio.data.repositories
 
 import net.laenredadera.app.android.lyricsradio.data.services.RadioReceiverService
-import net.laenredadera.app.android.lyricsradio.domain.GetExoPlayerUseCase
 import javax.inject.Inject
 
 class OnlineStationRepository @Inject constructor(

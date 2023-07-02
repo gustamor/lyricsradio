@@ -4,7 +4,11 @@ import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import net.laenredadera.app.android.lyricsradio.ui.ItemStation
+import net.laenredadera.app.android.lyricsradio.ui.PlayerViewModel
 import net.laenredadera.app.android.lyricsradio.ui.StationCover
 import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModelUI
 import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationsAddressUI
@@ -12,7 +16,7 @@ import org.junit.Rule
 import org.junit.Test
 
 class ComponentHomeScreenTest {
-    val station: RadioStationModelUI = RadioStationModelUI(
+    private val station: RadioStationModelUI = RadioStationModelUI(
         1,
         true,
         "Radio Name",
@@ -21,14 +25,15 @@ class ComponentHomeScreenTest {
         "",
         RadioStationsAddressUI("", "", "", "")
     )
-
     @get: Rule
     val composeTestRule = createComposeRule()
 
     @Test
     fun ItemRadio_CheckIfExists() {
         composeTestRule.setContent {
-            ItemStation(station)
+            val navHostController: NavHostController = rememberNavController()
+            val playerViewModel : PlayerViewModel = hiltViewModel()
+            ItemStation(station,navHostController, playerViewModel)
         }
         composeTestRule.onNodeWithTag("ItemCard").assertExists()
     }
@@ -36,7 +41,9 @@ class ComponentHomeScreenTest {
     @Test
     fun ItemRadio_CheckIfHasClickAction() {
         composeTestRule.setContent {
-            ItemStation(station)
+            val navHostController: NavHostController = rememberNavController()
+            val playerViewModel : PlayerViewModel = hiltViewModel()
+            ItemStation(station,navHostController, playerViewModel)
         }
         composeTestRule.onNodeWithTag("ItemCard").assertHasClickAction()
     }
@@ -69,7 +76,9 @@ class ComponentHomeScreenTest {
     @Test
     fun ItemText_CheckIfExistsTextOfItemTitle() {
         composeTestRule.setContent {
-            ItemStation(station)
+            val navHostController: NavHostController = rememberNavController()
+            val playerViewModel : PlayerViewModel = hiltViewModel()
+            ItemStation(station,navHostController, playerViewModel)
         }
         composeTestRule.onNodeWithTag("TextItemTitle").assertExists()
     }
@@ -77,7 +86,9 @@ class ComponentHomeScreenTest {
     @Test
     fun ItemText_CheckIfExistsTextOfItemDescription() {
         composeTestRule.setContent {
-            ItemStation(station)
+            val navHostController: NavHostController = rememberNavController()
+            val playerViewModel : PlayerViewModel = hiltViewModel()
+            ItemStation(station,navHostController, playerViewModel)
         }
         composeTestRule.onNodeWithTag("TextItemDescription").assertExists()
     }
@@ -85,7 +96,9 @@ class ComponentHomeScreenTest {
     @Test
     fun MenuHorizontal_CheckIfImageOfMenuExists() {
         composeTestRule.setContent {
-            ItemStation(station)
+            val navHostController: NavHostController = rememberNavController()
+            val playerViewModel : PlayerViewModel = hiltViewModel()
+            ItemStation(station,navHostController, playerViewModel)
         }
         composeTestRule.onNodeWithContentDescription("MenuHorizImage").assertExists()
     }
@@ -93,7 +106,9 @@ class ComponentHomeScreenTest {
     @Test
     fun MenuHorizontal_CheckIfItemExists() {
         composeTestRule.setContent {
-            ItemStation(station)
+            val navHostController: NavHostController = rememberNavController()
+            val playerViewModel : PlayerViewModel = hiltViewModel()
+            ItemStation(station,navHostController, playerViewModel)
         }
         composeTestRule.onNodeWithTag("MenuHorizontalItem").assertExists()
     }
@@ -101,7 +116,9 @@ class ComponentHomeScreenTest {
     @Test
     fun MenuHorizontal_CheckIfItemIsClickable() {
         composeTestRule.setContent {
-            ItemStation(station)
+            val navHostController: NavHostController = rememberNavController()
+            val playerViewModel : PlayerViewModel = hiltViewModel()
+            ItemStation(station,navHostController, playerViewModel)
         }
         composeTestRule.onNodeWithTag("MenuHorizontalItem").assertHasClickAction()
     }

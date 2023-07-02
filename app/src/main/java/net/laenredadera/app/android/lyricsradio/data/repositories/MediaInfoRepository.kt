@@ -1,7 +1,6 @@
 package net.laenredadera.app.android.lyricsradio.data.repositories
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import net.laenredadera.app.android.lyricsradio.data.services.LastFMService
 import net.laenredadera.app.android.lyricsradio.data.services.network.model.Wiki
 import javax.inject.Inject

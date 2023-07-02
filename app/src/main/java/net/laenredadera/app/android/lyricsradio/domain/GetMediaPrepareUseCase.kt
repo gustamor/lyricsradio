@@ -5,8 +5,5 @@ import javax.inject.Inject
 
 
 class GetMediaPrepareUseCase @Inject constructor(private val media: MediaServiceRepository){
-
-    operator fun invoke() {
-        return media.initPlayer()
-    }
+    operator fun invoke() = media.initPlayer()
 }

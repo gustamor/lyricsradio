@@ -4,5 +4,5 @@ import net.laenredadera.app.android.lyricsradio.data.repositories.OnlineStationR
 import javax.inject.Inject
 
 class GetItemArtistNameUseCase @Inject constructor(private val stationsRepository: OnlineStationRepository) {
-    suspend operator fun invoke():String = stationsRepository.getArtist() ?: " "
+    suspend operator fun invoke():String = stationsRepository.getArtist()
 }

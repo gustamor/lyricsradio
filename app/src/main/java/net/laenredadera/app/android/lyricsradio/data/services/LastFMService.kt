@@ -1,10 +1,6 @@
 package net.laenredadera.app.android.lyricsradio.data.services
 
 import android.content.Context
-import android.content.res.Resources
-import android.provider.Settings.System.getString
-import android.util.Log
-import androidx.compose.ui.res.stringResource
 import dagger.hilt.android.qualifiers.ApplicationContext
 import net.laenredadera.app.android.lyricsradio.R
 import net.laenredadera.app.android.lyricsradio.data.services.network.LastFMApiClient
@@ -18,7 +14,6 @@ class LastFMService @Inject constructor(private val api: LastFMApiClient, @Appli
     }
 
     suspend fun getAlbumCover(artistName: String, trackName: String): String {
-
         var trackInfo = api.getTrackInfo(getApiKey(), artistName, trackName)
         return if ( trackInfo.isSuccessful) {
             var cover = trackInfo.body()!!.track.album.image[3].text
@@ -56,8 +51,6 @@ class LastFMService @Inject constructor(private val api: LastFMApiClient, @Appli
         } else {
             return  Wiki("0","","")
         }
-
     }
-
 
 }

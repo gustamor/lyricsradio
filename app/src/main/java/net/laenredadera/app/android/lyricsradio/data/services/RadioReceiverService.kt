@@ -4,8 +4,6 @@ import android.app.Service
 import android.content.Intent
 import android.net.Uri
 import android.os.IBinder
-import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Metadata
 import androidx.media3.common.util.UnstableApi
@@ -69,10 +67,12 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
      *
      */
     fun play() {
+
         prepare()
         //  player.play()
         player.playWhenReady = true
         _isPlaying.value = true
+
     }
 
     /**
@@ -81,7 +81,7 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
      */
     fun pause() {
         player.pause()
-        _isPlaying.value = false
+        _isPlaying.value = true
         _artistName.value = " "
         _songName.value = " "
 
@@ -144,8 +144,6 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
                         _artistName.value = " "
                         _songName.value = " "
                     }
-
-
             }
         }
 

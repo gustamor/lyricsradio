@@ -1,8 +1,6 @@
 package net.laenredadera.app.android.lyricsradio.data.services.network.model
 
-
 import com.google.gson.annotations.SerializedName
-
 data class AlbumInfoResponse(
     @SerializedName("album")
     val album: Album

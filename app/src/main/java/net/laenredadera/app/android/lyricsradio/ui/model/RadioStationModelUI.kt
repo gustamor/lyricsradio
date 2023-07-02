@@ -1,12 +1,8 @@
 package net.laenredadera.app.android.lyricsradio.ui.model
 
 import com.google.gson.annotations.SerializedName
-
-import net.laenredadera.app.android.lyricsradio.data.services.network.model.RadioStationItem
-import net.laenredadera.app.android.lyricsradio.data.services.network.model.RadioStationsAddressResponse
 import net.laenredadera.app.android.lyricsradio.domain.model.RadioStationModel
 import net.laenredadera.app.android.lyricsradio.domain.model.RadioStationsAddress
-import net.laenredadera.app.android.lyricsradio.domain.model.toData
 
 data class RadioStationModelUI(
     val id: Int,
@@ -17,10 +13,7 @@ data class RadioStationModelUI(
     val description: String?,
     val address: RadioStationsAddressUI
 )
-
-
 data class RadioStationsAddressUI(
-
     @SerializedName("url") val icy_url: String,
     val mp3u: String?,
     val pls: String?,

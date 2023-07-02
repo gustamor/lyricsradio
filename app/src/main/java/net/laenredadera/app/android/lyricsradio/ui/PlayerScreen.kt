@@ -1,11 +1,12 @@
 package net.laenredadera.app.android.lyricsradio.ui
 
 import android.annotation.SuppressLint
-import android.util.Log
+import android.graphics.drawable.Drawable
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,8 +34,10 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -56,11 +59,12 @@ import kotlinx.coroutines.withContext
 import net.laenredadera.app.android.lyricsradio.R
 import net.laenredadera.app.android.lyricsradio.Routes
 
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun PlayerScreen(navigationController: NavHostController, playerViewModel: PlayerViewModel) {
 
-    Box(
+    Column(
         modifier = Modifier.background(Color(0xFF1C1C1C)),
     ) {
         PlayerTopAppBar(navigationController)
@@ -77,20 +81,21 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
     val heightSize = screenWidth + 300.dp
     val station = playerViewModel.station.observeAsState()
     val playerStateFlow = playerViewModel.uiIsPlaying.collectAsStateWithLifecycle()
+    val playerStatePausedFlow = playerViewModel.uiIsPaused.collectAsStateWithLifecycle()
+
     val song by playerViewModel.song.collectAsStateWithLifecycle()
     val albumCover by playerViewModel.cover.observeAsState()
     val coroutineScope = rememberCoroutineScope()
 
 
-    playerViewModel.albumCover()
     Column(
         modifier = Modifier
-            .padding(top = 64.dp, start = 16.dp, end = 16.dp)
+            .padding(top = 16.dp, start = 16.dp, end = 16.dp)
             .fillMaxSize()
             .background(Color(0xFF1C1C1C))
             .border(1.dp, Color.Red),
     ) {
-        Box(Modifier.weight(1.4f)) {
+        Box(Modifier.weight(1.2f)) {
             Space(64)
             SubcomposeAsyncImage(
                 model = if (albumCover == "") station.value?.cover else albumCover,
@@ -137,7 +142,9 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
         ) {
             Space(2)
             Text(
-                text = station.value?.name ?: " Radio Name forever",
+                text = station.value?.name ?: " Radio Station",
+                color = Color.White,
+
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.testTag("StationNameInPlayer")
@@ -145,12 +152,15 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
             Space(1)
             Text(
                 text = song[0] ?: "Radio name",
+                color = Color.White,
                 fontSize = 19.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.testTag("ArtistNameInPlayer")
             )
             Text(
                 text = song[1] ?: "radio name",
+                color = Color.White,
+
                 fontSize = 19.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.testTag("SongTitleInPlayer")
@@ -173,6 +183,7 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
                                 withContext(Dispatchers.IO) {
                                     playerViewModel.play().apply {
                                         playerViewModel.getTrackInfo()
+                                        playerViewModel.albumCover()
                                     }
                                 }
                             }
@@ -247,11 +258,13 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
                 )
             }
             Box(
-                Modifier
-                    .height(56.dp)
+                modifier = Modifier
                     .fillMaxWidth()
-            )
+                    .height(24.dp)
+
+            ) {  }
         }
+
     }
 }
 
@@ -301,7 +314,7 @@ fun PlayerTopAppBar(navigationController: NavHostController) {
     {
         IconButton(onClick = { navigationController.navigate(Routes.MainScreen.route) }) {
             Icon(
-                imageVector = Icons.Filled.ArrowBack, contentDescription = "Arrow Back to Main"
+                imageVector = Icons.Filled.ArrowBack, tint = Color.White,  contentDescription = "Arrow Back to Main"
             )
         }/* Text(
              "En reproduccion",
@@ -310,6 +323,140 @@ fun PlayerTopAppBar(navigationController: NavHostController) {
              fontWeight = FontWeight.Bold,
              modifier = Modifier.testTag("NowPlayingHeaderText")        )*/
     }
-
-
 }
+
+@Composable
+fun Botonera(playerViewModel: PlayerViewModel = hiltViewModel()) {
+    val station = playerViewModel.station.observeAsState()
+    val playerStateFlow = playerViewModel.uiIsPlaying.collectAsStateWithLifecycle()
+    val playerStatePausedFlow = playerViewModel.uiIsPaused.collectAsStateWithLifecycle()
+
+    val song by playerViewModel.song.collectAsStateWithLifecycle()
+    val albumCover by playerViewModel.cover.observeAsState()
+    val coroutineScope = rememberCoroutineScope()
+    val playDrawable = AppCompatResources.getDrawable(
+        LocalContext.current,
+        androidx.media3.ui.R.drawable.exo_icon_play
+    )
+    val stopDrawable = AppCompatResources.getDrawable(
+        LocalContext.current,
+        androidx.media3.ui.R.drawable.exo_icon_pause
+    )
+    var drawable: Drawable
+    Box(
+        modifier = Modifier
+            .shadow(4.dp)
+            .testTag("Botonera")
+            .background(Color(0xFF1C1C1C))
+            .height(92.dp)
+            .clickable { /*TODO */ }
+    ) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .height(92.dp)
+                .padding(8.dp)
+                .background(Color(0xFF1C1C1C)),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        )
+        {
+            Row(
+                Modifier
+                    .height(92.dp)
+                    .padding(4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                SubcomposeAsyncImage(
+                    model = if (albumCover == "") station.value?.cover else albumCover,
+                    contentDescription = "nowPlayingCoverImageBotonera",
+                    contentScale = ContentScale.FillBounds,
+                    modifier = Modifier
+                        .height(48.dp)
+                        .width(48.dp)
+                ) {
+                    val state = painter.state
+                    when (state) {
+                        is AsyncImagePainter.State.Loading -> {
+                            CircularProgressIndicator(
+                                color = Color.Red,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(4.dp)
+                                    .clip(RoundedCornerShape(16.dp)),
+                            )
+                        }
+                        is AsyncImagePainter.State.Error, is AsyncImagePainter.State.Empty -> {
+                            val blur = AppCompatResources.getDrawable(
+                                LocalContext.current, R.drawable.blur
+                            )
+                            Image(
+                                painter = rememberDrawablePainter(drawable = blur),
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(RoundedCornerShape(16.dp)),
+                                contentDescription = "imagenBlur"
+                            )
+                        }
+
+                        else -> {
+                            SubcomposeAsyncImageContent()
+                        }
+                    }
+                }
+
+                Column(Modifier.padding(start = 8.dp)) {
+                    Text(
+                        text = song[0] ?: "",
+                        fontSize = 17.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        modifier = Modifier.testTag("TextItemNowplayingArtistBotonera")
+                    )
+                    Spacer(modifier = Modifier.height(1.dp))
+                    Text(
+                        text = song[1] ?: "",
+                        fontSize = 16.sp,
+                        color = Color.White,
+                        modifier = Modifier.testTag("TextItemNowplayingSongBotonera")
+                    )
+                }
+            }
+            Box(
+                Modifier
+                    .padding(4.dp)
+                    .size(48.dp)
+                    .clickable {
+                        if (!playerStatePausedFlow.value) {
+                            coroutineScope.launch {
+                                withContext(Dispatchers.IO) {
+                                    playerViewModel.pause()
+                                }
+                            }
+                        } else {
+                            coroutineScope.launch {
+                                withContext(Dispatchers.IO) {
+                                    playerViewModel.play()
+                                }
+                            }
+                        }
+                    }
+                    .testTag("PlayStopBotonera")
+            ) {
+                drawable = if (!playerStatePausedFlow.value) {
+                    stopDrawable!!
+                } else {
+                    playDrawable!!
+                }
+                Icon(
+                    painter = rememberDrawablePainter(drawable = drawable),
+                    tint = Color.White,
+                    contentDescription = "PlayStopImageBotonera",
+                )
+            }
+        }
+    }
+}
+
+
+

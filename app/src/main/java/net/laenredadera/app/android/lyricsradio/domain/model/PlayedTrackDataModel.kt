@@ -1,8 +1,6 @@
 package net.laenredadera.app.android.lyricsradio.domain.model
 
 import net.laenredadera.app.android.lyricsradio.data.db.PlayedTrackDataEntity
-import java.util.Date
-
 
 data class PlayedTrackDataModel(
      var MbID: String,

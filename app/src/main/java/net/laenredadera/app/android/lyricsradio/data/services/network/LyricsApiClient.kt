@@ -7,9 +7,7 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 
 interface LyricsApiClient {
-
     @FormUrlEncoded
     @POST("lyrics")
     suspend fun getLyrics(@Field("artist") artist:String, @Field("title") title:String) : Response<LyricsResponse>
-
 }

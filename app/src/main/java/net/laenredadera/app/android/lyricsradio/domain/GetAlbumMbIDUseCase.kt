@@ -4,7 +4,6 @@ import net.laenredadera.app.android.lyricsradio.data.repositories.MediaInfoRepos
 import javax.inject.Inject
 
 class GetAlbumMbIDUseCase  @Inject constructor(private val mediaInfoRepository: MediaInfoRepository) {
-
     suspend operator fun invoke(artist: String, trackName: String): String = mediaInfoRepository.getAlbumMbId(artist,trackName)
 
 }

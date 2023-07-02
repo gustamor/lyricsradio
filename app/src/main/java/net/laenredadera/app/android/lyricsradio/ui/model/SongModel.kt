@@ -1,7 +1,6 @@
 package net.laenredadera.app.android.lyricsradio.ui.model
 
 import com.google.gson.annotations.SerializedName
-
 data class SongModelUI(
     @SerializedName("id") val ide: Int,
     @SerializedName("artist") val artist: ArtistModelUI,

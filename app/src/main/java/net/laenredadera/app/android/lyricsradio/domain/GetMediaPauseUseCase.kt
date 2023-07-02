@@ -4,8 +4,5 @@ import net.laenredadera.app.android.lyricsradio.data.repositories.MediaServiceRe
 import javax.inject.Inject
 
 class GetMediaPauseUseCase @Inject constructor(private val media: MediaServiceRepository){
-
-    operator fun invoke() {
-        return media.pause()
-    }
+    operator fun invoke() = media.pause()
 }

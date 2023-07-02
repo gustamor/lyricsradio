@@ -26,6 +26,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -64,8 +65,8 @@ fun MainScreen(
     radioStationsViewModel: RadioStationViewModel,
     playerViewModel: PlayerViewModel
 ) {
-    radioStationsViewModel.getStations()
 
+    radioStationsViewModel.getStations()
     Column(
         Modifier
             .fillMaxSize()
@@ -84,16 +85,11 @@ fun MainBody(
 ) {
     val stations: List<RadioStationModelUI>? by radioStationsViewModel.stations.observeAsState()
     Log.i("GusMor", radioStationsViewModel.stations.value.toString())
-
     Column(
         Modifier.background(Color(0xFF1C1C1C))
-
     ) {
-
         SubHeaderMain("Welcome the destroyer", "Explore", navigationController)
-
         Space(18)
-
             LazyRow( Modifier
                 .fillMaxWidth()
                 .height(128.dp)) {
@@ -109,16 +105,10 @@ fun MainBody(
                                 .padding(horizontal = 6.dp)
                         )
                 }
-
         }
         Space(16)
         SubHeaderMain("Favs", "View", navigationController)
-        Row(
-
-            Modifier
-                .height(160.dp)
-
-        ) {
+        Row(Modifier.height(160.dp)) {
             RoundedBordersRectangleImage(
                 painter = painterResource(id = R.drawable.blur),
                 width = 200.dp,
@@ -145,9 +135,8 @@ fun MainBody(
             ItemNowPlaying()
             ItemNowPlaying()
         }
-
-
     }
+    Botonera(playerViewModel)
 }
 
 @Composable
@@ -166,7 +155,6 @@ fun SubHeaderMain(title: String, textButton: String?, nav: NavHostController) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         TitleHeaderMain(title, 21)
         if (textButton != null) {
-
             Button(
                 onClick = { nav.navigate(Routes.HomeScreen.route) },
                 colors = ButtonDefaults.buttonColors(Color.Magenta),
@@ -210,25 +198,23 @@ fun RoundedBordersSquareImage(
                         playerViewModel.addMediaItem(uri)
                     }
                     nav.navigate(Routes.PlayerScreen.route)
-
-
                 }
-
             }
     ) {
-        val state = painter.state
-        if (state is AsyncImagePainter.State.Loading) {
-            CircularProgressIndicator(color = Color.Red, modifier = Modifier
-                .fillMaxSize()
-                .padding(4.dp))
-        }
-        else if (state is AsyncImagePainter.State.Error || state is AsyncImagePainter.State.Empty){
-            val drawable = AppCompatResources.getDrawable(LocalContext.current, R.drawable.blur)
-            Image(painter = rememberDrawablePainter(drawable = drawable),
-                modifier = Modifier.fillMaxSize(), contentDescription = "imagenBlur")
-        }
-        else  {
-            SubcomposeAsyncImageContent()
+        when (painter.state) {
+            is AsyncImagePainter.State.Loading -> {
+                CircularProgressIndicator(color = Color.Red, modifier = Modifier
+                    .fillMaxSize()
+                    .padding(4.dp))
+            }
+            is AsyncImagePainter.State.Error, is AsyncImagePainter.State.Empty -> {
+                val drawable = AppCompatResources.getDrawable(LocalContext.current, R.drawable.blur)
+                Image(painter = rememberDrawablePainter(drawable = drawable),
+                    modifier = Modifier.fillMaxSize(), contentDescription = "imagenBlur")
+            }
+            else -> {
+                SubcomposeAsyncImageContent()
+            }
         }
     }
 }
@@ -244,7 +230,6 @@ fun RoundedBordersRectangleImage(
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
     val w = (((screenWidth)-(screenWidth/10))/2f)
-
     Image(
         painter = painter,
         contentDescription = contentDescription,
@@ -256,10 +241,8 @@ fun RoundedBordersRectangleImage(
     )
 }
 
-
 @Composable
 fun ItemNowPlaying() {
-
     Box(
         modifier = Modifier
             .shadow(4.dp)
@@ -281,7 +264,6 @@ fun ItemNowPlaying() {
                 Modifier
                     .height(92.dp)
                     .padding(4.dp),
-
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 val blur = AppCompatResources.getDrawable(LocalContext.current, R.drawable.blur)
@@ -292,8 +274,6 @@ fun ItemNowPlaying() {
                         .height(40.dp)
                         .width(40.dp)
                 )
-
-
                 Column(Modifier.padding(start = 8.dp)) {
                     Text(
                         text = "Artist name",
@@ -322,8 +302,9 @@ fun ItemNowPlaying() {
                     LocalContext.current,
                     androidx.media3.ui.R.drawable.exo_icon_play
                 )
-                Image(
+                Icon(
                     painter = rememberDrawablePainter(drawable = drawable),
+                    tint = Color.White,
                     contentDescription = "MenuHorizImage",
                 )
             }

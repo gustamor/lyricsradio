@@ -145,7 +145,6 @@ fun PlayedItem() {
                     modifier = Modifier.testTag("ListenedItemBodyText")
                 )
             }
-
         }
         Row(
             Modifier
@@ -159,7 +158,6 @@ fun PlayedItem() {
                 modifier = Modifier.testTag("RadioStationListenedAttext")
             )
         }
-
     }
 
 }

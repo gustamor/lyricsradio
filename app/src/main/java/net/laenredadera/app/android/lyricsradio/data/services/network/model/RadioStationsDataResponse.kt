@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class RadioStationsDataResponse(
     @SerializedName("name") val name: String,
-    @SerializedName("stations") val stations: List<RadioStationItem>
+    @SerializedName("stations") val stations: List<RadioStationItemResponse>
 )

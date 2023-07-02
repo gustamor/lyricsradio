@@ -7,7 +7,6 @@ data class SongModel(
     @SerializedName("title") val title: String,
     @SerializedName("album") val album: AlbumModel
 )
-
 data class AlbumModel(
     @SerializedName("mbid") val mbid: String,
     @SerializedName("name") val name: String,

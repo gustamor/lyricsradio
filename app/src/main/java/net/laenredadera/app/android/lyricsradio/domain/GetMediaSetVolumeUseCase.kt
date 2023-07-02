@@ -4,8 +4,6 @@ import net.laenredadera.app.android.lyricsradio.data.repositories.MediaServiceRe
 import javax.inject.Inject
 
 class GetMediaSetVolumeUseCase  @Inject constructor(private val media: MediaServiceRepository){
+    operator fun invoke(vol: Float) = media.setVolume(vol)
 
-    operator fun invoke(vol: Float) {
-        return media.setVolume(vol)
-    }
 }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomSheetScaffold
@@ -49,13 +50,15 @@ class MainActivity : ComponentActivity() {
         setContent {
             LyricsRadioTheme {
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize(),
+
+                    contentColor = Color(0xFF1C1C1C),
                     color = Color(0xFF1C1C1C)
                 ) {
                     val song by playerViewModel.song.collectAsStateWithLifecycle()
                     val playerStateFlow = playerViewModel.uiIsPlaying.collectAsStateWithLifecycle()
-
-                    var sheetPeekHeight = if (playerStateFlow.value) 24.dp else 0.dp
+                    val sheetPeekHeight = if (playerStateFlow.value) 24.dp else 0.dp
 
                     BottomSheetScaffold(
                         scaffoldState = rememberBottomSheetScaffoldState(),
@@ -63,22 +66,25 @@ class MainActivity : ComponentActivity() {
                         sheetTonalElevation = 0.dp,
                         sheetShadowElevation = 0.dp,
                         sheetDragHandle = {
-                           if (song[1] == " ") Text( "Drag me to hell") else Text(song[1]!!)
+                            if (song[1] == " ") Text("Drag me to hell") else Text(song[1]!!)
                         },
                         contentColor = Color(0xFF1C1C1C),
                         sheetContentColor = Color(0xFF1C1C1C),
-                        containerColor =  Color(0xFF1C1C1C),
+                        containerColor = Color(0xFF1C1C1C),
                         sheetContent = {
                             if (playerStateFlow.value) {
                                 Column(
                                     verticalArrangement = Arrangement.Center,
                                     horizontalAlignment = Alignment.CenterHorizontally,
-                                    modifier = Modifier.fillMaxWidth().background(Color(0xFF1C1C1C))
-
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(Color(0xFF1C1C1C))
                                 ) {
                                     Column(
                                         horizontalAlignment = Alignment.CenterHorizontally,
-                                        modifier = Modifier.verticalScroll(rememberScrollState()).background(Color(0xFF1C1C1C))
+                                        modifier = Modifier
+                                            .verticalScroll(rememberScrollState())
+                                            .background(Color(0xFF1C1C1C))
                                     ) {
                                         Botonera(playerViewModel)
                                     }

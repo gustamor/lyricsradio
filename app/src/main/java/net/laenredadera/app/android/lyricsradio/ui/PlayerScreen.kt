@@ -70,7 +70,6 @@ fun PlayerScreen(navigationController: NavHostController, playerViewModel: Playe
         PlayerTopAppBar(navigationController)
         PlayerBody(playerViewModel)
     }
-
 }
 
 @SuppressLint("StateFlowValueCalledInComposition")

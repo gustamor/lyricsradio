@@ -90,9 +90,10 @@ fun MainBody(
     ) {
         SubHeaderMain("Welcome the destroyer", "Explore", navigationController)
         Space(18)
-            LazyRow( Modifier
-                .fillMaxWidth()
-                .height(128.dp)) {
+            LazyRow(
+                Modifier
+                    .fillMaxWidth()
+                    .height(128.dp)) {
                 items(stations.orEmpty(), key = { it.id }) { st ->
                     if (st.enabled)
                         RoundedBordersSquareImage(
@@ -107,21 +108,25 @@ fun MainBody(
                 }
         }
         Space(16)
-        SubHeaderMain("Favs", "View", navigationController)
+        SubHeaderMain("Favs", "View All", navigationController)
         Row(Modifier.height(160.dp)) {
             RoundedBordersRectangleImage(
-                painter = painterResource(id = R.drawable.blur),
+                painter = painterResource(id = R.drawable.mostplayedstations),
                 width = 200.dp,
                 height = 128.dp,
-                contentDescription = "",
+                headText = "Your top",
+                bodyText = "Stations",
+                contentDescription = "mostplayedstations",
                 modifier = Modifier
                     .padding(horizontal = 6.dp)
             )
             RoundedBordersRectangleImage(
-                painter = painterResource(id = R.drawable.blur),
+                painter = painterResource(id = R.drawable.mostplayed2),
                 width = 200.dp,
                 height = 128.dp,
-                contentDescription = "",
+                headText = "Recently",
+                bodyText = "Played",
+                contentDescription = "lastplayedsongs",
                 modifier = Modifier
                     .padding(horizontal = 6.dp)
             )
@@ -181,6 +186,7 @@ fun RoundedBordersSquareImage(
     val cover = Uri.parse(station.cover)
     val uri = Uri.parse(station.address.icy_url)
     val coroutineScope = rememberCoroutineScope()
+Box() {
 
     SubcomposeAsyncImage(
         model = cover,
@@ -218,10 +224,13 @@ fun RoundedBordersSquareImage(
         }
     }
 }
+}
 
 @Composable
 fun RoundedBordersRectangleImage(
     painter: Painter,
+    headText: String,
+    bodyText: String,
     width: Dp,
     height: Dp,
     contentDescription: String?,
@@ -230,15 +239,23 @@ fun RoundedBordersRectangleImage(
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
     val w = (((screenWidth)-(screenWidth/10))/2f)
-    Image(
-        painter = painter,
-        contentDescription = contentDescription,
-        contentScale = ContentScale.FillBounds,
-         modifier = modifier
-             .height(height)
-             .width(w.dp)
-             .clip(RoundedCornerShape(32.dp))
-    )
+    Box(contentAlignment=Alignment.Center) {
+        Image(
+            painter = painter,
+            contentDescription = contentDescription,
+            contentScale = ContentScale.FillBounds,
+            modifier = modifier
+                .height(height)
+                .width(w.dp)
+                .clip(RoundedCornerShape(32.dp))
+        )
+        Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(headText, fontSize = 22.sp, color= Color.White, fontWeight = FontWeight.Bold)
+            Text(bodyText, fontSize = 19.sp, color= Color.White)
+        }
+    }
 }
 
 @Composable

@@ -13,7 +13,7 @@ import net.laenredadera.app.android.lyricsradio.ui.model.LyricsModelUI
 import javax.inject.Inject
 
 @HiltViewModel
-class yricsViewModel @Inject constructor(private val getLyricsUseCase: GetLyricsUseCase) : ViewModel() {
+class LyricsViewModel @Inject constructor(private val getLyricsUseCase: GetLyricsUseCase) : ViewModel() {
 
     private var _lyrics = MutableLiveData<LyricsModelUI>()
     val lyrics : LiveData<LyricsModelUI> = _lyrics

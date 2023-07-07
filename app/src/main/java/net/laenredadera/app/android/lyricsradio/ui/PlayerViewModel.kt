@@ -10,13 +10,19 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import net.laenredadera.app.android.lyricsradio.CoverState
+import net.laenredadera.app.android.lyricsradio.PlayingSongInfoState
 import net.laenredadera.app.android.lyricsradio.domain.GetAlbumCoverUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetExoPlayerUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaAddItemUseCase
+import net.laenredadera.app.android.lyricsradio.domain.GetMediaGetVolumeUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaPauseUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaPlayUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaPrepareUseCase
@@ -40,6 +46,7 @@ class PlayerViewModel @Inject constructor(
     private val getMediaAddItemUseCase: GetMediaAddItemUseCase,
     private val getStationDataUseCase: GetStationDataUseCase,
     private val getMediaSetVolumeUseCase: GetMediaSetVolumeUseCase,
+    private val getMediaGetVolumeUseCase: GetMediaGetVolumeUseCase,
     private val getAlbumCoverUseCase: GetAlbumCoverUseCase,
     private val getRadioStationAddOnePlayedUseCase: GetRadioStationAddOnePlayedUseCase,
     private val getRadioStationNumberOfTimesPlayedUseCase: GetRadioStationNumberOfTimesPlayedUseCase
@@ -48,11 +55,18 @@ class PlayerViewModel @Inject constructor(
     private var _cover = MutableLiveData("")
     var cover: LiveData<String> = _cover
 
+    private var _volume: Flow<Float> = getMediaGetVolumeUseCase()
+    var volume: Flow<Float> = _volume
+
     private var _station: RadioStationModelUI? = null
     var station = MutableLiveData<RadioStationModelUI?>()
 
-    private val _song = MutableStateFlow<List<String?>>(listOf(" ", " "))
-    var song: StateFlow<List<String?>> = _song.asStateFlow()
+    private var _song = MutableStateFlow(listOf(" ", " "))
+    var song: StateFlow<List<String>> = _song.asStateFlow()
+
+    private val _songStateFlow =
+        MutableStateFlow<PlayingSongInfoState>(PlayingSongInfoState.Loading)
+    var songStateFlow: StateFlow<PlayingSongInfoState> = _songStateFlow.asStateFlow()
 
     private val _uiIsPlaying = MutableStateFlow(false)
     val uiIsPlaying: StateFlow<Boolean> = _uiIsPlaying.asStateFlow()
@@ -60,17 +74,52 @@ class PlayerViewModel @Inject constructor(
     private val _uiIsPaused = MutableStateFlow(false)
     val uiIsPaused: StateFlow<Boolean> = _uiIsPaused.asStateFlow()
 
+    private val _imageUrlFlow = MutableStateFlow<String?>(null)
+    val imageUrlFlow: StateFlow<String?> = _imageUrlFlow.asStateFlow()
+
+    private val _imageStateFlow = MutableStateFlow<CoverState>(CoverState.Loading)
+    val imageStateFlow: StateFlow<CoverState> = _imageStateFlow.asStateFlow()
+
     init {
+        viewModelScope.launch {
+            albumCover()
+            addSong()
+        }
+    }
+
+    private fun addSong() {
         viewModelScope.launch {
             while (true) {
                 delay(100)
-                if (_uiIsPlaying.value!!) {
-                    _song.value = getStationDataUseCase()
+                if (_uiIsPlaying.value) {
+                   /* getStationDataUseCase().map(PlayingSongInfoState::Success)
+                        .catch {PlayingSongInfoState.Error(it)}
+                        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PlayingSongInfoState.Loading)*/
+                    getStationDataUseCase().collect {
+                        _song.value = when (it) {
+                            is PlayingSongInfoState.Error -> {
+                                Log.i("GusMor _song Error", it.exception.toString())
+                                listOf(" ", " ")
+                            }
+                           is PlayingSongInfoState.Loading -> {
+                                Log.i("GusMor _song Loading", it.toString())
+                                listOf(" ", " ")
+                            }
+                            is PlayingSongInfoState.Success -> {
+                                Log.i("GusMor _song Success", it.artist + it.title)
+                                listOf(it.artist, it.title)
+
+                            }
+                            is PlayingSongInfoState.Updating -> {
+                                Log.i("GusMor _song Updating", it.toString())
+                                listOf(" ", " ")
+                            }
+                        }
+                    }
                 } else
                     station.value = _station
                 addListener()
             }
-            albumCover()
         }
     }
 
@@ -82,6 +131,7 @@ class PlayerViewModel @Inject constructor(
                     reason: Int
                 ) {
                     _song.value = listOf(" ", " ")
+                  // addSong()
                 }
             }
         )
@@ -102,8 +152,9 @@ class PlayerViewModel @Inject constructor(
     }
 
     suspend fun addMediaItem(uri: Uri) {
-        stop()
+
         viewModelScope.launch {
+            stop()
             getMediaAddItemUseCase(uri)
         }
     }
@@ -139,9 +190,8 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch {
             getMediaStopUseCase()
             _uiIsPlaying.value = false
-            _uiIsPaused.value = true
+            _uiIsPaused.value = false
         }.apply {
-            _song.value = listOf(" ", " ")
         }
     }
 
@@ -154,8 +204,36 @@ class PlayerViewModel @Inject constructor(
     fun getTrackInfo() {
         viewModelScope.launch {
             try {
-                _song.value = getStationDataUseCase()
+            //    _songStateFlow.value = getStationDataUseCase()
             } catch (e: Exception) {
+            }
+        }
+    }
+
+    fun loadImageUrl() {
+        viewModelScope.launch {
+            delay(200)
+            getAlbumCoverUseCase(
+                _song.value[0] ?: "",
+                _song.value[1] ?: ""
+            ).collect {
+
+                when (it) {
+                    is CoverState.Error -> {
+                        _cover.value = ""
+                        Log.i("GusMor _cover Error", it.exception.toString())
+                    }
+
+                    is CoverState.Loading -> {
+                        _cover.value = " "
+                        Log.i("GusMor _cover Loading", it.toString())
+                    }
+
+                    is CoverState.Success -> {
+                        _cover.value = it.url.toString()
+                        Log.i("GusMor _cover Success", it.url.toString())
+                    }
+                }
             }
         }
     }
@@ -163,16 +241,7 @@ class PlayerViewModel @Inject constructor(
     fun albumCover() {
         viewModelScope.launch {
             try {
-                while (true) {
-                    delay(3000)
-                    if (_uiIsPlaying.value) {
-                        _cover.value =
-                            getAlbumCoverUseCase(_song.value[0] ?: "", _song.value[1] ?: "")
-                    } else {
-                        delay(1000)
-                        _cover.value = ""
-                    }
-                }
+                loadImageUrl()
             } catch (e: Exception) {
             }
         }

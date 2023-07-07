@@ -19,6 +19,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -57,6 +58,8 @@ class MainActivity : ComponentActivity() {
                     color = Color(0xFF1C1C1C)
                 ) {
                     val song by playerViewModel.song.collectAsStateWithLifecycle()
+                    val station = playerViewModel.station.observeAsState()
+
                     val playerStateFlow = playerViewModel.uiIsPlaying.collectAsStateWithLifecycle()
                     val sheetPeekHeight = if (playerStateFlow.value) 24.dp else 0.dp
 
@@ -66,7 +69,13 @@ class MainActivity : ComponentActivity() {
                         sheetTonalElevation = 0.dp,
                         sheetShadowElevation = 0.dp,
                         sheetDragHandle = {
-                            if (song[1] == " ") Text("Drag me to hell") else Text(song[1]!!)
+                            if (station.value != null) {
+                                if (!playerStateFlow.value) {
+                                    Text(" ")
+                                } else {
+                                    if (station.value!!.name == " ") Text(" ") else Text(station.value!!.name)
+                                }
+                            }
                         },
                         contentColor = Color(0xFF1C1C1C),
                         sheetContentColor = Color(0xFF1C1C1C),

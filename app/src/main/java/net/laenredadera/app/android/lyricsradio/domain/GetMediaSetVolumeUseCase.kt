@@ -5,5 +5,5 @@ import javax.inject.Inject
 
 class GetMediaSetVolumeUseCase  @Inject constructor(private val media: MediaServiceRepository){
     operator fun invoke(vol: Float) = media.setVolume(vol)
-
 }
+

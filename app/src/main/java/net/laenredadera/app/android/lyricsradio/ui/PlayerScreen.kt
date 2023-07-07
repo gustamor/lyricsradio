@@ -69,7 +69,7 @@ fun PlayerScreen(navigationController: NavHostController, playerViewModel: Playe
     Column(
         modifier = Modifier.background(Color(0xFF1C1C1C)),
     ) {
-        PlayerTopAppBar(navigationController)
+        PlayerTopAppBar(navigationController,playerViewModel)
         PlayerBody(playerViewModel)
     }
 }
@@ -83,7 +83,6 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
     val station = playerViewModel.station.observeAsState()
     val playerStateFlow = playerViewModel.uiIsPlaying.collectAsStateWithLifecycle()
     val playerStatePauseFlow = playerViewModel.uiIsPaused.collectAsStateWithLifecycle()
-
     val song by playerViewModel.song.collectAsStateWithLifecycle()
     val albumCover by playerViewModel.cover.observeAsState()
     val coroutineScope = rememberCoroutineScope()
@@ -119,7 +118,6 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
                                 .clip(RoundedCornerShape(16.dp)),
                         )
                     }
-
                     is AsyncImagePainter.State.Error, is AsyncImagePainter.State.Empty -> {
                         val blur = AppCompatResources.getDrawable(
                             LocalContext.current, R.drawable.blur
@@ -132,7 +130,6 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
                             contentDescription = "imagenBlur"
                         )
                     }
-
                     else -> {
                         SubcomposeAsyncImageContent()
                     }
@@ -140,18 +137,10 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
             }
         }
         Column(
-            Modifier.weight(1f), verticalArrangement = Arrangement.SpaceBetween
+            Modifier.weight(1f),
         ) {
-            Space(2)
-            Text(
-                text = station.value?.name ?: " Radio Station",
-                color = Color.White,
 
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.testTag("StationNameInPlayer")
-            )
-            Space(1)
+            Space(16)
             Text(
                 text = song[0] ?: "Radio name",
                 color = Color.White,
@@ -162,12 +151,11 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
             Text(
                 text = song[1] ?: "radio name",
                 color = Color.White,
-
                 fontSize = 19.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.testTag("SongTitleInPlayer")
             )
-            Space(4)
+            Space(16)
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
@@ -180,7 +168,6 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
                     .padding(bottom = 16.dp, top = 12.dp),
                     onClick = {
                         if ( !playerStateFlow.value) {
-                            //   playerViewModel.prepare()
                             coroutineScope.launch {
                                 withContext(Dispatchers.IO) {
                                     playerViewModel.play().apply {
@@ -264,7 +251,9 @@ fun Space(size: Int) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlayerTopAppBar(navigationController: NavHostController) {
+fun PlayerTopAppBar(navigationController: NavHostController, playerViewModel: PlayerViewModel = hiltViewModel()) {
+    val station = playerViewModel.station.observeAsState()
+
     Row(
         modifier = Modifier
             .background(Color(0xFF1C1C1C))
@@ -279,6 +268,13 @@ fun PlayerTopAppBar(navigationController: NavHostController) {
                 contentDescription = "Arrow Back to Main"
             )
         }
+        Text(
+            text = station.value?.name ?: " Radio Station",
+            color = Color.White,
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(top=12.dp, start=32.dp). testTag("StationNameInTabBar")
+        )
     }
 }
 

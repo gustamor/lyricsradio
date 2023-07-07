@@ -1,6 +1,7 @@
 package net.laenredadera.app.android.lyricsradio.data.repositories
 
 import android.util.Log
+import androidx.media3.exoplayer.ExoPlayer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -29,12 +30,13 @@ class OnlineStationRepository @Inject constructor(
                         prevTitle = getTitle()
                         emit(PlayingSongInfoState.Loading)
                     }
-                    try {
-                        delay(500)
-                        emit(PlayingSongInfoState.Success(getArtist(), getTitle()))
-                    } catch (e: Exception) {
-                        emit(PlayingSongInfoState.Error(e))
-                    }
+                    else
+                        try {
+                            delay(500)
+                            emit(PlayingSongInfoState.Success(getArtist(), getTitle()))
+                        } catch (e: Exception) {
+                            emit(PlayingSongInfoState.Error(e))
+                        }
                 }
             }
         }

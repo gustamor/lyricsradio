@@ -65,7 +65,6 @@ fun MainScreen(
     radioStationsViewModel: RadioStationViewModel,
     playerViewModel: PlayerViewModel
 ) {
-
     radioStationsViewModel.getStations()
     Column(
         Modifier

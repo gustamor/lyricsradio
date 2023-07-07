@@ -4,7 +4,6 @@ import net.laenredadera.app.android.lyricsradio.data.repositories.MediaServiceRe
 import javax.inject.Inject
 
 class GetMediaStopUseCase @Inject constructor(private val media: MediaServiceRepository){
-
     operator fun invoke() {
         return media.stop()
     }

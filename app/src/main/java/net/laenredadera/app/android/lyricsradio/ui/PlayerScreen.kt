@@ -168,7 +168,6 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
                             coroutineScope.launch {
                                 withContext(Dispatchers.IO) {
                                     playerViewModel.play().apply {
-                                        playerViewModel.getTrackInfo()
                                         playerViewModel.albumCover()
                                     }
                                 }
@@ -295,7 +294,6 @@ fun Botonera(playerViewModel: PlayerViewModel = hiltViewModel()) {
         LocalContext.current,
         androidx.media3.ui.R.drawable.exo_icon_pause
     )
-    var drawable: Drawable
 
     Box(
         modifier = Modifier

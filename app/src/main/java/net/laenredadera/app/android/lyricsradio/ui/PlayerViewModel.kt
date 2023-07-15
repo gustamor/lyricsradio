@@ -1,7 +1,6 @@
 package net.laenredadera.app.android.lyricsradio.ui
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,36 +19,25 @@ import net.laenredadera.app.android.lyricsradio.domain.GetAlbumCoverUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetExoPlayerUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaAddItemUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaGetVolumeUseCase
-import net.laenredadera.app.android.lyricsradio.domain.GetMediaPauseUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaPlayUseCase
-import net.laenredadera.app.android.lyricsradio.domain.GetMediaPrepareUseCase
-import net.laenredadera.app.android.lyricsradio.domain.GetMediaQueryIsPlayingUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaSetVolumeUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaStopUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetRadioStationAddOnePlayedUseCase
-import net.laenredadera.app.android.lyricsradio.domain.GetRadioStationNumberOfTimesPlayedUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetStationDataUseCase
-import net.laenredadera.app.android.lyricsradio.domain.GetStationSetLastPlayedDate
 import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModelUI
 import javax.inject.Inject
 
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
+    getMediaGetVolumeUseCase: GetMediaGetVolumeUseCase,
     private val getExoPlayerUseCase: GetExoPlayerUseCase,
-    private val getMediaQueryIsPlayingUseCase: GetMediaQueryIsPlayingUseCase,
     private val getMediaPlayUseCase: GetMediaPlayUseCase,
     private val getMediaStopUseCase: GetMediaStopUseCase,
-    private val getMediaPauseUseCase: GetMediaPauseUseCase,
-    private val getMediaPrepareUseCase: GetMediaPrepareUseCase,
     private val getMediaAddItemUseCase: GetMediaAddItemUseCase,
     private val getStationDataUseCase: GetStationDataUseCase,
     private val getMediaSetVolumeUseCase: GetMediaSetVolumeUseCase,
-    private val getMediaGetVolumeUseCase: GetMediaGetVolumeUseCase,
     private val getAlbumCoverUseCase: GetAlbumCoverUseCase,
     private val getRadioStationAddOnePlayedUseCase: GetRadioStationAddOnePlayedUseCase,
-    private val getRadioStationNumberOfTimesPlayedUseCase: GetRadioStationNumberOfTimesPlayedUseCase,
-    private val getStationSetLastPlayedDate: GetStationSetLastPlayedDate
-
 ) : ViewModel() {
 
     private var _cover = MutableLiveData("")
@@ -64,21 +52,11 @@ class PlayerViewModel @Inject constructor(
     private var _song = MutableStateFlow(listOf(" ", " "))
     var song: StateFlow<List<String>> = _song.asStateFlow()
 
-    private val _songStateFlow =
-        MutableStateFlow<PlayingSongInfoState>(PlayingSongInfoState.Loading)
-    var songStateFlow: StateFlow<PlayingSongInfoState> = _songStateFlow.asStateFlow()
-
     private val _uiIsPlaying = MutableStateFlow(false)
     val uiIsPlaying: StateFlow<Boolean> = _uiIsPlaying.asStateFlow()
 
     private val _uiIsPaused = MutableStateFlow(false)
     val uiIsPaused: StateFlow<Boolean> = _uiIsPaused.asStateFlow()
-
-    private val _imageUrlFlow = MutableStateFlow<String?>(null)
-    val imageUrlFlow: StateFlow<String?> = _imageUrlFlow.asStateFlow()
-
-    private val _imageStateFlow = MutableStateFlow<CoverState>(CoverState.Loading)
-    val imageStateFlow: StateFlow<CoverState> = _imageStateFlow.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -92,26 +70,22 @@ class PlayerViewModel @Inject constructor(
             while (true) {
                 delay(100)
                 if (_uiIsPlaying.value) {
-                   /* getStationDataUseCase().map(PlayingSongInfoState::Success)
-                        .catch {PlayingSongInfoState.Error(it)}
-                        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PlayingSongInfoState.Loading)*/
-                    getStationDataUseCase().collect {
+                  getStationDataUseCase().collect {
                         _song.value = when (it) {
                             is PlayingSongInfoState.Error -> {
-                                Log.i("GusMor _song Error", it.exception.toString())
                                 listOf(" ", " ")
                             }
-                           is PlayingSongInfoState.Loading -> {
-                                Log.i("GusMor _song Loading", it.toString())
+
+                            is PlayingSongInfoState.Loading -> {
                                 listOf(" ", " ")
                             }
+
                             is PlayingSongInfoState.Success -> {
-                                Log.i("GusMor _song Success", it.artist + it.title)
                                 listOf(it.artist, it.title)
 
                             }
+
                             is PlayingSongInfoState.Updating -> {
-                                Log.i("GusMor _song Updating", it.toString())
                                 listOf(" ", " ")
                             }
                         }
@@ -131,19 +105,13 @@ class PlayerViewModel @Inject constructor(
                     reason: Int
                 ) {
                     _song.value = listOf(" ", " ")
-                  // addSong()
                 }
             }
         )
     }
 
-    private fun updateServiceIsPlaying() {
-        viewModelScope.launch {
-            _uiIsPlaying.value = getMediaQueryIsPlayingUseCase()
-        }
-    }
+    fun addMediaItem(uri: Uri) {
 
-     fun addMediaItem(uri: Uri) {
         viewModelScope.launch {
             stop()
             getMediaAddItemUseCase(uri)
@@ -169,14 +137,6 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    fun pause() {
-        viewModelScope.launch {
-            getMediaPauseUseCase()
-            _uiIsPlaying.value = true
-            _uiIsPaused.value = true
-        }
-    }
-
     fun stop() {
         viewModelScope.launch {
             getMediaStopUseCase()
@@ -192,19 +152,16 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-
     fun loadImageUrl() {
         viewModelScope.launch {
             delay(200)
             getAlbumCoverUseCase(
-                _song.value[0] ,
+                _song.value[0],
                 _song.value[1]
             ).collect {
-
                 when (it) {
                     is CoverState.Error -> {
                         _cover.value = ""
-                        throw Exception(it.exception)
                     }
 
                     is CoverState.Loading -> {
@@ -213,6 +170,7 @@ class PlayerViewModel @Inject constructor(
 
                     is CoverState.Success -> {
                         _cover.value = it.url
+
                     }
                 }
             }
@@ -224,22 +182,18 @@ class PlayerViewModel @Inject constructor(
             try {
                 loadImageUrl()
             } catch (e: Exception) {
+                throw Exception(e.toString())
             }
         }
     }
 
-    private suspend fun setLastPlayedDate(id: Int) {
-        viewModelScope.launch {
-            getStationSetLastPlayedDate(id)
-        }
-    }
     private fun addOnePlayedTime() {
         viewModelScope.launch {
             try {
                 getRadioStationAddOnePlayedUseCase(_station!!.id)
-                setLastPlayedDate(_station!!.id)
+
             } catch (e: Exception) {
-                throw  Exception(e.toString())
+                throw Exception(e.toString())
             }
         }
     }

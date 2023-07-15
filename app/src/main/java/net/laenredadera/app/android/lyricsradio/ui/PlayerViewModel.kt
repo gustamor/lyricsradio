@@ -12,12 +12,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import net.laenredadera.app.android.lyricsradio.CoverState
 import net.laenredadera.app.android.lyricsradio.PlayingSongInfoState
 import net.laenredadera.app.android.lyricsradio.domain.GetAlbumCoverUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetExoPlayerUseCase
@@ -32,6 +29,7 @@ import net.laenredadera.app.android.lyricsradio.domain.GetMediaStopUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetRadioStationAddOnePlayedUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetRadioStationNumberOfTimesPlayedUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetStationDataUseCase
+import net.laenredadera.app.android.lyricsradio.domain.GetStationSetLastPlayedDate
 import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModelUI
 import javax.inject.Inject
 
@@ -49,7 +47,9 @@ class PlayerViewModel @Inject constructor(
     private val getMediaGetVolumeUseCase: GetMediaGetVolumeUseCase,
     private val getAlbumCoverUseCase: GetAlbumCoverUseCase,
     private val getRadioStationAddOnePlayedUseCase: GetRadioStationAddOnePlayedUseCase,
-    private val getRadioStationNumberOfTimesPlayedUseCase: GetRadioStationNumberOfTimesPlayedUseCase
+    private val getRadioStationNumberOfTimesPlayedUseCase: GetRadioStationNumberOfTimesPlayedUseCase,
+    private val getStationSetLastPlayedDate: GetStationSetLastPlayedDate
+
 ) : ViewModel() {
 
     private var _cover = MutableLiveData("")
@@ -143,16 +143,7 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    fun prepare() {
-        viewModelScope.launch {
-            getMediaPrepareUseCase()
-        }.apply {
-            addListener()
-        }
-    }
-
-    suspend fun addMediaItem(uri: Uri) {
-
+     fun addMediaItem(uri: Uri) {
         viewModelScope.launch {
             stop()
             getMediaAddItemUseCase(uri)
@@ -201,37 +192,27 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    fun getTrackInfo() {
-        viewModelScope.launch {
-            try {
-            //    _songStateFlow.value = getStationDataUseCase()
-            } catch (e: Exception) {
-            }
-        }
-    }
 
     fun loadImageUrl() {
         viewModelScope.launch {
             delay(200)
             getAlbumCoverUseCase(
-                _song.value[0] ?: "",
-                _song.value[1] ?: ""
+                _song.value[0] ,
+                _song.value[1]
             ).collect {
 
                 when (it) {
                     is CoverState.Error -> {
                         _cover.value = ""
-                        Log.i("GusMor _cover Error", it.exception.toString())
+                        throw Exception(it.exception)
                     }
 
                     is CoverState.Loading -> {
                         _cover.value = " "
-                        Log.i("GusMor _cover Loading", it.toString())
                     }
 
                     is CoverState.Success -> {
-                        _cover.value = it.url.toString()
-                        Log.i("GusMor _cover Success", it.url.toString())
+                        _cover.value = it.url
                     }
                 }
             }
@@ -247,15 +228,18 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+    private suspend fun setLastPlayedDate(id: Int) {
+        viewModelScope.launch {
+            getStationSetLastPlayedDate(id)
+        }
+    }
     private fun addOnePlayedTime() {
         viewModelScope.launch {
             try {
                 getRadioStationAddOnePlayedUseCase(_station!!.id)
-                var num = getRadioStationNumberOfTimesPlayedUseCase(_station!!.id)
-                Log.i("GusMor station id: ", _station!!.id.toString())
-                Log.i("GusMor station id played: ", num.toString())
+                setLastPlayedDate(_station!!.id)
             } catch (e: Exception) {
-                Log.i("GusMor station id: ", e.toString())
+                throw  Exception(e.toString())
             }
         }
     }

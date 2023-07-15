@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomSheetScaffold
@@ -18,7 +17,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +33,7 @@ import net.laenredadera.app.android.lyricsradio.ui.PlayerScreen
 import net.laenredadera.app.android.lyricsradio.ui.PlayerViewModel
 import net.laenredadera.app.android.lyricsradio.ui.RadioHomeScreen
 import net.laenredadera.app.android.lyricsradio.ui.RadioStationViewModel
+import net.laenredadera.app.android.lyricsradio.ui.TopStationsScreen
 import net.laenredadera.app.android.lyricsradio.ui.theme.LyricsRadioTheme
 import net.laenredadera.app.android.lyricsradio.ui.theme.PreviouslyPlayedScreen
 
@@ -47,22 +46,17 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             LyricsRadioTheme {
                 Surface(
                     modifier = Modifier
                         .fillMaxSize(),
-
                     contentColor = Color(0xFF1C1C1C),
                     color = Color(0xFF1C1C1C)
                 ) {
-                    val song by playerViewModel.song.collectAsStateWithLifecycle()
                     val station = playerViewModel.station.observeAsState()
-
                     val playerStateFlow = playerViewModel.uiIsPlaying.collectAsStateWithLifecycle()
                     val sheetPeekHeight = if (playerStateFlow.value) 24.dp else 0.dp
-
                     BottomSheetScaffold(
                         scaffoldState = rememberBottomSheetScaffoldState(),
                         sheetPeekHeight = sheetPeekHeight,
@@ -102,7 +96,6 @@ class MainActivity : ComponentActivity() {
                         }
                     ) {
                         val navigationController = rememberNavController()
-
                         NavHost(
                             navController = navigationController,
                             startDestination = Routes.MainScreen.route,
@@ -127,7 +120,12 @@ class MainActivity : ComponentActivity() {
                                     playerViewModel
                                 )
                             }
-                            composable(Routes.PreviouslyPlayedScreen.route) { PreviouslyPlayedScreen() }
+                            composable(Routes.PreviouslyPlayedScreen.route) {
+                                PreviouslyPlayedScreen(
+                                    navigationController
+                                )
+                            }
+                            composable(Routes.TopStationsScreen.route) {TopStationsScreen( navigationController)}
                         }
                     }
                 }

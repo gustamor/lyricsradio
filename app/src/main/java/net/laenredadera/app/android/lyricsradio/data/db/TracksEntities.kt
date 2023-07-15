@@ -59,11 +59,13 @@ data class PlayedTrackDataEntity(
 )
 
 @Entity
-data class MostPlayedStationEntity(
+data class TopStationEntity(
     @PrimaryKey
     var id: Int,
     var enabled: Boolean = true,
     var name: String,
+    var cover: String,
+    var description: String,
     var lastTimePlayed: Long?,
     var numTimesPlayed: Int?,
 )

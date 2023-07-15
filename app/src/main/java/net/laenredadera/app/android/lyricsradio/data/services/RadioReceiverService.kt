@@ -4,7 +4,6 @@ import android.app.Service
 import android.content.Intent
 import android.net.Uri
 import android.os.IBinder
-import android.util.Log
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Metadata
 import androidx.media3.common.util.UnstableApi
@@ -14,12 +13,8 @@ import androidx.media3.exoplayer.util.EventLogger
 import androidx.media3.extractor.metadata.icy.IcyInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import net.laenredadera.app.android.lyricsradio.BuildConfig
 import javax.inject.Inject

@@ -1,16 +1,13 @@
 package net.laenredadera.app.android.lyricsradio.data.repositories
 
-import android.util.Log
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import net.laenredadera.app.android.lyricsradio.CoverState
 import net.laenredadera.app.android.lyricsradio.data.services.LastFMService
 import net.laenredadera.app.android.lyricsradio.data.services.network.model.Wiki
+import net.laenredadera.app.android.lyricsradio.ui.CoverState
 import javax.inject.Inject
 
 class MediaInfoRepository @Inject constructor(private val lastFM: LastFMService) {
@@ -38,7 +35,6 @@ class MediaInfoRepository @Inject constructor(private val lastFM: LastFMService)
                 }
             }
         }
-
 
     suspend fun getArtistMbId(artistName: String, trackName: String): String {
         return lastFM.getArtistMbId(artistName, trackName)

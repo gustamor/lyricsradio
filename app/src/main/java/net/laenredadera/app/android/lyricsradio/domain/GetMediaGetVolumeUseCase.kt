@@ -2,8 +2,6 @@ package net.laenredadera.app.android.lyricsradio.domain
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import net.laenredadera.app.android.lyricsradio.data.repositories.MediaServiceRepository
 import javax.inject.Inject

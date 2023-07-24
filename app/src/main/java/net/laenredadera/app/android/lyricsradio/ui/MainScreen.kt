@@ -63,7 +63,8 @@ import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModelUI
 fun MainScreen(
     navigationController: NavHostController,
     radioStationsViewModel: RadioStationViewModel,
-    playerViewModel: PlayerViewModel
+    playerViewModel: PlayerViewModel,
+
 ) {
     radioStationsViewModel.getStations()
     Column(
@@ -79,15 +80,15 @@ fun MainScreen(
 @Composable
 fun MainBody(
     radioStationsViewModel: RadioStationViewModel,
-    navigationController: NavHostController,
-    playerViewModel: PlayerViewModel
+    nav: NavHostController,
+    playerViewModel: PlayerViewModel,
 ) {
     val stations: List<RadioStationModelUI>? by radioStationsViewModel.stations.observeAsState()
     Log.i("GusMor", radioStationsViewModel.stations.value.toString())
     Column(
         Modifier.background(Color(0xFF1C1C1C))
     ) {
-        SubHeaderMain("Welcome the destroyer", "Explore", navigationController)
+        SubHeaderMain("Welcome the destroyer", "Explore", nav)
         Space(18)
             LazyRow(
                 Modifier
@@ -97,7 +98,7 @@ fun MainBody(
                     if (st.enabled)
                         RoundedBordersSquareImage(
                             station = st,
-                            nav = navigationController,
+                            nav = nav,
                             playerViewModel = playerViewModel,
                             width = 176.dp,
                             height = 176.dp,
@@ -107,17 +108,18 @@ fun MainBody(
                 }
         }
         Space(16)
-        SubHeaderMain("Favs", "View All", navigationController)
+        SubHeaderMain("Favs", "View All", nav)
         Row(Modifier.height(160.dp)) {
             RoundedBordersRectangleImage(
                 painter = painterResource(id = R.drawable.mostplayedstations),
-                width = 200.dp,
-                height = 128.dp,
                 headText = "Your top",
                 bodyText = "Stations",
-                contentDescription = "mostplayedstations",
+                width = 200.dp,
+                height = 128.dp,
+                contentDescription = "topstationsgotoButton",
                 modifier = Modifier
-                    .padding(horizontal = 6.dp)
+                    .padding(horizontal = 6.dp),
+                clickFunction = { nav.navigate(Routes.TopStationsScreen.route) }
             )
             RoundedBordersRectangleImage(
                 painter = painterResource(id = R.drawable.mostplayed2),
@@ -127,7 +129,8 @@ fun MainBody(
                 bodyText = "Played",
                 contentDescription = "lastplayedsongs",
                 modifier = Modifier
-                    .padding(horizontal = 6.dp)
+                    .padding(horizontal = 6.dp),
+                clickFunction =  { nav.navigate(Routes.PreviouslyPlayedScreen.route) },
             )
         }
         Space(4)
@@ -234,27 +237,31 @@ fun RoundedBordersRectangleImage(
     height: Dp,
     contentDescription: String?,
     modifier: Modifier = Modifier,
+    clickFunction: () -> Unit ,
 ) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
     val w = (((screenWidth)-(screenWidth/10))/2f)
-    Box(contentAlignment=Alignment.Center) {
-        Image(
-            painter = painter,
-            contentDescription = contentDescription,
-            contentScale = ContentScale.FillBounds,
-            modifier = modifier
-                .height(height)
-                .width(w.dp)
-                .clip(RoundedCornerShape(32.dp))
-        )
-        Column(
+
+    Box(contentAlignment=Alignment.Center, modifier= Modifier.clickable {  clickFunction() }) {
+            Image(
+                painter = painter,
+                contentDescription = contentDescription,
+                contentScale = ContentScale.FillBounds,
+                modifier = modifier
+                    .height(height)
+                    .width(w.dp)
+                    .clip(RoundedCornerShape(32.dp))
+            )
+            Column(
                 horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(headText, fontSize = 22.sp, color= Color.White, fontWeight = FontWeight.Bold)
-            Text(bodyText, fontSize = 19.sp, color= Color.White)
-        }
+            ) {
+                Text(headText, fontSize = 22.sp, color= Color.White, fontWeight = FontWeight.Bold)
+                Text(bodyText, fontSize = 19.sp, color= Color.White)
+            }
+
     }
+
 }
 
 @Composable

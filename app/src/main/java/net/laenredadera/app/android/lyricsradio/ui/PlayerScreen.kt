@@ -2,7 +2,6 @@ package net.laenredadera.app.android.lyricsradio.ui
 
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
-import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -79,10 +78,8 @@ fun PlayerScreen(navigationController: NavHostController, playerViewModel: Playe
 fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
-    val heightSize = screenWidth + 300.dp
     val station = playerViewModel.station.observeAsState()
     val playerStateFlow = playerViewModel.uiIsPlaying.collectAsStateWithLifecycle()
-    val playerStatePauseFlow = playerViewModel.uiIsPaused.collectAsStateWithLifecycle()
     val song by playerViewModel.song.collectAsStateWithLifecycle()
     val albumCover by playerViewModel.cover.observeAsState()
     val coroutineScope = rememberCoroutineScope()
@@ -142,14 +139,14 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
 
             Space(16)
             Text(
-                text = song[0] ?: "Radio name",
+                text = song[0],
                 color = Color.White,
                 fontSize = 19.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.testTag("ArtistNameInPlayer")
             )
             Text(
-                text = song[1] ?: "radio name",
+                text = song[1],
                 color = Color.White,
                 fontSize = 19.sp,
                 fontWeight = FontWeight.Bold,
@@ -171,7 +168,6 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
                             coroutineScope.launch {
                                 withContext(Dispatchers.IO) {
                                     playerViewModel.play().apply {
-                                        playerViewModel.getTrackInfo()
                                         playerViewModel.albumCover()
                                     }
                                 }
@@ -298,7 +294,6 @@ fun Botonera(playerViewModel: PlayerViewModel = hiltViewModel()) {
         LocalContext.current,
         androidx.media3.ui.R.drawable.exo_icon_pause
     )
-    var drawable: Drawable
 
     Box(
         modifier = Modifier
@@ -366,7 +361,7 @@ fun Botonera(playerViewModel: PlayerViewModel = hiltViewModel()) {
                     }
                     Column(Modifier.padding(start = 8.dp)) {
                         Text(
-                            text = song[0] ?: "",
+                            text = song[0],
                             fontSize = 17.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.White,
@@ -374,7 +369,7 @@ fun Botonera(playerViewModel: PlayerViewModel = hiltViewModel()) {
                         )
                         Spacer(modifier = Modifier.height(1.dp))
                         Text(
-                            text = song[1] ?: "",
+                            text = song[1],
                             fontSize = 16.sp,
                             color = Color.White,
                             modifier = Modifier.testTag("TextItemNowplayingSongBotonera")

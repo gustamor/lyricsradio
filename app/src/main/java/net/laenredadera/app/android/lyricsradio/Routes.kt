@@ -5,6 +5,6 @@ sealed class Routes (val route: String){
     object HomeScreen:Routes("homeScreen")
     object MainScreen:Routes("mainScreen")
     object PreviouslyPlayedScreen:Routes("previouslyPlayedScreen")
-
+    object TopStationsScreen:Routes("topStationsScreen")
 
 }

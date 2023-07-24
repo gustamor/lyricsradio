@@ -12,14 +12,20 @@ import kotlinx.coroutines.flow.Flow
 interface TracksDao {
     @Query("SELECT * FROM TrackEntity")
     fun getTracks(): Flow<List<TrackEntity>>
-    @Query("SELECT * FROM MostPlayedStationEntity WHERE MostPlayedStationEntity.enabled = 1 ORDER BY numTimesPlayed DESC")
-    fun getOrderedMostPlayedStation(): Flow<List<MostPlayedStationEntity?>>
-    @Query("SELECT * FROM MostPlayedStationEntity WHERE id = :id")
-    fun getMostPlayedStationEntity(id: Int): MostPlayedStationEntity
-    @Query("UPDATE MostPlayedStationEntity SET numTimesPlayed = numTimesPlayed +1 WHERE name = :id ")
-    suspend fun updateMostPlayedStationEntity(id: Int)
-    @Query("SELECT numTimesPlayed FROM MostPlayedStationEntity WHERE id = :id")
-    fun getNumberOfTimesPlayed(id: Int): Int
+    @Query("SELECT * FROM TopStationEntity WHERE TopStationEntity.enabled = 1 ORDER BY numTimesPlayed DESC")
+    fun getOrderedTopStations(): Flow<List<TopStationEntity?>>
+    @Query("SELECT * FROM TopStationEntity WHERE id = :id")
+    fun getTopStationEntity(id: Int): TopStationEntity
+    @Query("UPDATE TopStationEntity SET numTimesPlayed = numTimesPlayed + 1 WHERE id = :id ")
+    fun updateTopStationEntity(id: Int)
+    @Query("SELECT numTimesPlayed FROM TopStationEntity WHERE id = :id")
+    fun getNumberStationTimesPlayed(id: Int): Int
+
+    @Query("UPDATE TopStationEntity SET lastTimePlayed = :ms WHERE id = :id ")
+    fun setLastTimePlayed(id: Int, ms: Long)
+
+    @Query("SELECT lastTimePlayed FROM TopStationEntity WHERE id = :id")
+    fun getLastTimePlayed(id: Int): Long
 
     @Query(
         "SELECT TrackEntity.MbID, TrackEntity.name, AlbumEntity.name as albumName, " +
@@ -47,7 +53,7 @@ interface TracksDao {
     @Query("SELECT AlbumEntity.cover FROM AlbumEntity WHERE AlbumEntity.MbId = :albumMbID ")
     fun getAlbumCover(albumMbID: String): Flow<String>
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertMostPlayedStationEntity(stationEntity: MostPlayedStationEntity)
+    suspend fun insertMostPlayedStationEntity(stationEntity: TopStationEntity)
     @Insert
     suspend fun insertPlayedTrack(track: PlayedTrackDataEntity)
     @Insert
@@ -62,7 +68,7 @@ interface TracksDao {
     fun insertWiki(wiki: WikiEntity)
 
     @Delete
-    fun deleteMostPlayedTracks(stationEntity: MostPlayedStationEntity)
+    fun deleteMostPlayedTracks(stationEntity: TopStationEntity)
 
     @Delete
     fun deletePlayedTrack(track: PlayedTrackDataEntity)

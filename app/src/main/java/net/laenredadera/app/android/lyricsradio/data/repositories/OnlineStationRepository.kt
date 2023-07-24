@@ -1,14 +1,11 @@
 package net.laenredadera.app.android.lyricsradio.data.repositories
 
-import android.util.Log
-import androidx.media3.exoplayer.ExoPlayer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
-import net.laenredadera.app.android.lyricsradio.CoverState
 import net.laenredadera.app.android.lyricsradio.PlayingSongInfoState
 import net.laenredadera.app.android.lyricsradio.data.services.RadioReceiverService
 import javax.inject.Inject
@@ -18,9 +15,6 @@ class OnlineStationRepository @Inject constructor(
 ) {
     private var prevArtist: String = " "
     private var prevTitle: String = " "
-    suspend fun getStation() {}
-    suspend fun getStationName() {}
-
     suspend fun songInfo(): Flow<PlayingSongInfoState> =
         coroutineScope {
             withContext(Dispatchers.IO) {

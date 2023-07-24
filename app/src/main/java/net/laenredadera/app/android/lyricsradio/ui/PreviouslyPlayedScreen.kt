@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,16 +25,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import net.laenredadera.app.android.lyricsradio.R
 import net.laenredadera.app.android.lyricsradio.ui.Space
 
-@Preview
 @Composable
-fun PreviouslyPlayedScreen() {
+fun PreviouslyPlayedScreen(navigationController: NavHostController) {
 
     Column(
         Modifier
@@ -42,13 +42,13 @@ fun PreviouslyPlayedScreen() {
             .verticalScroll(rememberScrollState())
             .background(Color(0xFF1C1C1C))
     ) {
-        PlayedHeader()
-        PlayedBody()
+        PlayedHeader(navigationController)
+        PlayedBody(navigationController)
     }
 }
 
 @Composable
-fun PlayedHeader() {
+fun PlayedHeader(navigationController: NavHostController) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -56,6 +56,21 @@ fun PlayedHeader() {
         horizontalArrangement = Arrangement.SpaceBetween
 
     ) {
+
+        IconButton(onClick = { navigationController.popBackStack() }) {
+            val backArrow = AppCompatResources.getDrawable(
+                LocalContext.current,
+                R.drawable.ic_back_arrow
+            )
+            Icon(
+                painter = rememberDrawablePainter(drawable = backArrow),
+                tint = Color.White,
+                modifier = Modifier
+                    .height(21.dp)
+                    .width(21.dp),
+                contentDescription = "BackArrowHeaderIcon"
+            )
+        }
         Text(
             text = "Played",
             fontWeight = FontWeight.Bold,
@@ -72,13 +87,12 @@ fun PlayedHeader() {
                 painter = rememberDrawablePainter(drawable = settings),
                 contentDescription = "PlayedHeaderIcon"
             )
-
         }
     }
 }
 
 @Composable
-fun PlayedBody() {
+fun PlayedBody(navigationController: NavHostController) {
     Text(
         text = "Previously Played",
         fontSize = 21.sp,
@@ -129,7 +143,6 @@ fun PlayedItem() {
                     color = Color.White,
                     modifier = Modifier.testTag("ListenedItemHeaderText")
                 )
-
                 Text(
                     text = "Sub header",
                     fontSize = 16.sp,
@@ -137,7 +150,6 @@ fun PlayedItem() {
                     modifier = Modifier.testTag("ListenedItemBodyText")
                 )
                 Space(12)
-
                 Text(
                     text = "18 Ago 23",
                     fontSize = 14.sp,
@@ -159,5 +171,4 @@ fun PlayedItem() {
             )
         }
     }
-
 }

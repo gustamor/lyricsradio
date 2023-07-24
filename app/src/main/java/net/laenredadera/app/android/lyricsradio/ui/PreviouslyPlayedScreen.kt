@@ -27,14 +27,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import net.laenredadera.app.android.lyricsradio.R
+import net.laenredadera.app.android.lyricsradio.ui.PreviousPlayedSongViewModel
 import net.laenredadera.app.android.lyricsradio.ui.Space
+import net.laenredadera.app.android.lyricsradio.ui.TopStationsViewModel
 
 @Composable
 fun PreviouslyPlayedScreen(navigationController: NavHostController) {
-
     Column(
         Modifier
             .fillMaxSize()
@@ -93,6 +95,9 @@ fun PlayedHeader(navigationController: NavHostController) {
 
 @Composable
 fun PlayedBody(navigationController: NavHostController) {
+    val playedSongViewModel: PreviousPlayedSongViewModel = hiltViewModel()
+
+    var playedSongs = playedSongViewModel.playedSongs
     Text(
         text = "Previously Played",
         fontSize = 21.sp,

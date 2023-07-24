@@ -48,7 +48,8 @@ data class PlayedTrackEntity(
 )
 @Entity
 data class PlayedTrackDataEntity(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    var id: Int,
     var MbID: String,
     var name: String,
     var artistName: String,

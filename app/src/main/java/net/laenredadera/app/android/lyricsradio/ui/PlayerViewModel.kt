@@ -82,10 +82,12 @@ class PlayerViewModel @Inject constructor(
                   getStationDataUseCase().collect { it ->
                       _song.value = when (it) {
                             is PlayingSongInfoState.Error -> {
+                                _album.value = " "
                                 listOf(" ", " ")
                             }
 
                             is PlayingSongInfoState.Loading -> {
+                                _album.value = " "
                                 listOf(" ", " ")
                             }
 
@@ -98,6 +100,7 @@ class PlayerViewModel @Inject constructor(
                             }
 
                             is PlayingSongInfoState.Updating -> {
+                                _album.value = " "
                                 listOf(" ", " ")
                             }
                         }

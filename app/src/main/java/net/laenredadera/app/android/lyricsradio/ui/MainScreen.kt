@@ -107,21 +107,21 @@ fun MainBody(
                         )
                 }
         }
-        Space(16)
-        SubHeaderMain("Favs", "View All", nav)
+        Space(40)
+     //   SubHeaderMain("Favs", "View All", nav)
         Row(Modifier.height(160.dp)) {
             RoundedBordersRectangleImage(
                 painter = painterResource(id = R.drawable.mostplayedstations),
                 headText = "Your top",
                 bodyText = "Stations",
-                width = 200.dp,
+                width = 450.dp,
                 height = 128.dp,
                 contentDescription = "topstationsgotoButton",
                 modifier = Modifier
                     .padding(horizontal = 6.dp),
                 clickFunction = { nav.navigate(Routes.TopStationsScreen.route) }
             )
-            RoundedBordersRectangleImage(
+            /*RoundedBordersRectangleImage(
                 painter = painterResource(id = R.drawable.mostplayed2),
                 width = 200.dp,
                 height = 128.dp,
@@ -131,19 +131,16 @@ fun MainBody(
                 modifier = Modifier
                     .padding(horizontal = 6.dp),
                 clickFunction =  { nav.navigate(Routes.PreviouslyPlayedScreen.route) },
-            )
+            )*/
         }
         Space(4)
-        TitleHeaderMain("Now Playing", 24)
+      //  TitleHeaderMain("Now Playing", 24)
         Space(4)
         Column(Modifier.verticalScroll(rememberScrollState())) {
-            ItemNowPlaying()
-            ItemNowPlaying()
-            ItemNowPlaying()
-            ItemNowPlaying()
+
         }
     }
-    Botonera(playerViewModel)
+//    Botonera()
 }
 
 @Composable
@@ -189,7 +186,6 @@ fun RoundedBordersSquareImage(
     val uri = Uri.parse(station.address.icy_url)
     val coroutineScope = rememberCoroutineScope()
 Box() {
-
     SubcomposeAsyncImage(
         model = cover,
         contentDescription = "stationCoverImage",
@@ -250,6 +246,7 @@ fun RoundedBordersRectangleImage(
                 contentScale = ContentScale.FillBounds,
                 modifier = modifier
                     .height(height)
+                    .width(width)
                     .width(w.dp)
                     .clip(RoundedCornerShape(32.dp))
             )

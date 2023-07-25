@@ -2,6 +2,12 @@ package net.laenredadera.app.android.lyricsradio.data.services
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 import net.laenredadera.app.android.lyricsradio.R
 import net.laenredadera.app.android.lyricsradio.data.services.network.LastFMApiClient
 import net.laenredadera.app.android.lyricsradio.data.services.network.model.Wiki
@@ -30,14 +36,14 @@ class LastFMService @Inject constructor(
         if (trackInfo.isSuccessful) {
             return trackInfo.body()!!.track.album.mbid
         } else {
-           return ""
+            return ""
         }
     }
 
     suspend fun getArtistMbId(artistName: String, trackName: String): String {
         val trackInfo = api.getTrackInfo(getApiKey(), artistName, trackName)
-         if (trackInfo.isSuccessful) {
-           return trackInfo.body()!!.track.artist.mbid
+        if (trackInfo.isSuccessful) {
+            return trackInfo.body()!!.track.artist.mbid
         } else {
             return ""
         }
@@ -61,7 +67,7 @@ class LastFMService @Inject constructor(
         }
     }
 
-    suspend fun getTrackInfo(artistName: String, trackName: String): String {
+    suspend fun getTrackInfoMbID(artistName: String, trackName: String): String {
         val trackInfo = api.getTrackInfo(getApiKey(), artistName, trackName)
         return if (trackInfo.isSuccessful) {
             trackInfo.body()!!.track.mbid
@@ -70,4 +76,25 @@ class LastFMService @Inject constructor(
         }
     }
 
+    suspend fun getAlbumName(artistName: String, trackName: String): Flow<String> =
+        coroutineScope {
+            withContext(Dispatchers.IO) {
+                flow {
+                    val trackInfo = api.getTrackInfo(getApiKey(), artistName, trackName)
+                    if (trackInfo.isSuccessful) {
+                        try {
+                            val  mbid =  trackInfo.body()!!.track.album.mbid
+                            delay(500)
+                            emit(getAlbumNameByMbID(mbid))
+                        } catch (e: Exception) {
+
+                        }
+
+                    } else {
+                        delay(1000)
+                        emit("")
+                    }
+                }
+            }
+        }
 }

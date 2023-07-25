@@ -89,7 +89,7 @@ class MainActivity : ComponentActivity() {
                                             .verticalScroll(rememberScrollState())
                                             .background(Color(0xFF1C1C1C))
                                     ) {
-                                        Botonera(playerViewModel)
+                                        Botonera()
                                     }
                                 }
                             }

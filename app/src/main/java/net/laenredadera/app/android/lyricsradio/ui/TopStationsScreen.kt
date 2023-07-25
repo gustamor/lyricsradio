@@ -49,7 +49,6 @@ fun TopStationsScreen(navigationController: NavHostController) {
         Modifier
             .fillMaxSize()
             .padding(top = 32.dp)
-
             .background(Color(0xFF1C1C1C))
     ) {
         TopStationsHeader(navigationController)
@@ -120,13 +119,11 @@ fun TopStationsBody(nav: NavHostController) {
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-
             items(topStations.value) { station ->
                 TopStationItem(station!!)
             }
         }
         Space(64)
-
     }
 }
 

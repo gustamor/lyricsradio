@@ -4,12 +4,14 @@ import android.app.Service
 import android.content.Intent
 import android.net.Uri
 import android.os.IBinder
+import android.util.Log
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Metadata
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.analytics.AnalyticsListener
 import androidx.media3.exoplayer.util.EventLogger
+import androidx.media3.extractor.metadata.icy.IcyHeaders
 import androidx.media3.extractor.metadata.icy.IcyInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
@@ -30,7 +32,7 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
     private val _isPlaying = MutableStateFlow(false)
     var isPlaying = _isPlaying.asStateFlow()
 
-    private val _stationName = MutableStateFlow("Shoutcast Station")
+    private val _stationName = MutableStateFlow("Radio Station")
     var stationName = _stationName.asStateFlow()
 
     private val _artistName = MutableStateFlow(" ")
@@ -132,9 +134,12 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
                             metadata: Metadata
                         ) {
                             super.onMetadata(eventTime, metadata)
+
                             for (i in 0 until metadata.length()) {
                                 val info = metadata[i]
+
                                 if (info is IcyInfo) {
+
                                     val _artistTitle: String = info.title.orEmpty()
                                     val partes = _artistTitle.split(" - ")
                                     if (partes.size >= 2) {

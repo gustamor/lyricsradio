@@ -16,8 +16,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import net.laenredadera.app.android.lyricsradio.PlayingSongInfoState
 import net.laenredadera.app.android.lyricsradio.domain.GetAlbumCoverUseCase
+import net.laenredadera.app.android.lyricsradio.domain.GetAlbumNameUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetExoPlayerUseCase
-import net.laenredadera.app.android.lyricsradio.domain.GetInsertPlayedTrackUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaAddItemUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaGetVolumeUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaPlayUseCase
@@ -38,6 +38,7 @@ class PlayerViewModel @Inject constructor(
     private val getStationDataUseCase: GetStationDataUseCase,
     private val getMediaSetVolumeUseCase: GetMediaSetVolumeUseCase,
     private val getAlbumCoverUseCase: GetAlbumCoverUseCase,
+    private val getAlbumNameUseCase: GetAlbumNameUseCase,
     private val getRadioStationAddOnePlayedUseCase: GetRadioStationAddOnePlayedUseCase,
 ) : ViewModel() {
 
@@ -47,11 +48,17 @@ class PlayerViewModel @Inject constructor(
     private var _volume: Flow<Float> = getMediaGetVolumeUseCase()
     var volume: Flow<Float> = _volume
 
+    private var _stationName = MutableStateFlow(" ")
+    var stationName: StateFlow<String> = _stationName.asStateFlow()
+
     private var _station: RadioStationModelUI? = null
     var station = MutableLiveData<RadioStationModelUI?>()
 
     private var _song = MutableStateFlow(listOf(" ", " "))
     var song: StateFlow<List<String>> = _song.asStateFlow()
+
+    private var _album = MutableStateFlow(" ")
+    var album: StateFlow<String> = _album.asStateFlow()
 
     private val _uiIsPlaying = MutableStateFlow(false)
     val uiIsPlaying: StateFlow<Boolean> = _uiIsPlaying.asStateFlow()
@@ -63,6 +70,7 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch {
             albumCover()
             addSong()
+            addStationName()
         }
     }
 
@@ -71,8 +79,8 @@ class PlayerViewModel @Inject constructor(
             while (true) {
                 delay(100)
                 if (_uiIsPlaying.value) {
-                  getStationDataUseCase().collect {
-                        _song.value = when (it) {
+                  getStationDataUseCase().collect { it ->
+                      _song.value = when (it) {
                             is PlayingSongInfoState.Error -> {
                                 listOf(" ", " ")
                             }
@@ -82,6 +90,9 @@ class PlayerViewModel @Inject constructor(
                             }
 
                             is PlayingSongInfoState.Success -> {
+                                getAlbumNameUseCase(it.artist, it.title).collect{albun ->
+                                 _album.value = albun
+                                }
                                 listOf(it.artist, it.title)
 
                             }
@@ -91,8 +102,9 @@ class PlayerViewModel @Inject constructor(
                             }
                         }
                     }
-                } else
-                    station.value = _station
+                }
+                addStationName()
+                station.value = _station
                 addListener()
             }
         }
@@ -114,14 +126,22 @@ class PlayerViewModel @Inject constructor(
     fun addMediaItem(uri: Uri) {
 
         viewModelScope.launch {
-            stop()
+            //stop()
             getMediaAddItemUseCase(uri)
         }
     }
-
     fun addStationModel(radioStationModel: RadioStationModelUI) {
         viewModelScope.launch {
             _station = radioStationModel
+        }
+    }
+    fun addStationName() {
+        viewModelScope.launch {
+            while (true) {
+                delay(500)
+                _stationName.value = _station?.name ?: "Radio Station"
+            }
+
         }
     }
 

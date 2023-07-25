@@ -1,7 +1,6 @@
 package net.laenredadera.app.android.lyricsradio.ui
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.Drawable
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -83,6 +82,8 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
     val song by playerViewModel.song.collectAsStateWithLifecycle()
     val albumCover by playerViewModel.cover.observeAsState()
     val coroutineScope = rememberCoroutineScope()
+    val album = playerViewModel.album.collectAsStateWithLifecycle()
+
     LaunchedEffect(song) {
         playerViewModel.albumCover()
     }
@@ -91,7 +92,6 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
             .padding(top = 16.dp, start = 16.dp, end = 16.dp)
             .fillMaxSize()
             .background(Color(0xFF1C1C1C))
-            .border(1.dp, Color.Red),
     ) {
         Box(Modifier.weight(1.2f)) {
             Space(64)
@@ -112,7 +112,7 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(4.dp)
-                                .clip(RoundedCornerShape(16.dp)),
+                                .clip(RoundedCornerShape(4.dp)),
                         )
                     }
                     is AsyncImagePainter.State.Error, is AsyncImagePainter.State.Empty -> {
@@ -139,18 +139,26 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
 
             Space(16)
             Text(
-                text = song[0],
-                color = Color.White,
-                fontSize = 19.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.testTag("ArtistNameInPlayer")
-            )
-            Text(
                 text = song[1],
                 color = Color.White,
                 fontSize = 19.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.testTag("SongTitleInPlayer")
+                modifier = Modifier.testTag("TitleInPlayer")
+            )
+            Spacer(modifier = Modifier.height(1.dp))
+            Text(
+                text = song[0],
+                color = Color.White,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier.testTag("AristNameInPlayer")
+            )
+            Text(
+                text = album.value,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Normal,
+                color = Color.White,
+                modifier = Modifier.testTag("albumNameInPlayer")
             )
             Space(16)
             Row(
@@ -158,7 +166,6 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(96.dp)
-                    .border(1.dp, Color.Green)
             ) {
                 IconButton(modifier = Modifier
                     .size(112.dp)
@@ -248,7 +255,7 @@ fun Space(size: Int) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerTopAppBar(navigationController: NavHostController, playerViewModel: PlayerViewModel = hiltViewModel()) {
-    val station = playerViewModel.station.observeAsState()
+    val stationName = playerViewModel.stationName.collectAsStateWithLifecycle()
 
     Row(
         modifier = Modifier
@@ -265,18 +272,21 @@ fun PlayerTopAppBar(navigationController: NavHostController, playerViewModel: Pl
             )
         }
         Text(
-            text = station.value?.name ?: " Radio Station",
+            text = stationName.value ?: " Radio Station",
             color = Color.White,
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(top=12.dp, start=32.dp). testTag("StationNameInTabBar")
+            modifier = Modifier
+                .padding(top = 12.dp, start = 32.dp)
+                .testTag("StationNameInTabBar")
         )
     }
 }
 
 @SuppressLint("PrivateResource")
 @Composable
-fun Botonera(playerViewModel: PlayerViewModel = hiltViewModel()) {
+fun Botonera() {
+    val playerViewModel: PlayerViewModel = hiltViewModel()
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val station = playerViewModel.station.observeAsState()
@@ -335,7 +345,6 @@ fun Botonera(playerViewModel: PlayerViewModel = hiltViewModel()) {
                         when (state) {
                             is AsyncImagePainter.State.Loading -> {
                                 CircularProgressIndicator(
-                                    color = Color.Red,
                                     modifier = Modifier
                                         .fillMaxSize()
                                         .padding(4.dp)
@@ -359,20 +368,22 @@ fun Botonera(playerViewModel: PlayerViewModel = hiltViewModel()) {
                             }
                         }
                     }
+
                     Column(Modifier.padding(start = 8.dp)) {
                         Text(
-                            text = song[0],
-                            fontSize = 17.sp,
+                            text = song[1],
+                            fontSize = 19.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.White,
-                            modifier = Modifier.testTag("TextItemNowplayingArtistBotonera")
+                            modifier = Modifier.testTag("TextItemNowplayingSongtBotonera")
                         )
                         Spacer(modifier = Modifier.height(1.dp))
+
                         Text(
-                            text = song[1],
+                            text = song[0],
                             fontSize = 16.sp,
                             color = Color.White,
-                            modifier = Modifier.testTag("TextItemNowplayingSongBotonera")
+                            modifier = Modifier.testTag("TextItemNowplayingArtistBotonera")
                         )
                     }
                 }
@@ -403,15 +414,12 @@ fun Botonera(playerViewModel: PlayerViewModel = hiltViewModel()) {
                              tint = Color.White,
                              contentDescription = "PlayStopImageBotonera",
                          )
-
                     } else { Icon(
                          painter = rememberDrawablePainter(drawable =  playDrawable!!),
                          tint = Color.White,
                          contentDescription = "PlayStopImageBotonera",
                      )
-
                     }
-
                 }
             }
             Row(

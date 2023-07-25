@@ -18,11 +18,7 @@ import javax.inject.Inject
 
 class TracksRepository @Inject constructor(
     private val dao: TracksDao,
-    private val getItemSongTitleUseCase: GetItemSongTitleUseCase,
-    private val getItemArtistNameUseCase: GetItemArtistNameUseCase,
-    private val getAlbumCoverUseCase: GetAlbumCoverUseCase,
-    private val getAlbumMbIDUseCase: GetAlbumMbIDUseCase,
-    private val getAlbumNameFromMbIDUseCase: GetAlbumNameFromMbIDUseCase
+
 ) {
     suspend fun insertPlayedTrack(track: PlayedTrackDataModel) {
         withContext(Dispatchers.IO) {
@@ -35,8 +31,6 @@ class TracksRepository @Inject constructor(
         dao.getPlayedTracks().map { track -> track.map { it.toData() } }
 
     suspend fun addTrack(playedTrack: PlayedTrackDataModel) {
-
-
         dao.insertPlayedTrack(playedTrack.toData())
     }
 

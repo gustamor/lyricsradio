@@ -19,7 +19,9 @@ class MediaInfoRepository @Inject constructor(private val lastFM: LastFMService)
     suspend fun getAlbumNameByMbID(MbID: String): String {
         return lastFM.getAlbumNameByMbID(MbID)
     }
-
+    suspend fun getAlbumName(artistName: String, trackName: String): Flow<String> {
+        return lastFM.getAlbumName(artistName, trackName)
+    }
     suspend fun getAlbumCover(artistName: String, trackName: String): Flow<CoverState> =
         coroutineScope {
             withContext(Dispatchers.IO) {
@@ -48,6 +50,6 @@ class MediaInfoRepository @Inject constructor(private val lastFM: LastFMService)
     }
 
     suspend fun getTrackMbID(artistName: String, trackName: String): String =
-        lastFM.getTrackInfo(artistName,trackName)
+        lastFM.getTrackInfoMbID(artistName,trackName)
 
 }

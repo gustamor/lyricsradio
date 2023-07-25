@@ -8,3 +8,7 @@ import javax.inject.Inject
 class GetPlayedTracksUseCase @Inject constructor(private val playedTracksRepository: TracksRepository) {
     operator fun invoke(): Flow<List<PlayedTrackDataModel>> = playedTracksRepository.getTracksInfo()
 }
+
+
+
+

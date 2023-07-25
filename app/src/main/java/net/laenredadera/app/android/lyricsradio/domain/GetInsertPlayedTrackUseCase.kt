@@ -5,6 +5,6 @@ import net.laenredadera.app.android.lyricsradio.domain.model.PlayedTrackDataMode
 import javax.inject.Inject
 
 class GetInsertPlayedTrackUseCase @Inject constructor(private val playedTracksRepository: TracksRepository) {
-    suspend operator fun invoke(track: PlayedTrackDataModel) =
-        playedTracksRepository.insertPlayedTrack(track)
+    suspend operator fun invoke(trackDataModel: PlayedTrackDataModel) =
+        playedTracksRepository.insertPlayedTrack(trackDataModel)
 }

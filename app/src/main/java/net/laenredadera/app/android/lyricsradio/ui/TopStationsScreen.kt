@@ -103,7 +103,9 @@ fun TopStationsHeader(nav: NavHostController) {
 @Composable
 fun TopStationsBody(nav: NavHostController) {
     val topStationViewModel: TopStationsViewModel = hiltViewModel()
+    topStationViewModel.topStations()
     val topStations = topStationViewModel.topStations.collectAsState(emptyList())
+
     Text(
         text = "Your top stations",
         fontSize = 21.sp,
@@ -132,6 +134,7 @@ fun TopStationsBody(nav: NavHostController) {
 fun TopStationItem(item: TopStationUi) {
     val topStationViewModel: TopStationsViewModel = hiltViewModel()
     val lastPlayedDate = topStationViewModel.lastPlayedDate.collectAsState("")
+
     LaunchedEffect(Unit) {
         withContext(Dispatchers.IO) {
             topStationViewModel.getItemLastDate(item.id)

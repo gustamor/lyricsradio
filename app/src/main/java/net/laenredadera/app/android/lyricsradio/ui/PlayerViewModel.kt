@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import net.laenredadera.app.android.lyricsradio.PlayingSongInfoState
 import net.laenredadera.app.android.lyricsradio.domain.GetAlbumCoverUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetExoPlayerUseCase
+import net.laenredadera.app.android.lyricsradio.domain.GetInsertPlayedTrackUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaAddItemUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaGetVolumeUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetMediaPlayUseCase

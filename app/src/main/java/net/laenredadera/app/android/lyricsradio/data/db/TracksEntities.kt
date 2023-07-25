@@ -3,6 +3,7 @@ package net.laenredadera.app.android.lyricsradio.data.db
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import net.laenredadera.app.android.lyricsradio.domain.model.PlayedTrackDataModel
 
 @Entity
 data class TrackEntity(
@@ -49,7 +50,7 @@ data class PlayedTrackEntity(
 @Entity
 data class PlayedTrackDataEntity(
     @PrimaryKey(autoGenerate = true)
-    var id: Int,
+    var id: Int? = 0,
     var MbID: String,
     var name: String,
     var artistName: String,
@@ -58,6 +59,7 @@ data class PlayedTrackDataEntity(
     var radioStationName: String,
     val playedAt: String
 )
+
 
 @Entity
 data class TopStationEntity(

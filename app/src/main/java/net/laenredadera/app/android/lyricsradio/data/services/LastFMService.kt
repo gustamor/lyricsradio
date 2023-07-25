@@ -7,49 +7,66 @@ import net.laenredadera.app.android.lyricsradio.data.services.network.LastFMApiC
 import net.laenredadera.app.android.lyricsradio.data.services.network.model.Wiki
 import javax.inject.Inject
 
-class LastFMService @Inject constructor(private val api: LastFMApiClient, @ApplicationContext private val context: Context
-){
+class LastFMService @Inject constructor(
+    private val api: LastFMApiClient, @ApplicationContext private val context: Context
+) {
     fun getApiKey(): String {
         return context.resources.getString(R.string.api_lastfm_key)
     }
 
     suspend fun getAlbumCover(artistName: String, trackName: String): String {
         var trackInfo = api.getTrackInfo(getApiKey(), artistName, trackName)
-        return if ( trackInfo.isSuccessful) {
+        return if (trackInfo.isSuccessful) {
             var cover = trackInfo.body()!!.track.album.image[3].text
-            if (cover == null)   cover = trackInfo.body()!!.track.album.image[2].text
+            if (cover == null) cover = trackInfo.body()!!.track.album.image[2].text
             return cover
         } else {
             return ""
         }
     }
-    suspend fun getAlbumMbId(artistName: String, trackName: String): String  {
-        var trackInfo = api.getTrackInfo(getApiKey(), artistName, trackName)
-        return if ( trackInfo.isSuccessful) {
-            var mbid = trackInfo.body()!!.track.album.mbid
-            return mbid
+
+    suspend fun getAlbumMbId(artistName: String, trackName: String): String {
+        val trackInfo = api.getTrackInfo(getApiKey(), artistName, trackName)
+        if (trackInfo.isSuccessful) {
+            return trackInfo.body()!!.track.album.mbid
         } else {
-            return ""
+           return ""
         }
     }
-    suspend fun getArtistMbId(artistName: String, trackName: String): String  {
-        var trackInfo = api.getTrackInfo(getApiKey(), artistName, trackName)
-        return if ( trackInfo.isSuccessful) {
-            var mbid = trackInfo.body()!!.track.artist.mbid
-            return mbid
+
+    suspend fun getArtistMbId(artistName: String, trackName: String): String {
+        val trackInfo = api.getTrackInfo(getApiKey(), artistName, trackName)
+         if (trackInfo.isSuccessful) {
+           return trackInfo.body()!!.track.artist.mbid
         } else {
             return ""
         }
     }
 
     suspend fun getAlbumInfoWiki(mbid: String): Wiki {
-        var albumInfo = api.getAlbumInfo(getApiKey(), mbid)
+        val albumInfo = api.getAlbumInfo(getApiKey(), mbid)
         return if (albumInfo.isSuccessful) {
-
-            var wiki = albumInfo.body()!!.album.wiki
-            return wiki
+            albumInfo.body()!!.album.wiki
         } else {
-            return  Wiki("0","","")
+            return Wiki("0", "", "")
+        }
+    }
+
+    suspend fun getAlbumNameByMbID(MbID: String): String {
+        val albumInfo = api.getAlbumInfo(getApiKey(), MbID)
+        return if (albumInfo.isSuccessful) {
+            albumInfo.body()!!.album.name
+        } else {
+            return " "
+        }
+    }
+
+    suspend fun getTrackInfo(artistName: String, trackName: String): String {
+        val trackInfo = api.getTrackInfo(getApiKey(), artistName, trackName)
+        return if (trackInfo.isSuccessful) {
+            trackInfo.body()!!.track.mbid
+        } else {
+            ""
         }
     }
 

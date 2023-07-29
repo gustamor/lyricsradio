@@ -19,7 +19,7 @@ class RadioStationsRepository @Inject constructor(
     suspend fun getAllRadioStations(): List<RadioStationModel> {
         val response: List<RadioStationItemResponse> = retrofitService.getAllRadioStations()
         return response.map {
-            val station = TopStationsModel(it.id, it.enabled, it.name, it.cover, it.description, 1, 0)
+            val station = TopStationsModel(it.id, it.enabled, it.name, it.cover,it.address.icy_url, it.description, 1, 0)
             insertTopStationEntity(station)
             it.toData()
         }
@@ -42,7 +42,7 @@ class RadioStationsRepository @Inject constructor(
 
     suspend fun insertTopStationEntity(station: TopStationsModel) {
         return withContext(Dispatchers.IO) {
-            dao.insertMostPlayedStationEntity(station.toData())
+            dao.insertTopStationEntity(station.toData())
         }
     }
 

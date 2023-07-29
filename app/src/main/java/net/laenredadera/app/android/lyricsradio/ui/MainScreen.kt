@@ -115,7 +115,7 @@ fun MainBody(
                 headText = "Your top",
                 bodyText = "Stations",
                 width = 450.dp,
-                height = 256.dp,
+                height = 384.dp,
                 contentDescription = "topstationsgotoButton",
                 modifier = Modifier
                     .padding(horizontal = 6.dp),
@@ -255,9 +255,7 @@ fun RoundedBordersRectangleImage(
                 Text(headText, fontSize = 24.sp, color= Color.White, fontWeight = FontWeight.Bold)
                 Text(bodyText, fontSize = 21.sp, color= Color.White)
             }
-
     }
-
 }
 
 @Composable

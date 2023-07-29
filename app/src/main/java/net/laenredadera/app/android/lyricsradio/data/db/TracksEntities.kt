@@ -67,6 +67,7 @@ data class TopStationEntity(
     var id: Int,
     var enabled: Boolean = true,
     var name: String,
+    var address: String,
     var cover: String,
     var description: String,
     var lastTimePlayed: Long?,

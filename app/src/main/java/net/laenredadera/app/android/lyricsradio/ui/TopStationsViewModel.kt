@@ -21,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 
 class TopStationsViewModel @Inject constructor(
-    private val  getRadioStationTopStationsUseCase: GetRadioStationTopStationsUseCase,
+    private val getRadioStationTopStationsUseCase: GetRadioStationTopStationsUseCase,
     private val getStationLastPlayedDate: GetStationLastPlayedDate,
 ) : ViewModel() {
 
@@ -46,6 +46,7 @@ class TopStationsViewModel @Inject constructor(
     }
     suspend fun getItemLastDate(id: Int) {
         val currentDate: Long = getStationLastPlayedDate(id)
+        Log.i("GusMor currentDate", currentDate.toString())
         if (currentDate > 1) {
             val dateFormat = SimpleDateFormat("dd/MM/yyyy")
             val formattedDate = dateFormat.format(currentDate)

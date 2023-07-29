@@ -30,6 +30,7 @@ data class TopStationsModel(
     var id: Int,
     var enabled: Boolean = true,
     var name: String,
+    var address: String,
     var cover: String,
     var description: String,
     var lastTimePlayed: Long?,
@@ -40,6 +41,6 @@ fun RadioStationsAddressResponse.toData() = RadioStationsAddress(icy_url,mp3u,pl
 
 fun RadioStationItemResponse.toData() = RadioStationModel(id,enabled, name,cover, url,description, address.toData())
 
-fun TopStationEntity.toData() = TopStationsModel(id,enabled, name,cover,description,lastTimePlayed,numTimesPlayed)
+fun TopStationEntity.toData() = TopStationsModel(id,enabled, name, address, cover,description,lastTimePlayed,numTimesPlayed)
 
-fun TopStationsModel.toData() = TopStationEntity(id,enabled, name,cover,description, lastTimePlayed,numTimesPlayed)
+fun TopStationsModel.toData() = TopStationEntity(id,enabled, name,address,cover,description,lastTimePlayed,numTimesPlayed)

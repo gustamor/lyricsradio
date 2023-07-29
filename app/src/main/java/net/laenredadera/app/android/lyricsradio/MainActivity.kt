@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -35,7 +36,6 @@ import net.laenredadera.app.android.lyricsradio.ui.RadioHomeScreen
 import net.laenredadera.app.android.lyricsradio.ui.RadioStationViewModel
 import net.laenredadera.app.android.lyricsradio.ui.TopStationsScreen
 import net.laenredadera.app.android.lyricsradio.ui.theme.LyricsRadioTheme
-import net.laenredadera.app.android.lyricsradio.ui.theme.PreviouslyPlayedScreen
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -95,7 +95,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     ) {
-                        val navigationController = rememberNavController()
+                        val navigationController: NavHostController = rememberNavController()
                         NavHost(
                             navController = navigationController,
                             startDestination = Routes.MainScreen.route,
@@ -116,8 +116,7 @@ class MainActivity : ComponentActivity() {
                                     navigationController,
                                     radioStationsViewModel, playerViewModel)
                             }
-
-                            composable(Routes.TopStationsScreen.route) {TopStationsScreen( navigationController)}
+                            composable(Routes.TopStationsScreen.route) {TopStationsScreen(navigationController, playerViewModel)}
                         }
                     }
                 }

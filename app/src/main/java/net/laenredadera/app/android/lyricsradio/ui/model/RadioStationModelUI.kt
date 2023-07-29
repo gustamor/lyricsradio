@@ -16,7 +16,8 @@ data class RadioStationModelUI(
     val address: RadioStationsAddressUI
 )
 data class RadioStationsAddressUI(
-    @SerializedName("url") val icy_url: String,
+    @SerializedName("url")
+    val icy_url: String,
     val mp3u: String?,
     val pls: String?,
     val xspf: String?
@@ -28,6 +29,7 @@ data class TopStationUi(
     var id: Int,
     var enabled: Boolean = true,
     var name: String,
+    var address: String,
     var cover: String,
     var description: String,
     var lastTimePlayed: Long?,
@@ -36,5 +38,5 @@ data class TopStationUi(
 
 fun RadioStationsAddress.toData() = RadioStationsAddressUI(icy_url,mp3u,pls,xspf)
 fun RadioStationModel.toData() = RadioStationModelUI(id,enabled, name,cover, url,description,address.toData())
-
-fun TopStationsModel.toData() = TopStationUi(id,enabled, name,cover,description, lastTimePlayed,numTimesPlayed)
+fun TopStationUi.toRadioStation() = RadioStationModelUI(id,enabled, name,cover,address,description,RadioStationsAddressUI(address,"","",""))
+fun TopStationsModel.toData() = TopStationUi(id,enabled, name,cover,address,description,lastTimePlayed,numTimesPlayed)

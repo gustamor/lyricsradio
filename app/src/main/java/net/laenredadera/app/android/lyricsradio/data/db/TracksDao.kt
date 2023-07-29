@@ -53,7 +53,7 @@ interface TracksDao {
     @Query("SELECT AlbumEntity.cover FROM AlbumEntity WHERE AlbumEntity.MbId = :albumMbID ")
     fun getAlbumCover(albumMbID: String): Flow<String>
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertMostPlayedStationEntity(stationEntity: TopStationEntity)
+    suspend fun insertTopStationEntity(stationEntity: TopStationEntity)
     @Insert
     suspend fun insertPlayedTrack(track: PlayedTrackDataEntity)
     @Insert

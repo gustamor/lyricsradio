@@ -1,9 +1,11 @@
 package net.laenredadera.app.android.lyricsradio.ui
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,8 +23,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -39,12 +41,15 @@ import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.laenredadera.app.android.lyricsradio.R
+import net.laenredadera.app.android.lyricsradio.Routes
 import net.laenredadera.app.android.lyricsradio.ui.model.TopStationUi
+import net.laenredadera.app.android.lyricsradio.ui.model.toRadioStation
 
 @Composable
-fun TopStationsScreen(navigationController: NavHostController) {
+fun TopStationsScreen(navigationController: NavHostController, playerViewModel: PlayerViewModel) {
     Column(
         Modifier
             .fillMaxSize()
@@ -52,7 +57,7 @@ fun TopStationsScreen(navigationController: NavHostController) {
             .background(Color(0xFF1C1C1C))
     ) {
         TopStationsHeader(navigationController)
-        TopStationsBody(navigationController)
+        TopStationsBody(navigationController,playerViewModel )
     }
 }
 
@@ -100,7 +105,7 @@ fun TopStationsHeader(nav: NavHostController) {
 }
 
 @Composable
-fun TopStationsBody(nav: NavHostController) {
+fun TopStationsBody(nav: NavHostController, playerViewModel: PlayerViewModel) {
     val topStationViewModel: TopStationsViewModel = hiltViewModel()
     topStationViewModel.topStations()
     val topStations = topStationViewModel.topStations.collectAsState(emptyList())
@@ -120,7 +125,7 @@ fun TopStationsBody(nav: NavHostController) {
                 .fillMaxWidth()
         ) {
             items(topStations.value) { station ->
-                TopStationItem(station!!)
+                TopStationItem(station!!, nav, playerViewModel)
             }
         }
         Space(64)
@@ -128,15 +133,10 @@ fun TopStationsBody(nav: NavHostController) {
 }
 
 @Composable
-fun TopStationItem(item: TopStationUi) {
-    val topStationViewModel: TopStationsViewModel = hiltViewModel()
-    val lastPlayedDate = topStationViewModel.lastPlayedDate.collectAsState("")
+fun TopStationItem(item: TopStationUi, nav: NavHostController, playerViewModel: PlayerViewModel = hiltViewModel()) {
+    val coroutineScope = rememberCoroutineScope()
+    val uri = Uri.parse(item.address)
 
-    LaunchedEffect(Unit) {
-        withContext(Dispatchers.IO) {
-            topStationViewModel.getItemLastDate(item.id)
-        }
-    }
     Column(
         modifier = Modifier
             .height(128.dp)
@@ -147,6 +147,15 @@ fun TopStationItem(item: TopStationUi) {
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(8f)
+                .clickable {
+                    coroutineScope.launch() {
+                        withContext(Dispatchers.IO) {
+                            playerViewModel.addStationModel(item.toRadioStation())
+                            playerViewModel.addMediaItem(uri)
+                        }
+                        nav.navigate(Routes.PlayerScreen.route)
+                    }
+                }
         ) {
             SubcomposeAsyncImage(
                 model = item.cover,
@@ -200,7 +209,7 @@ fun TopStationItem(item: TopStationUi) {
                     modifier = Modifier.testTag("TopStationItemNameText")
                 )
                 Text(
-                    text = lastPlayedDate.value,
+                    text = "Times played: ${item.numTimesPlayed}",
                     fontSize = 15.sp,
                     color = Color.White,
                     modifier = Modifier.testTag("TopStationItemDescriptionText")

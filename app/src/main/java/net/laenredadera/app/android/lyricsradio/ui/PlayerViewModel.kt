@@ -77,7 +77,7 @@ class PlayerViewModel @Inject constructor(
     private fun addSong() {
         viewModelScope.launch {
             while (true) {
-                delay(100)
+                delay(101)
                 if (_uiIsPlaying.value) {
                   getStationDataUseCase().collect { it ->
                       _song.value = when (it) {
@@ -136,15 +136,15 @@ class PlayerViewModel @Inject constructor(
     fun addStationModel(radioStationModel: RadioStationModelUI) {
         viewModelScope.launch {
             _station = radioStationModel
+            addStationName()
         }
     }
-    fun addStationName() {
+    private fun addStationName() {
         viewModelScope.launch {
             while (true) {
-                delay(500)
+                delay(101)
                 _stationName.value = _station?.name ?: "Radio Station"
             }
-
         }
     }
 
@@ -152,12 +152,14 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch {
             getMediaPlayUseCase()
             while (!_uiIsPlaying.value) {
-                delay(100)
+                delay(101)
                 _uiIsPlaying.value = true
                 _uiIsPaused.value = false
             }
         }.apply {
             addOnePlayedTime()
+            addStationName()
+
         }
     }
 
@@ -176,9 +178,9 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    fun loadImageUrl() {
+    private fun loadImageUrl() {
         viewModelScope.launch {
-            delay(200)
+            delay(50)
             getAlbumCoverUseCase(
                 _song.value[0],
                 _song.value[1]
@@ -198,6 +200,9 @@ class PlayerViewModel @Inject constructor(
                     }
                 }
             }
+        }.apply {
+            addStationName()
+
         }
     }
 

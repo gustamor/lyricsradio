@@ -38,6 +38,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
@@ -54,14 +55,13 @@ import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModelUI
 fun RadioHomeScreen(
     navigationController: NavHostController,
     radioStationsViewModel: RadioStationViewModel,
-    playerViewModel: PlayerViewModel
 ) {
     radioStationsViewModel.getStations()
 
     Box(modifier = Modifier
         .fillMaxSize()
         .background(MaterialTheme.colorScheme.background),) {
-        RadioStationsList(radioStationsViewModel,navigationController,playerViewModel)
+        RadioStationsList(radioStationsViewModel,navigationController)
     }
 }
 
@@ -69,9 +69,8 @@ fun RadioHomeScreen(
 fun RadioStationsList(
     radioStationsViewModel: RadioStationViewModel,
     navigationController: NavHostController,
-    playerViewModel: PlayerViewModel
 ) {
-
+    val playerViewModel: PlayerViewModel = hiltViewModel()
     val stations: List<RadioStationModelUI>? by radioStationsViewModel.stations.observeAsState()
     Log.i("GusMor", radioStationsViewModel.stations.value.toString())
 

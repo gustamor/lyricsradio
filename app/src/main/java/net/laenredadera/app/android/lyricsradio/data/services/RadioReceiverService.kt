@@ -1,10 +1,19 @@
 package net.laenredadera.app.android.lyricsradio.data.services
 
+import android.annotation.SuppressLint
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.IBinder
 import android.util.Log
+import android.widget.Toast
+import androidx.core.app.NotificationCompat
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Metadata
 import androidx.media3.common.util.UnstableApi
@@ -19,6 +28,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
 import net.laenredadera.app.android.lyricsradio.BuildConfig
+import net.laenredadera.app.android.lyricsradio.R
 import javax.inject.Inject
 
 /**
@@ -32,23 +42,26 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
     private val _isPlaying = MutableStateFlow(false)
     var isPlaying = _isPlaying.asStateFlow()
 
-    private val _stationName = MutableStateFlow("Radio Station")
-    var stationName = _stationName.asStateFlow()
-
     private val _artistName = MutableStateFlow(" ")
     var artistName = _artistName.asStateFlow()
 
     private val _songName = MutableStateFlow(" ")
     var songName = _songName.asStateFlow()
+    override fun onBind(p0: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+
         if (intent.action == Intent.ACTION_MEDIA_BUTTON) {
             //    mediaSessionComponent.handleMediaButtonIntent(intent)
         }
         return START_NOT_STICKY
+
     }
 
-    override fun onBind(intent: Intent): IBinder? = null
+    private fun stopService() {
+        stopForeground(true)
+        stopSelf()
+    }
 
     /**
      * use this function to prepare de player
@@ -165,3 +178,4 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
     }
 
 }
+

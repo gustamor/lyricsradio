@@ -115,7 +115,7 @@ fun MainBody(
                 headText = "Your top",
                 bodyText = "Stations",
                 width = 450.dp,
-                height = 128.dp,
+                height = 256.dp,
                 contentDescription = "topstationsgotoButton",
                 modifier = Modifier
                     .padding(horizontal = 6.dp),
@@ -140,7 +140,6 @@ fun MainBody(
 
         }
     }
-//    Botonera()
 }
 
 @Composable
@@ -253,8 +252,8 @@ fun RoundedBordersRectangleImage(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(headText, fontSize = 22.sp, color= Color.White, fontWeight = FontWeight.Bold)
-                Text(bodyText, fontSize = 19.sp, color= Color.White)
+                Text(headText, fontSize = 24.sp, color= Color.White, fontWeight = FontWeight.Bold)
+                Text(bodyText, fontSize = 21.sp, color= Color.White)
             }
 
     }

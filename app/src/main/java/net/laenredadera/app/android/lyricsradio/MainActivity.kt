@@ -103,9 +103,7 @@ class MainActivity : ComponentActivity() {
                             composable(Routes.HomeScreen.route) {
                                 RadioHomeScreen(
                                     navigationController,
-                                    radioStationsViewModel,
-                                    playerViewModel
-                                )
+                                    radioStationsViewModel)
                             }
                             composable(Routes.PlayerScreen.route) {
                                 PlayerScreen(
@@ -116,15 +114,9 @@ class MainActivity : ComponentActivity() {
                             composable(Routes.MainScreen.route) {
                                 MainScreen(
                                     navigationController,
-                                    radioStationsViewModel,
-                                    playerViewModel
-                                )
+                                    radioStationsViewModel, playerViewModel)
                             }
-                            composable(Routes.PreviouslyPlayedScreen.route) {
-                                PreviouslyPlayedScreen(
-                                    navigationController
-                                )
-                            }
+
                             composable(Routes.TopStationsScreen.route) {TopStationsScreen( navigationController)}
                         }
                     }

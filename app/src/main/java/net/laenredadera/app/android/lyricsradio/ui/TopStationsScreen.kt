@@ -25,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -53,7 +54,7 @@ fun TopStationsScreen(navigationController: NavHostController, playerViewModel: 
     Column(
         Modifier
             .fillMaxSize()
-            .padding(top = 32.dp)
+            .padding(top = 21.dp)
             .background(Color(0xFF1C1C1C))
     ) {
         TopStationsHeader(navigationController)
@@ -67,8 +68,10 @@ fun TopStationsHeader(nav: NavHostController) {
     Row(
         Modifier
             .fillMaxWidth()
-            .height(80.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+            .height(48.dp)
+            .padding(bottom = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = { nav.popBackStack() }) {
             val backArrow = AppCompatResources.getDrawable(
@@ -96,9 +99,11 @@ fun TopStationsHeader(nav: NavHostController) {
                 LocalContext.current,
                 androidx.media3.ui.R.drawable.exo_ic_settings
             )
-            Image(
+            Icon(
                 painter = rememberDrawablePainter(drawable = settings),
-                contentDescription = "PlayedHeaderIcon"
+                contentDescription = "PlayedHeaderIcon",
+                tint = Color(0xFF1C1C1C)
+
             )
         }
     }
@@ -208,6 +213,7 @@ fun TopStationItem(item: TopStationUi, nav: NavHostController, playerViewModel: 
                     color = Color.White,
                     modifier = Modifier.testTag("TopStationItemNameText")
                 )
+                Space(4)
                 Text(
                     text = "Times played: ${item.numTimesPlayed}",
                     fontSize = 15.sp,

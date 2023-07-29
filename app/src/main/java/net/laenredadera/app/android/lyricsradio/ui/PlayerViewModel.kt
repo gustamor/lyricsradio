@@ -127,7 +127,6 @@ class PlayerViewModel @Inject constructor(
     }
 
     fun addMediaItem(uri: Uri) {
-
         viewModelScope.launch {
             //stop()
             getMediaAddItemUseCase(uri)
@@ -202,7 +201,6 @@ class PlayerViewModel @Inject constructor(
             }
         }.apply {
             addStationName()
-
         }
     }
 
@@ -220,7 +218,6 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 getRadioStationAddOnePlayedUseCase(_station!!.id)
-
             } catch (e: Exception) {
                 throw Exception(e.toString())
             }

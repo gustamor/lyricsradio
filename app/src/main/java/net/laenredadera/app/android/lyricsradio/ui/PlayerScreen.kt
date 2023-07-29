@@ -65,7 +65,7 @@ import net.laenredadera.app.android.lyricsradio.Routes
 fun PlayerScreen(navigationController: NavHostController, playerViewModel: PlayerViewModel) {
 
     Column(
-        modifier = Modifier.background(Color(0xFF1C1C1C)),
+        modifier = Modifier.padding(top = 16.dp).background(Color(0xFF1C1C1C)),
     ) {
         PlayerTopAppBar(navigationController,playerViewModel)
         PlayerBody(playerViewModel)

@@ -52,16 +52,18 @@ import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModelUI
 
 
 @Composable
-fun RadioHomeScreen(
+fun ExploreStationScreen(
     navigationController: NavHostController,
     radioStationsViewModel: RadioStationViewModel,
+    playerViewModel: PlayerViewModel
 ) {
     radioStationsViewModel.getStations()
 
     Box(modifier = Modifier
         .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background),) {
-        RadioStationsList(radioStationsViewModel,navigationController)
+        .padding(top = 21.dp)
+        .background(Color(0xFF1C1C1C))) {
+        RadioStationsList(radioStationsViewModel,navigationController,playerViewModel)
     }
 }
 
@@ -69,8 +71,9 @@ fun RadioHomeScreen(
 fun RadioStationsList(
     radioStationsViewModel: RadioStationViewModel,
     navigationController: NavHostController,
+    playerViewModel: PlayerViewModel = hiltViewModel()
+
 ) {
-    val playerViewModel: PlayerViewModel = hiltViewModel()
     val stations: List<RadioStationModelUI>? by radioStationsViewModel.stations.observeAsState()
     Log.i("GusMor", radioStationsViewModel.stations.value.toString())
 
@@ -89,14 +92,13 @@ fun RadioStationsList(
 fun ItemStation(station: RadioStationModelUI, navigationController: NavHostController, playerViewModel: PlayerViewModel) {
 
     val coroutineScope = rememberCoroutineScope()
-
     val uri = Uri.parse(station.address.icy_url)
 
     Card(
         modifier = Modifier
             .shadow(4.dp)
             .testTag("ItemCard")
-            .background(MaterialTheme.colorScheme.background)
+            .background(Color(0xFF1C1C1C))
             .clickable {
                 coroutineScope.launch(Dispatchers.IO) {
                     playerViewModel.addStationModel(station)
@@ -110,7 +112,7 @@ fun ItemStation(station: RadioStationModelUI, navigationController: NavHostContr
             Modifier
                 .fillMaxWidth()
                 .height(92.dp)
-                .background(MaterialTheme.colorScheme.background),
+                .background(Color(0xFF1C1C1C)),
 
         verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -120,15 +122,15 @@ fun ItemStation(station: RadioStationModelUI, navigationController: NavHostContr
                 Modifier
                     .height(92.dp)
                     .padding(4.dp)
-                    .background(MaterialTheme.colorScheme.background),
+                    .background(Color(0xFF1C1C1C)),
 
             verticalAlignment = Alignment.CenterVertically
             ) {
                 StationCover(station.cover)
                 Column {
-                    Text(text = station.name,  fontSize = 15.sp, fontWeight = FontWeight.Bold, modifier = Modifier.testTag("TextItemTitle"))
+                    Text(text = station.name, color=Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold, modifier = Modifier.testTag("TextItemTitle"))
                     Spacer(modifier = Modifier.height(1.dp))
-                    Text(text = station.description ?: "cualquiera ", fontSize = 13.sp, modifier = Modifier.testTag("TextItemDescription"))
+                    Text(text = station.description ?: "cualquiera ", color=Color.White, fontSize = 13.sp, modifier = Modifier.testTag("TextItemDescription"))
                 }
             }
 
@@ -137,14 +139,15 @@ fun ItemStation(station: RadioStationModelUI, navigationController: NavHostContr
                     .padding(16.dp)
                     .size(32.dp)
                     .clickable { /*TODO*/ }
-                    .background(MaterialTheme.colorScheme.background)
+                    .background(Color(0xFF1C1C1C))
                     .testTag("MenuHorizontalItem")
+
             ) {
                 val drawable = AppCompatResources.getDrawable(LocalContext.current, R.drawable.more_horiz)
                 Image(
                     painter = rememberDrawablePainter(drawable = drawable),
                     contentDescription = "MenuHorizImage",
-                    colorFilter =  ColorFilter.tint(MaterialTheme.colorScheme.tertiary)
+                    colorFilter =  ColorFilter.tint(Color(0xFF1C1C1C))
                 )
             }
         }
@@ -157,7 +160,7 @@ fun StationCover(url: String) {
     Box(
         Modifier
             .padding(8.dp)
-            .background(MaterialTheme.colorScheme.tertiary)
+            .background(Color(0xFF1C1C1C))
             .height(64.dp)
             .width(64.dp)
             .testTag("StationCover")

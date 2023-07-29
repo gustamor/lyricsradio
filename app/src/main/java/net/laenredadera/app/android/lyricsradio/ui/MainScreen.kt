@@ -27,6 +27,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -43,6 +44,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -58,6 +60,7 @@ import kotlinx.coroutines.withContext
 import net.laenredadera.app.android.lyricsradio.R
 import net.laenredadera.app.android.lyricsradio.Routes
 import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModelUI
+import net.laenredadera.app.android.lyricsradio.ui.theme.LatoFont
 
 @Composable
 fun MainScreen(
@@ -86,7 +89,8 @@ fun MainBody(
     val stations: List<RadioStationModelUI>? by radioStationsViewModel.stations.observeAsState()
     Log.i("GusMor", radioStationsViewModel.stations.value.toString())
     Column(
-        Modifier.background(Color(0xFF1C1C1C))
+        Modifier.background(Color(0xFF1C1C1C)).padding(top = 21.dp)
+
     ) {
         SubHeaderMain("Welcome the destroyer", "Explore", nav)
         Space(18)
@@ -252,8 +256,8 @@ fun RoundedBordersRectangleImage(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(headText, fontSize = 24.sp, color= Color.White, fontWeight = FontWeight.Bold)
-                Text(bodyText, fontSize = 21.sp, color= Color.White)
+                Text(headText, color= Color.White, style = MaterialTheme.typography.titleLarge)
+                Text(bodyText, color= Color.White, style = MaterialTheme.typography.titleMedium)
             }
     }
 }

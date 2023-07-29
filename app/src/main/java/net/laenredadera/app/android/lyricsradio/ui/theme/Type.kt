@@ -19,6 +19,7 @@ val provider = GoogleFont.Provider(
 
 val eczarFont = GoogleFont("Eczar")
 val RobotoFont = GoogleFont("Roboto Condensed")
+val LatoFont = GoogleFont("Lato")
 
 val fontFamilyEczar = FontFamily(
     Font(googleFont = eczarFont, fontProvider = provider)
@@ -26,60 +27,61 @@ val fontFamilyEczar = FontFamily(
 val fontFamilyRoboto = FontFamily(
     Font(googleFont = RobotoFont, fontProvider = provider)
 )
-
+val fontFamilyLato = FontFamily(
+    Font(googleFont = LatoFont, fontProvider = provider)
+)
 
 // Set of Material typography styles to start with
 val Typography = Typography(
     bodyLarge = TextStyle(
-        fontFamily = fontFamilyEczar,
+        fontFamily = fontFamilyLato,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
     ),
     bodyMedium = TextStyle(
-        fontFamily = fontFamilyRoboto,
+        fontFamily = fontFamilyLato,
         fontWeight = FontWeight.Light,
         fontSize = 14.sp,
         lineHeight = 22.sp,
         letterSpacing = 0.5.sp
     ),
     headlineLarge = TextStyle(
-        fontFamily = fontFamilyRoboto,
+        fontFamily = fontFamilyLato,
         fontWeight = FontWeight.Light,
         fontSize = 96.sp,
         lineHeight = 22.sp,
         letterSpacing = 0.5.sp
     ),
     headlineMedium = TextStyle(
-        fontFamily = fontFamilyRoboto,
+        fontFamily = fontFamilyLato,
         fontWeight = FontWeight.Light,
         fontSize = 60.sp,
         lineHeight = 22.sp,
         letterSpacing = 0.5.sp
     ),
     headlineSmall = TextStyle(
-        fontFamily = fontFamilyEczar,
+        fontFamily = fontFamilyLato ,
         fontWeight = FontWeight.Normal,
         fontSize = 46.sp,
         lineHeight = 22.sp,
         letterSpacing = 0.5.sp
     ),
 
-    /* Other default text styles to override
     titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = fontFamilyLato,
         fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
+        fontSize = 24.sp,
+        lineHeight = 21.sp,
         letterSpacing = 0.sp
     ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
+    titleMedium = TextStyle(
+        fontFamily = fontFamilyLato,
         fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
+        fontSize = 21.sp,
         lineHeight = 16.sp,
         letterSpacing = 0.5.sp
     )
-    */
+
 )

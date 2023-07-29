@@ -32,7 +32,7 @@ import net.laenredadera.app.android.lyricsradio.ui.Botonera
 import net.laenredadera.app.android.lyricsradio.ui.MainScreen
 import net.laenredadera.app.android.lyricsradio.ui.PlayerScreen
 import net.laenredadera.app.android.lyricsradio.ui.PlayerViewModel
-import net.laenredadera.app.android.lyricsradio.ui.RadioHomeScreen
+import net.laenredadera.app.android.lyricsradio.ui.ExploreStationScreen
 import net.laenredadera.app.android.lyricsradio.ui.RadioStationViewModel
 import net.laenredadera.app.android.lyricsradio.ui.TopStationsScreen
 import net.laenredadera.app.android.lyricsradio.ui.theme.LyricsRadioTheme
@@ -52,8 +52,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier
                         .fillMaxSize(),
                     contentColor = Color(0xFF1C1C1C),
-                    color = Color(0xFF1C1C1C)
-                ) {
+                    color = Color(0xFF1C1C1C),
+
+                    ) {
                     val station = playerViewModel.station.observeAsState()
                     val playerStateFlow = playerViewModel.uiIsPlaying.collectAsStateWithLifecycle()
                     val sheetPeekHeight = if (playerStateFlow.value) 24.dp else 0.dp
@@ -101,9 +102,11 @@ class MainActivity : ComponentActivity() {
                             startDestination = Routes.MainScreen.route,
                         ) {
                             composable(Routes.HomeScreen.route) {
-                                RadioHomeScreen(
+                                ExploreStationScreen(
                                     navigationController,
-                                    radioStationsViewModel)
+                                    radioStationsViewModel,
+                                    playerViewModel
+                                )
                             }
                             composable(Routes.PlayerScreen.route) {
                                 PlayerScreen(
@@ -114,9 +117,15 @@ class MainActivity : ComponentActivity() {
                             composable(Routes.MainScreen.route) {
                                 MainScreen(
                                     navigationController,
-                                    radioStationsViewModel, playerViewModel)
+                                    radioStationsViewModel, playerViewModel
+                                )
                             }
-                            composable(Routes.TopStationsScreen.route) {TopStationsScreen(navigationController, playerViewModel)}
+                            composable(Routes.TopStationsScreen.route) {
+                                TopStationsScreen(
+                                    navigationController,
+                                    playerViewModel
+                                )
+                            }
                         }
                     }
                 }

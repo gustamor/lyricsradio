@@ -59,11 +59,13 @@ fun ExploreStationScreen(
 ) {
     radioStationsViewModel.getStations()
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .padding(top = 21.dp)
-        .background(Color(0xFF1C1C1C))) {
-        RadioStationsList(radioStationsViewModel,navigationController,playerViewModel)
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 21.dp)
+            .background(Color(0xFF1C1C1C))
+    ) {
+        RadioStationsList(radioStationsViewModel, navigationController, playerViewModel)
     }
 }
 
@@ -72,7 +74,6 @@ fun RadioStationsList(
     radioStationsViewModel: RadioStationViewModel,
     navigationController: NavHostController,
     playerViewModel: PlayerViewModel = hiltViewModel()
-
 ) {
     val stations: List<RadioStationModelUI>? by radioStationsViewModel.stations.observeAsState()
     Log.i("GusMor", radioStationsViewModel.stations.value.toString())
@@ -80,16 +81,28 @@ fun RadioStationsList(
     Box(
         Modifier
             .background(MaterialTheme.colorScheme.background)
-            .fillMaxSize()
+           .fillMaxSize()
     ) {
         LazyColumn {
-            items(stations.orEmpty(),key = { it.id }) { station -> if (station.enabled) ItemStation(station,navigationController,playerViewModel) }
+            items(
+                stations.orEmpty(),
+                key = { it.id }) { station ->
+                if (station.enabled) ItemStation(
+                    station,
+                    navigationController,
+                    playerViewModel
+                )
+            }
         }
     }
 }
 
 @Composable
-fun ItemStation(station: RadioStationModelUI, navigationController: NavHostController, playerViewModel: PlayerViewModel) {
+fun ItemStation(
+    station: RadioStationModelUI,
+    navigationController: NavHostController,
+    playerViewModel: PlayerViewModel
+) {
 
     val coroutineScope = rememberCoroutineScope()
     val uri = Uri.parse(station.address.icy_url)
@@ -99,6 +112,7 @@ fun ItemStation(station: RadioStationModelUI, navigationController: NavHostContr
             .shadow(4.dp)
             .testTag("ItemCard")
             .background(Color(0xFF1C1C1C))
+            .padding(start = 16.dp, top = 8.dp)
             .clickable {
                 coroutineScope.launch(Dispatchers.IO) {
                     playerViewModel.addStationModel(station)
@@ -107,14 +121,14 @@ fun ItemStation(station: RadioStationModelUI, navigationController: NavHostContr
                 navigationController.navigate(Routes.PlayerScreen.route)
 
             },
-        ) {
+    ) {
         Row(
             Modifier
                 .fillMaxWidth()
                 .height(92.dp)
                 .background(Color(0xFF1C1C1C)),
 
-        verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         )
         {
@@ -124,13 +138,23 @@ fun ItemStation(station: RadioStationModelUI, navigationController: NavHostContr
                     .padding(4.dp)
                     .background(Color(0xFF1C1C1C)),
 
-            verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 StationCover(station.cover)
-                Column {
-                    Text(text = station.name, color=Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold, modifier = Modifier.testTag("TextItemTitle"))
+                Column(modifier = Modifier.padding(start = 16.dp)) {
+                    Text(
+                        text = station.name,
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.testTag("TextItemTitle")
+                    )
                     Spacer(modifier = Modifier.height(1.dp))
-                    Text(text = station.description ?: "cualquiera ", color=Color.White, fontSize = 13.sp, modifier = Modifier.testTag("TextItemDescription"))
+                    Text(
+                        text = station.description ?: "cualquiera ",
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.testTag("TextItemDescription")
+                    )
                 }
             }
 
@@ -143,17 +167,17 @@ fun ItemStation(station: RadioStationModelUI, navigationController: NavHostContr
                     .testTag("MenuHorizontalItem")
 
             ) {
-                val drawable = AppCompatResources.getDrawable(LocalContext.current, R.drawable.more_horiz)
+                val drawable =
+                    AppCompatResources.getDrawable(LocalContext.current, R.drawable.more_horiz)
                 Image(
                     painter = rememberDrawablePainter(drawable = drawable),
                     contentDescription = "MenuHorizImage",
-                    colorFilter =  ColorFilter.tint(Color(0xFF1C1C1C))
+                    colorFilter = ColorFilter.tint(Color(0xFF1C1C1C))
                 )
             }
         }
     }
 }
-
 
 @Composable
 fun StationCover(url: String) {
@@ -165,24 +189,25 @@ fun StationCover(url: String) {
             .width(64.dp)
             .testTag("StationCover")
     ) {
-
         SubcomposeAsyncImage(
             model = url,
             contentDescription = "stationCoverImage",
             contentScale = ContentScale.FillBounds,
-            ) {
+        ) {
             val state = painter.state
             if (state is AsyncImagePainter.State.Loading) {
-                CircularProgressIndicator(color = Color.Red, modifier = Modifier
-                    .fillMaxSize()
-                    .padding(4.dp))
-            }
-            else if (state is AsyncImagePainter.State.Error || state is AsyncImagePainter.State.Empty){
+                CircularProgressIndicator(
+                    color = Color.Red, modifier = Modifier
+                        .fillMaxSize()
+                        .padding(4.dp)
+                )
+            } else if (state is AsyncImagePainter.State.Error || state is AsyncImagePainter.State.Empty) {
                 val drawable = AppCompatResources.getDrawable(LocalContext.current, R.drawable.blur)
-                Image(painter = rememberDrawablePainter(drawable = drawable),
-                    modifier = Modifier.fillMaxSize(), contentDescription = "imagenBlur")
-            }
-            else  {
+                Image(
+                    painter = rememberDrawablePainter(drawable = drawable),
+                    modifier = Modifier.fillMaxSize(), contentDescription = "imagenBlur"
+                )
+            } else {
                 SubcomposeAsyncImageContent()
             }
         }

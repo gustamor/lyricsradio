@@ -1,6 +1,7 @@
 package net.laenredadera.app.android.lyricsradio.ui
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -32,6 +33,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -42,12 +44,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
@@ -56,6 +61,7 @@ import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import net.laenredadera.app.android.lyricsradio.AudioVolumeState
 import net.laenredadera.app.android.lyricsradio.R
 import net.laenredadera.app.android.lyricsradio.Routes
 
@@ -65,7 +71,9 @@ import net.laenredadera.app.android.lyricsradio.Routes
 fun PlayerScreen(navigationController: NavHostController, playerViewModel: PlayerViewModel) {
 
     Column(
-        modifier = Modifier.padding(top = 16.dp).background(Color(0xFF1C1C1C)),
+        modifier = Modifier
+            .padding(top = 16.dp)
+            .background(Color(0xFF1C1C1C)),
     ) {
         PlayerTopAppBar(navigationController,playerViewModel)
         PlayerBody(playerViewModel)
@@ -221,8 +229,27 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
 
 @Composable
 fun VolumeSlider(modifier: Modifier, playerViewModel: PlayerViewModel) {
-    val position = rememberSaveable { mutableStateOf(1f) }
+    val position = rememberSaveable { mutableStateOf((1f)) }
 
+    val mediaAudioViewModel: MediaAudioViewModel = hiltViewModel()
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+
+    val volumeState by produceState<AudioVolumeState>(
+        initialValue = AudioVolumeState.Initialized,
+        key1 = lifecycle,
+        key2 = mediaAudioViewModel){
+        lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
+            mediaAudioViewModel.currentVolume.collect{value = it}
+        }
+    }
+    when(volumeState) {
+        AudioVolumeState.Error -> {}
+        AudioVolumeState.Initialized -> {}
+        is AudioVolumeState.UpdatedVolume -> {
+            Log.d("currentVol composable",  (volumeState as AudioVolumeState.UpdatedVolume).volume.toString())
+
+        }
+    }
     Slider(
         colors = SliderDefaults.colors(
             thumbColor = Color.Magenta,
@@ -310,7 +337,7 @@ fun Botonera() {
             .shadow(4.dp)
             .testTag("Botonera")
             .background(Color(0xFF1C1C1C))
-            .height(132.dp)
+            .height(96.dp)
     ) {
         Column(
             verticalArrangement = Arrangement.Center
@@ -422,7 +449,7 @@ fun Botonera() {
                     }
                 }
             }
-            Row(
+            /*Row(
                 Modifier
                     .height(32.dp)
                     .padding(horizontal = 4.dp)
@@ -470,7 +497,7 @@ fun Botonera() {
                         .padding(top = 8.dp, start = 4.dp),
                     contentDescription = "volumeUp"
                 )
-            }
+            }*/
             Space(size = 4)
         }
     }

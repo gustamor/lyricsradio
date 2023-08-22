@@ -1,4 +1,4 @@
-# lyricsradio
+# Radio with Lyrics
 
 A Shoutcast streming receiver with lyrics of the songs.
 

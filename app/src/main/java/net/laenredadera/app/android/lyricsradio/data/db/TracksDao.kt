@@ -16,6 +16,8 @@ interface TracksDao {
     fun getOrderedTopStations(): Flow<List<TopStationEntity?>>
     @Query("SELECT * FROM TopStationEntity WHERE id = :id")
     fun getTopStationEntity(id: Int): TopStationEntity
+    @Query("DELETE FROM TopStationEntity")
+    fun deleteAllTopStations()
     @Query("UPDATE TopStationEntity SET numTimesPlayed = numTimesPlayed + 1 WHERE id = :id ")
     fun updateTopStationEntity(id: Int)
     @Query("SELECT numTimesPlayed FROM TopStationEntity WHERE id = :id")

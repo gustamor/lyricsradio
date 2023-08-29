@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import net.laenredadera.app.android.lyricsradio.domain.DeleteTopRadioStationsUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetRadioStationTopStationsUseCase
 import net.laenredadera.app.android.lyricsradio.domain.GetStationLastPlayedDate
 import net.laenredadera.app.android.lyricsradio.domain.model.TopStationsModel
@@ -23,6 +24,7 @@ import javax.inject.Inject
 class TopStationsViewModel @Inject constructor(
     private val getRadioStationTopStationsUseCase: GetRadioStationTopStationsUseCase,
     private val getStationLastPlayedDate: GetStationLastPlayedDate,
+    private val deleteTopRadioStationsUseCase: DeleteTopRadioStationsUseCase
 ) : ViewModel() {
 
     private var _topStations: Flow<List<TopStationsModel?>> = getRadioStationTopStationsUseCase()
@@ -42,6 +44,13 @@ class TopStationsViewModel @Inject constructor(
         viewModelScope.launch {
             _topStations = getRadioStationTopStationsUseCase()
             Log.i("GusMor station top", _topStations.toString())
+        }
+    }
+
+    fun deleteTopStations() {
+        viewModelScope.launch {
+            deleteTopRadioStationsUseCase()
+          //  _topStations =
         }
     }
     suspend fun getItemLastDate(id: Int) {

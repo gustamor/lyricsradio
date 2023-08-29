@@ -14,17 +14,27 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,20 +68,26 @@ fun TopStationsScreen(navigationController: NavHostController, playerViewModel: 
             .background(Color(0xFF1C1C1C))
     ) {
         TopStationsHeader(navigationController)
-        TopStationsBody(navigationController,playerViewModel )
+        TopStationsBody(navigationController, playerViewModel)
     }
 }
 
 @SuppressLint("PrivateResource")
 @Composable
-fun TopStationsHeader(nav: NavHostController) {
+fun TopStationsHeader(
+    nav: NavHostController,
+    topStationViewModel: TopStationsViewModel = hiltViewModel()
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var dialogOpen by remember {    mutableStateOf(false)
+    }
     Row(
         Modifier
             .fillMaxWidth()
             .height(48.dp)
             .padding(bottom = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = { nav.popBackStack() }) {
             val backArrow = AppCompatResources.getDrawable(
@@ -94,18 +110,99 @@ fun TopStationsHeader(nav: NavHostController) {
             color = Color.White,
             modifier = Modifier.testTag("TopStationsHeaderText")
         )
-        IconButton(onClick = { /*TODO*/ }) {
-            val settings = AppCompatResources.getDrawable(
-                LocalContext.current,
-                androidx.media3.ui.R.drawable.exo_ic_settings
-            )
-            Icon(
-                painter = rememberDrawablePainter(drawable = settings),
-                contentDescription = "PlayedHeaderIcon",
-                tint = Color(0xFF1C1C1C)
 
-            )
+        Box(
+            contentAlignment = Alignment.TopStart
+        ) {
+            IconButton(
+                onClick = {
+                    expanded = !expanded
+                },
+                modifier = Modifier.testTag("TopStationsDropdownMenuIcon"),
+            ) {
+                val settings = AppCompatResources.getDrawable(
+                    LocalContext.current,
+                    R.drawable.ic_menu_other
+                )
+                Icon(
+                    painter = rememberDrawablePainter(drawable = settings),
+                    contentDescription = "PlayedHeaderIcon",
+                    tint = Color.White,
+                )
+            }
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier.testTag("TopStationsDropdownMenu"),
+
+                ) {
+                DropdownMenuItem(
+                    text = { Text("Delete All") },
+                    onClick = {
+                        dialogOpen = true
+                    },
+                    modifier = Modifier.testTag("TopStationsDropdownMenuItem"),
+                )
+            }
         }
+    }
+
+    if (dialogOpen) {
+        AlertDialog(
+
+            onDismissRequest = {
+                dialogOpen = false
+                expanded = false
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        topStationViewModel.deleteTopStations()
+                        dialogOpen = false
+                        expanded = false
+                    }
+                ) {
+                    Text(
+                        text = "OK",
+                        fontSize = 15.sp,
+                        modifier = Modifier.testTag("TopStationsConfirmButtonInDialog")
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        dialogOpen = false
+                        expanded = false
+                    }
+                ) {
+                    Text(
+                        text = "NO",
+                        fontSize = 15.sp,
+                        modifier = Modifier.testTag("TopStationsCancelButtonInDialog")
+                    )
+                }
+            },
+            title = {
+                Text(
+                    text = "Delete favorites",
+                    fontSize = 21.sp,
+                    modifier = Modifier.testTag("TopStationsTitleTextInDialog")
+                )
+            },
+            text = {
+                Text(
+                    text = "Do you want to delete the of your most listened stations?",
+                    fontSize = 18.sp,
+                    modifier = Modifier.testTag("TopStationsDescriptionTextInDialog")
+                )
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(32.dp)
+                .testTag("TopStationsAlertDialog"),
+            shape = RoundedCornerShape(5.dp),
+        )
     }
 }
 
@@ -135,10 +232,15 @@ fun TopStationsBody(nav: NavHostController, playerViewModel: PlayerViewModel) {
         }
         Space(64)
     }
+
 }
 
 @Composable
-fun TopStationItem(item: TopStationUi, nav: NavHostController, playerViewModel: PlayerViewModel = hiltViewModel()) {
+fun TopStationItem(
+    item: TopStationUi,
+    nav: NavHostController,
+    playerViewModel: PlayerViewModel = hiltViewModel()
+) {
     val coroutineScope = rememberCoroutineScope()
     val uri = Uri.parse(item.address)
 

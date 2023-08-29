@@ -65,5 +65,11 @@ class RadioStationsRepository @Inject constructor(
         }
     }
 
+    suspend fun deleteAllTopStations() {
+        return withContext(Dispatchers.IO) {
+            dao.deleteAllTopStations()
+        }
+    }
+
 
 }

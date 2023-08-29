@@ -92,11 +92,10 @@ class PlayerViewModel @Inject constructor(
                             }
 
                             is PlayingSongInfoState.Success -> {
-                                getAlbumNameUseCase(it.artist, it.title).collect{albun ->
-                                 _album.value = albun
+                                getAlbumNameUseCase(it.artist, it.title).collect{album ->
+                                 _album.value = album
                                 }
                                 listOf(it.artist, it.title)
-
                             }
 
                             is PlayingSongInfoState.Updating -> {
@@ -106,6 +105,7 @@ class PlayerViewModel @Inject constructor(
                         }
                     }
                 }
+
                 addStationName()
                 station.value = _station
                 addListener()
@@ -214,7 +214,7 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    private fun addOnePlayedTime() {
+     fun addOnePlayedTime() {
         viewModelScope.launch {
             try {
                 getRadioStationAddOnePlayedUseCase(_station!!.id)

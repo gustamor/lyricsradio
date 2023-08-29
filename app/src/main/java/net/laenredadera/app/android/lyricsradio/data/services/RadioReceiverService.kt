@@ -11,9 +11,12 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.IBinder
+import android.os.PowerManager
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Metadata
 import androidx.media3.common.util.UnstableApi
@@ -39,6 +42,9 @@ import javax.inject.Inject
  */
 class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : Service() {
 
+    private lateinit var notificationManager: NotificationManagerCompat
+    private lateinit var notification: Notification
+
     private val _isPlaying = MutableStateFlow(false)
     var isPlaying = _isPlaying.asStateFlow()
 
@@ -49,15 +55,37 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
     var songName = _songName.asStateFlow()
     override fun onBind(p0: Intent?): IBinder? = null
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-
-        if (intent.action == Intent.ACTION_MEDIA_BUTTON) {
-            //    mediaSessionComponent.handleMediaButtonIntent(intent)
-        }
-        return START_NOT_STICKY
-
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        notification = NotificationCompat.Builder(this, TIMER_SERVICE_NOTIFICATION_CHANNEL_ID)
+            .setContentTitle("Radio service")
+            .setContentText("Radio running")
+            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setOngoing(true) // an ongoing notification means can't dismiss by the user.
+            .setOnlyAlertOnce(true)
+            .build()
+        startForeground(TIMER_SERVICE_NOTIFICATION_ID, notification)
+        return START_STICKY
     }
 
+    private fun createNotificationChannel(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            val serviceChannel = NotificationChannel(
+                TIMER_SERVICE_NOTIFICATION_CHANNEL_ID,
+                getString(R.string.app_name),
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            notificationManager.createNotificationChannel(serviceChannel)
+        }
+    }
+    @RequiresApi(Build.VERSION_CODES.N)
+    override fun onDestroy() {
+        super.onDestroy()
+        stopForeground(STOP_FOREGROUND_REMOVE)
+    }
+    companion object {
+         const val TIMER_SERVICE_NOTIFICATION_CHANNEL_ID = "RadioReceiverServiceChannel"
+         const val TIMER_SERVICE_NOTIFICATION_ID = 2077
+    }
     private fun stopService() {
         stopForeground(true)
         stopSelf()
@@ -70,6 +98,7 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
     fun initPlayer() {
         prepare()
         getVolume()
+     //   player.setWakeMode(PowerManager.PARTIAL_WAKE_LOCK)
     }
 
     /**

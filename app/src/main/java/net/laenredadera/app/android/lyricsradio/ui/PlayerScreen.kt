@@ -429,6 +429,7 @@ fun Botonera() {
                                 coroutineScope.launch {
                                     withContext(Dispatchers.IO) {
                                         playerViewModel.play()
+                                        playerViewModel.addOnePlayedTime()
                                     }
                                 }
                             }

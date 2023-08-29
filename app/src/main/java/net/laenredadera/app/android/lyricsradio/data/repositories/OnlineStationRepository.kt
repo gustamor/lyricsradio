@@ -23,14 +23,14 @@ class OnlineStationRepository @Inject constructor(
                         prevArtist = getArtist()
                         prevTitle = getTitle()
                         emit(PlayingSongInfoState.Loading)
+                    } else
+
+                    try {
+                        emit(PlayingSongInfoState.Success(getArtist(), getTitle()))
+                        delay(500)
+                    } catch (e: Exception) {
+                        throw (e)
                     }
-                    else
-                        try {
-                            delay(500)
-                            emit(PlayingSongInfoState.Success(getArtist(), getTitle()))
-                        } catch (e: Exception) {
-                            emit(PlayingSongInfoState.Error(e))
-                        }
                 }
             }
         }

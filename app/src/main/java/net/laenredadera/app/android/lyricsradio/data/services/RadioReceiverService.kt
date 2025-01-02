@@ -11,9 +11,11 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.analytics.AnalyticsListener
 import androidx.media3.exoplayer.util.EventLogger
 import androidx.media3.extractor.metadata.icy.IcyInfo
+import androidx.multidex.BuildConfig
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import net.laenredadera.app.android.lyricsradio.BuildConfig
+
+
 import javax.inject.Inject
 
 /**

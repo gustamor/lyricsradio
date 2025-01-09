@@ -1,4 +1,5 @@
-package net.laenredadera.app.android.lyricsradio.ui
+package net.laenredadera.app.android.lyricsradio.ui.screens
+
 
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
@@ -12,17 +13,19 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Slider
@@ -43,6 +46,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,15 +62,22 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.laenredadera.app.android.lyricsradio.R
 import net.laenredadera.app.android.lyricsradio.Routes
+import net.laenredadera.app.android.lyricsradio.ui.composables.BackgroundImageSurface
+import net.laenredadera.app.android.lyricsradio.ui.composables.SadikSurface
+import net.laenredadera.app.android.lyricsradio.ui.vm.PlayerViewModel
 
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun PlayerScreen(navigationController: NavHostController, playerViewModel: PlayerViewModel) {
 
+
     Column(
-        modifier = Modifier.background(Color(0xFF1C1C1C)),
+
+        modifier = Modifier
+            .background(Color(0xFF1C1C1C))
+            .padding(WindowInsets.systemBars.asPaddingValues()),
     ) {
+
         PlayerTopAppBar(navigationController)
         PlayerBody(playerViewModel)
     }
@@ -81,29 +92,30 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
     val station = playerViewModel.station.observeAsState()
     val playerStateFlow = playerViewModel.uiIsPlaying.collectAsStateWithLifecycle()
     val playerStatePausedFlow = playerViewModel.uiIsPaused.collectAsStateWithLifecycle()
-
     val song by playerViewModel.song.collectAsStateWithLifecycle()
     val albumCover by playerViewModel.cover.observeAsState()
     val coroutineScope = rememberCoroutineScope()
 
-
     Column(
         modifier = Modifier
-            .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+            .padding(top = 8.dp, start = 0.dp, end = 0.dp)
             .fillMaxSize()
             .background(Color(0xFF1C1C1C))
             .border(1.dp, Color.Red),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(Modifier.weight(1.2f)) {
-            Space(64)
+        BackgroundImageSurface(modifier = Modifier.fillMaxWidth().weight(1.2f),
+            background =  painterResource(id = R.drawable.blur)) {
             SubcomposeAsyncImage(
                 model = if (albumCover == "") station.value?.cover else albumCover,
                 contentDescription = "albumCover",
                 contentScale = ContentScale.FillBounds,
+
                 modifier = Modifier
-                    .width(screenWidth)
-                    .height(screenWidth)
-                    .clip(RoundedCornerShape(32.dp))
+                    .width(screenWidth - 26.dp)
+                    .height(screenWidth - 26.dp)
+                    .clip(RoundedCornerShape(18.dp))
+
             ) {
                 val state = painter.state
                 when (state) {
@@ -116,7 +128,6 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
                                 .clip(RoundedCornerShape(16.dp)),
                         )
                     }
-
                     is AsyncImagePainter.State.Error, is AsyncImagePainter.State.Empty -> {
                         val blur = AppCompatResources.getDrawable(
                             LocalContext.current, R.drawable.blur
@@ -301,29 +312,40 @@ fun Space(size: Int) {
     Spacer(Modifier.size(size.dp))
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerTopAppBar(navigationController: NavHostController) {
-    Row(
-        modifier = Modifier
-            .background(Color(0xFF1C1C1C))
-            .testTag("NowPlayingHeaderRow")
-    )
 
-    {
-        IconButton(onClick = { navigationController.navigate(Routes.MainScreen.route) }) {
-            Icon(
-                imageVector = Icons.Filled.ArrowBack, tint = Color.White,  contentDescription = "Arrow Back to Main"
-            )
-        }/* Text(
+    SadikSurface(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .testTag("NowPlayingHeaderRow"),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        )
+
+        {
+            IconButton(onClick = { navigationController.navigate(Routes.MainScreen.route) }) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    tint = Color.White,
+                    contentDescription = "Arrow Back to Main"
+                )
+            }
+        }
+    }
+
+     /* Text(
              "En reproduccion",
              maxLines = 1,
              fontSize = 24.sp,
              fontWeight = FontWeight.Bold,
              modifier = Modifier.testTag("NowPlayingHeaderText")        )*/
     }
-}
 
+
+@SuppressLint("PrivateResource")
 @Composable
 fun Botonera(playerViewModel: PlayerViewModel = hiltViewModel()) {
     val station = playerViewModel.station.observeAsState()
@@ -447,15 +469,16 @@ fun Botonera(playerViewModel: PlayerViewModel = hiltViewModel()) {
                 } else {
                     playDrawable!!
                 }
-                Icon(
-                    painter = rememberDrawablePainter(drawable = drawable),
-                    tint = Color.White,
-                    contentDescription = "PlayStopImageBotonera",
-                )
+                IconButton(onClick = {}) {
+                    Icon(
+                        painter = rememberDrawablePainter(drawable = drawable),
+                        tint = Color.White,
+                        contentDescription = "PlayStopImageBotonera",
+                    )
+                }
+
+
             }
         }
     }
 }
-
-
-

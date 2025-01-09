@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomSheetScaffold
@@ -28,14 +27,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import net.laenredadera.app.android.lyricsradio.ui.Botonera
-import net.laenredadera.app.android.lyricsradio.ui.MainScreen
-import net.laenredadera.app.android.lyricsradio.ui.PlayerScreen
-import net.laenredadera.app.android.lyricsradio.ui.PlayerViewModel
-import net.laenredadera.app.android.lyricsradio.ui.RadioHomeScreen
-import net.laenredadera.app.android.lyricsradio.ui.RadioStationViewModel
+import net.laenredadera.app.android.lyricsradio.ui.screens.Botonera
+import net.laenredadera.app.android.lyricsradio.ui.screens.MainScreen
+import net.laenredadera.app.android.lyricsradio.ui.screens.PlayerScreen
+import net.laenredadera.app.android.lyricsradio.ui.vm.PlayerViewModel
+import net.laenredadera.app.android.lyricsradio.ui.screens.RadioHomeScreen
+import net.laenredadera.app.android.lyricsradio.ui.vm.RadioStationViewModel
 import net.laenredadera.app.android.lyricsradio.ui.theme.LyricsRadioTheme
-import net.laenredadera.app.android.lyricsradio.ui.theme.PreviouslyPlayedScreen
+import net.laenredadera.app.android.lyricsradio.ui.screens.PreviouslyPlayedScreen
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -66,7 +65,7 @@ class MainActivity : ComponentActivity() {
                         sheetTonalElevation = 0.dp,
                         sheetShadowElevation = 0.dp,
                         sheetDragHandle = {
-                            if (song[1] == " ") Text("Drag me to hell") else Text(song[1]!!)
+                            if (song[1] == " ") Text("Drag me") else Text(song[1]!!)
                         },
                         contentColor = Color(0xFF1C1C1C),
                         sheetContentColor = Color(0xFF1C1C1C),

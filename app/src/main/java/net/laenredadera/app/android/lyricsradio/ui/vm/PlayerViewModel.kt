@@ -1,4 +1,4 @@
-package net.laenredadera.app.android.lyricsradio.ui
+package net.laenredadera.app.android.lyricsradio.ui.vm
 
 import android.net.Uri
 import android.util.Log
@@ -64,13 +64,13 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch {
             while (true) {
                 delay(100)
-                if (_uiIsPlaying.value!!) {
+                if (_uiIsPlaying.value) {
                     _song.value = getStationDataUseCase()
                 } else
                     station.value = _station
                 addListener()
             }
-            albumCover()
+          //  albumCover()
         }
     }
 
@@ -101,7 +101,7 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    suspend fun addMediaItem(uri: Uri) {
+     fun addMediaItem(uri: Uri) {
         stop()
         viewModelScope.launch {
             getMediaAddItemUseCase(uri)
@@ -114,7 +114,7 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    suspend fun play() {
+     fun play() {
         viewModelScope.launch {
             getMediaPlayUseCase()
             while (!_uiIsPlaying.value) {
@@ -155,7 +155,7 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _song.value = getStationDataUseCase()
-            } catch (e: Exception) {
+            } catch (_: Exception) {
             }
         }
     }
@@ -173,7 +173,7 @@ class PlayerViewModel @Inject constructor(
                         _cover.value = ""
                     }
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
             }
         }
     }
@@ -182,7 +182,7 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 getRadioStationAddOnePlayedUseCase(_station!!.id)
-                var num = getRadioStationNumberOfTimesPlayedUseCase(_station!!.id)
+                val num = getRadioStationNumberOfTimesPlayedUseCase(_station!!.id)
                 Log.i("GusMor station id: ", _station!!.id.toString())
                 Log.i("GusMor station id played: ", num.toString())
             } catch (e: Exception) {

@@ -1,4 +1,4 @@
-package net.laenredadera.app.android.lyricsradio.ui
+package net.laenredadera.app.android.lyricsradio.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import net.laenredadera.app.android.lyricsradio.ui.vm.LyricsViewModel
 import net.laenredadera.app.android.lyricsradio.ui.model.LyricsModelUI
 
 @Composable

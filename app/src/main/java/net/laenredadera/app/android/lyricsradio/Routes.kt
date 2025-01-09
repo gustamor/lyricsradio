@@ -1,10 +1,10 @@
 package net.laenredadera.app.android.lyricsradio
 
 sealed class Routes (val route: String){
-    object PlayerScreen:Routes("playerScreen")
-    object HomeScreen:Routes("homeScreen")
-    object MainScreen:Routes("mainScreen")
-    object PreviouslyPlayedScreen:Routes("previouslyPlayedScreen")
+    data object PlayerScreen:Routes("playerScreen")
+    data object HomeScreen:Routes("homeScreen")
+    data object MainScreen:Routes("mainScreen")
+    data object PreviouslyPlayedScreen:Routes("previouslyPlayedScreen")
 
 
 }

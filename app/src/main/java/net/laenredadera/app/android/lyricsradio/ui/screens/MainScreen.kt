@@ -1,4 +1,4 @@
-package net.laenredadera.app.android.lyricsradio.ui
+package net.laenredadera.app.android.lyricsradio.ui.screens
 
 import android.net.Uri
 import android.util.Log
@@ -58,6 +58,8 @@ import kotlinx.coroutines.withContext
 import net.laenredadera.app.android.lyricsradio.R
 import net.laenredadera.app.android.lyricsradio.Routes
 import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModelUI
+import net.laenredadera.app.android.lyricsradio.ui.vm.PlayerViewModel
+import net.laenredadera.app.android.lyricsradio.ui.vm.RadioStationViewModel
 
 @Composable
 fun MainScreen(

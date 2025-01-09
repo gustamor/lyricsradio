@@ -1,4 +1,4 @@
-package net.laenredadera.app.android.lyricsradio.ui.theme
+package net.laenredadera.app.android.lyricsradio.ui.screens
 
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import net.laenredadera.app.android.lyricsradio.R
-import net.laenredadera.app.android.lyricsradio.ui.Space
 
 @Preview
 @Composable

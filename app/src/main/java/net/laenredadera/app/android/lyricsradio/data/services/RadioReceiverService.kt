@@ -25,12 +25,12 @@ import androidx.media3.exoplayer.analytics.AnalyticsListener
 import androidx.media3.exoplayer.util.EventLogger
 import androidx.media3.extractor.metadata.icy.IcyHeaders
 import androidx.media3.extractor.metadata.icy.IcyInfo
+import androidx.multidex.BuildConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
-import net.laenredadera.app.android.lyricsradio.BuildConfig
 import net.laenredadera.app.android.lyricsradio.R
 import javax.inject.Inject
 

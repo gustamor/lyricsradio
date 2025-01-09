@@ -12,7 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import net.laenredadera.app.android.lyricsradio.ui.vm.PlayerViewModel
+import net.laenredadera.app.android.lyricsradio.ui.PlayerViewModel
 import net.laenredadera.app.android.lyricsradio.ui.vm.RadioStationViewModel
 import net.laenredadera.app.android.lyricsradio.ui.composables.StationItem
 import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModelUI

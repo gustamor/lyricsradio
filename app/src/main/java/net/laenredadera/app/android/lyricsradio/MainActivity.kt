@@ -33,9 +33,9 @@ import net.laenredadera.app.android.lyricsradio.ui.MainScreen
 import net.laenredadera.app.android.lyricsradio.ui.PlayerScreen
 import net.laenredadera.app.android.lyricsradio.ui.PlayerViewModel
 import net.laenredadera.app.android.lyricsradio.ui.ExploreStationScreen
-import net.laenredadera.app.android.lyricsradio.ui.RadioStationViewModel
 import net.laenredadera.app.android.lyricsradio.ui.TopStationsScreen
 import net.laenredadera.app.android.lyricsradio.ui.theme.LyricsRadioTheme
+import net.laenredadera.app.android.lyricsradio.ui.vm.RadioStationViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

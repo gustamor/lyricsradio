@@ -61,6 +61,7 @@ import net.laenredadera.app.android.lyricsradio.R
 import net.laenredadera.app.android.lyricsradio.Routes
 import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModelUI
 import net.laenredadera.app.android.lyricsradio.ui.theme.LatoFont
+import net.laenredadera.app.android.lyricsradio.ui.vm.RadioStationViewModel
 
 @Composable
 fun MainScreen(
@@ -68,7 +69,7 @@ fun MainScreen(
     radioStationsViewModel: RadioStationViewModel,
     playerViewModel: PlayerViewModel,
 
-) {
+    ) {
     radioStationsViewModel.getStations()
     Column(
         Modifier

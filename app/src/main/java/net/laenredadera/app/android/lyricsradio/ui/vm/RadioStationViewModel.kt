@@ -1,4 +1,4 @@
-package net.laenredadera.app.android.lyricsradio.ui
+package net.laenredadera.app.android.lyricsradio.ui.vm
 
 import android.util.Log
 import androidx.lifecycle.LiveData

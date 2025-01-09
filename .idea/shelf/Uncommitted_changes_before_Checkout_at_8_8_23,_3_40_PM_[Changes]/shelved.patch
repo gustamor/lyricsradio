@@ -1,0 +1,13 @@
+Index: app/src/main/java/net/laenredadera/app/android/lyricsradio/ui/MainScreen.kt
+===================================================================
+diff --git a/app/src/main/java/net/laenredadera/app/android/lyricsradio/ui/MainScreen.kt b/app/src/main/java/net/laenredadera/app/android/lyricsradio/ui/MainScreen.kt
+--- a/app/src/main/java/net/laenredadera/app/android/lyricsradio/ui/MainScreen.kt	
++++ b/app/src/main/java/net/laenredadera/app/android/lyricsradio/ui/MainScreen.kt	
+@@ -67,7 +67,6 @@
+     navigationController: NavHostController,
+     radioStationsViewModel: RadioStationViewModel,
+     playerViewModel: PlayerViewModel,
+-
+ ) {
+     radioStationsViewModel.getStations()
+     Column(

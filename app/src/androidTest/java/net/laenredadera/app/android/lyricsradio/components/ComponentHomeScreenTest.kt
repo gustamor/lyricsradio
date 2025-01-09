@@ -8,7 +8,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import net.laenredadera.app.android.lyricsradio.ui.ItemStation
-import net.laenredadera.app.android.lyricsradio.ui.PlayerViewModel
+import net.laenredadera.app.android.lyricsradio.ui.vm.PlayerViewModel
 import net.laenredadera.app.android.lyricsradio.ui.StationCover
 import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationModelUI
 import net.laenredadera.app.android.lyricsradio.ui.model.RadioStationsAddressUI

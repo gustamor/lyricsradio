@@ -54,8 +54,8 @@ fun StationItem(station: RadioStationModelUI, navigationController: NavHostContr
                 .background(MaterialTheme.colorScheme.background)
                 .clickable {
                     coroutineScope.launch(Dispatchers.IO) {
-                        playerViewModel.addStationModel(station)
-                        playerViewModel.addMediaItem(uri)
+                        /*playerViewModel.addStationModel(station)
+                        playerViewModel.addMediaItem(uri)*/
                     }
                     navigationController.navigate(Routes.PlayerScreen.route)
 

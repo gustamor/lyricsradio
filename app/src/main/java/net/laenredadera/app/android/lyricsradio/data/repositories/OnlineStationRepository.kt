@@ -6,7 +6,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
-import net.laenredadera.app.android.lyricsradio.PlayingSongInfoState
+import net.laenredadera.app.android.lyricsradio.ui.model.PlayingSongInfoState
 import net.laenredadera.app.android.lyricsradio.data.services.RadioReceiverService
 import javax.inject.Inject
 

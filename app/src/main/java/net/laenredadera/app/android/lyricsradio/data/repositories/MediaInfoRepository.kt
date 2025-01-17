@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import net.laenredadera.app.android.lyricsradio.data.services.LastFMService
 import net.laenredadera.app.android.lyricsradio.data.services.network.model.Wiki
-import net.laenredadera.app.android.lyricsradio.ui.CoverState
+import net.laenredadera.app.android.lyricsradio.ui.model.CoverState
 import javax.inject.Inject
 
 class MediaInfoRepository @Inject constructor(private val lastFM: LastFMService) {

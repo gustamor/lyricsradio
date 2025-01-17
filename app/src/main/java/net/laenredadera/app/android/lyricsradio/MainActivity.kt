@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomSheetScaffold
@@ -28,102 +29,75 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import net.laenredadera.app.android.lyricsradio.ui.Botonera
 import net.laenredadera.app.android.lyricsradio.ui.MainScreen
 import net.laenredadera.app.android.lyricsradio.ui.PlayerScreen
 import net.laenredadera.app.android.lyricsradio.ui.PlayerViewModel
 import net.laenredadera.app.android.lyricsradio.ui.ExploreStationScreen
+import net.laenredadera.app.android.lyricsradio.ui.PlayerControls
 import net.laenredadera.app.android.lyricsradio.ui.TopStationsScreen
 import net.laenredadera.app.android.lyricsradio.ui.theme.LyricsRadioTheme
 import net.laenredadera.app.android.lyricsradio.ui.vm.RadioStationViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val radioStationsViewModel: RadioStationViewModel by viewModels()
     private val playerViewModel: PlayerViewModel by viewModels()
 
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             LyricsRadioTheme {
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentColor = Color(0xFF1C1C1C),
-                    color = Color(0xFF1C1C1C),
+                val scaffoldState = rememberBottomSheetScaffoldState()
 
+                BottomSheetScaffold(
+                    scaffoldState = scaffoldState,
+                    sheetContent = {
+                        // Mini reproductor que siempre está visible
+                        PlayerControls(playerViewModel)
+                    },
+                    sheetPeekHeight = 80.dp
+                ) { paddingValues ->
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
+                        color = Color(0xFF1C1C1C)
                     ) {
-                    val station = playerViewModel.station.observeAsState()
-                    val playerStateFlow = playerViewModel.uiIsPlaying.collectAsStateWithLifecycle()
-                    val sheetPeekHeight = if (playerStateFlow.value) 24.dp else 0.dp
-                    BottomSheetScaffold(
-                        scaffoldState = rememberBottomSheetScaffoldState(),
-                        sheetPeekHeight = sheetPeekHeight,
-                        sheetTonalElevation = 0.dp,
-                        sheetShadowElevation = 0.dp,
-                        sheetDragHandle = {
-                            if (station.value != null) {
-                                if (!playerStateFlow.value) {
-                                    Text(" ")
-                                } else {
-                                    if (station.value!!.name == " ") Text(" ") else Text(station.value!!.name)
-                                }
-                            }
-                        },
-                        contentColor = Color(0xFF1C1C1C),
-                        sheetContentColor = Color(0xFF1C1C1C),
-                        containerColor = Color(0xFF1C1C1C),
-                        sheetContent = {
-                            if (playerStateFlow.value) {
-                                Column(
-                                    verticalArrangement = Arrangement.Center,
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .background(Color(0xFF1C1C1C))
-                                ) {
-                                    Column(
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        modifier = Modifier
-                                            .verticalScroll(rememberScrollState())
-                                            .background(Color(0xFF1C1C1C))
-                                    ) {
-                                        Botonera()
-                                    }
-                                }
-                            }
-                        }
-                    ) {
-                        val navigationController: NavHostController = rememberNavController()
+                        val navigationController = rememberNavController()
+
                         NavHost(
                             navController = navigationController,
-                            startDestination = Routes.MainScreen.route,
+                            startDestination = Routes.MainScreen.route
                         ) {
-                            composable(Routes.HomeScreen.route) {
-                                ExploreStationScreen(
-                                    navigationController,
-                                    radioStationsViewModel,
-                                    playerViewModel
-                                )
-                            }
-                            composable(Routes.PlayerScreen.route) {
-                                PlayerScreen(
-                                    navigationController,
-                                    playerViewModel
-                                )
-                            }
                             composable(Routes.MainScreen.route) {
                                 MainScreen(
-                                    navigationController,
-                                    radioStationsViewModel, playerViewModel
+                                    navigationController = navigationController,
+                                    radioStationsViewModel = radioStationsViewModel,
+                                    playerViewModel = playerViewModel
                                 )
                             }
+
+                            composable(Routes.HomeScreen.route) {
+                                ExploreStationScreen(
+                                    navigationController = navigationController,
+                                    radioStationsViewModel = radioStationsViewModel,
+                                    playerViewModel = playerViewModel
+                                )
+                            }
+
+                            composable(Routes.PlayerScreen.route) {
+                                PlayerScreen(
+                                    navigationController = navigationController,
+                                    playerViewModel = playerViewModel
+                                )
+                            }
+
                             composable(Routes.TopStationsScreen.route) {
                                 TopStationsScreen(
-                                    navigationController,
-                                    playerViewModel
+                                    navigationController = navigationController,
+                                    playerViewModel = playerViewModel
                                 )
                             }
                         }

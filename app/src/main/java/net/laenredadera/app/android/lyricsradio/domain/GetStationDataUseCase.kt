@@ -2,7 +2,7 @@ package net.laenredadera.app.android.lyricsradio.domain
 
 
 import kotlinx.coroutines.flow.Flow
-import net.laenredadera.app.android.lyricsradio.PlayingSongInfoState
+import net.laenredadera.app.android.lyricsradio.ui.model.PlayingSongInfoState
 import net.laenredadera.app.android.lyricsradio.data.repositories.OnlineStationRepository
 import javax.inject.Inject
 

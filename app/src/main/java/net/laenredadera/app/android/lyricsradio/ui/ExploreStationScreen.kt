@@ -116,8 +116,8 @@ fun ItemStation(
             .padding(start = 16.dp, top = 8.dp)
             .clickable {
                 coroutineScope.launch(Dispatchers.IO) {
-                    playerViewModel.addStationModel(station)
-                    playerViewModel.addMediaItem(uri)
+                   /* playerViewModel.addStationModel(station)
+                    playerViewModel.addMediaItem(uri)*/
                 }
                 navigationController.navigate(Routes.PlayerScreen.route)
 

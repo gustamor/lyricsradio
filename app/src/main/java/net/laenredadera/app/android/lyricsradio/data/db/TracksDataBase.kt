@@ -5,7 +5,8 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [PlayedTrackDataEntity::class, WikiEntity::class, PlayedTrackEntity::class, TrackEntity::class, ArtistEntity::class, AlbumEntity::class,TopStationEntity::class],
-    version = 1
+    version = 2,
+  exportSchema = true
 )
 abstract class TracksDataBase : RoomDatabase() {
     abstract fun tracksDao(): TracksDao

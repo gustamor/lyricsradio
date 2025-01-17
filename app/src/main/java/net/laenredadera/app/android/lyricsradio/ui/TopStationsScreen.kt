@@ -257,8 +257,8 @@ fun TopStationItem(
                 .clickable {
                     coroutineScope.launch() {
                         withContext(Dispatchers.IO) {
-                            playerViewModel.addStationModel(item.toRadioStation())
-                            playerViewModel.addMediaItem(uri)
+                         /*   playerViewModel.addStationModel(item.toRadioStation())
+                            playerViewModel.addMediaItem(uri)*/
                         }
                         nav.navigate(Routes.PlayerScreen.route)
                     }

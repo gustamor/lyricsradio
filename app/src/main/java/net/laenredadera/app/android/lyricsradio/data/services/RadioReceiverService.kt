@@ -64,7 +64,7 @@ class RadioReceiverService @Inject constructor(private val player: ExoPlayer) : 
             .setOnlyAlertOnce(true)
             .build()
         startForeground(TIMER_SERVICE_NOTIFICATION_ID, notification)
-        return START_STICKY
+        return START_STICKY_COMPATIBILITY
     }
 
     private fun createNotificationChannel(){

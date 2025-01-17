@@ -21,10 +21,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
@@ -41,11 +43,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -64,6 +68,8 @@ import kotlinx.coroutines.withContext
 import net.laenredadera.app.android.lyricsradio.AudioVolumeState
 import net.laenredadera.app.android.lyricsradio.R
 import net.laenredadera.app.android.lyricsradio.Routes
+import net.laenredadera.app.android.lyricsradio.ui.model.PlayerIntent
+import net.laenredadera.app.android.lyricsradio.ui.model.PlayerState
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -77,6 +83,8 @@ fun PlayerScreen(navigationController: NavHostController, playerViewModel: Playe
     ) {
         PlayerTopAppBar(navigationController,playerViewModel)
         PlayerBody(playerViewModel)
+        VolumeSlider(modifier = Modifier.fillMaxWidth(), playerViewModel)
+
     }
 }
 
@@ -85,16 +93,11 @@ fun PlayerScreen(navigationController: NavHostController, playerViewModel: Playe
 fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
-    val station = playerViewModel.station.observeAsState()
-    val playerStateFlow = playerViewModel.uiIsPlaying.collectAsStateWithLifecycle()
-    val song by playerViewModel.song.collectAsStateWithLifecycle()
-    val albumCover by playerViewModel.cover.observeAsState()
-    val coroutineScope = rememberCoroutineScope()
-    val album = playerViewModel.album.collectAsStateWithLifecycle()
 
-    LaunchedEffect(song) {
-        playerViewModel.albumCover()
-    }
+    val playerState by playerViewModel.state.collectAsStateWithLifecycle()
+    val songInfo = if (playerState is PlayerState.Playing)  PlayerState.SongInfo(artist = "", title = "", albumCover = null) else null
+    val coroutineScope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
             .padding(top = 16.dp, start = 16.dp, end = 16.dp)
@@ -102,9 +105,10 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
             .background(Color(0xFF1C1C1C))
     ) {
         Box(Modifier.weight(1.2f)) {
-            Space(64)
+            Spacer(modifier = Modifier.size(64.dp))
             SubcomposeAsyncImage(
-                model = if (albumCover == "") station.value?.cover else albumCover,
+                filterQuality = FilterQuality.High,
+                model = "songInfo?.albumCoverUrl ?: playerViewModel.station.value?.cover",
                 contentDescription = "albumCover",
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier
@@ -124,15 +128,15 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
                         )
                     }
                     is AsyncImagePainter.State.Error, is AsyncImagePainter.State.Empty -> {
-                        val blur = AppCompatResources.getDrawable(
-                            LocalContext.current, R.drawable.blur
+                        val genericCover = AppCompatResources.getDrawable(
+                            LocalContext.current, R.drawable.blur // Imagen genérica local
                         )
                         Image(
-                            painter = rememberDrawablePainter(drawable = blur),
+                            painter = rememberDrawablePainter(drawable = genericCover),
                             modifier = Modifier
                                 .fillMaxSize()
                                 .clip(RoundedCornerShape(16.dp)),
-                            contentDescription = "imagenBlur"
+                            contentDescription = "imagenGenerica"
                         )
                     }
                     else -> {
@@ -142,90 +146,80 @@ fun PlayerBody(playerViewModel: PlayerViewModel = hiltViewModel()) {
             }
         }
         Column(
-            Modifier.weight(1f),
+            modifier = Modifier.weight(1f),
         ) {
-
-            Space(16)
-            Text(
-                text = song[1],
-                color = Color.White,
-                fontSize = 19.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.testTag("TitleInPlayer")
-            )
-            Spacer(modifier = Modifier.height(1.dp))
-            Text(
-                text = song[0],
-                color = Color.White,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Normal,
-                modifier = Modifier.testTag("AristNameInPlayer")
-            )
-            Text(
-                text = album.value,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Normal,
-                color = Color.White,
-                modifier = Modifier.testTag("albumNameInPlayer")
-            )
-            Space(16)
+            Spacer(modifier = Modifier.size(16.dp))
+            songInfo?.let {
+                Text(
+                    text = it.title,
+                    color = Color.White,
+                    fontSize = 19.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.testTag("TitleInPlayer")
+                )
+                Spacer(modifier = Modifier.height(1.dp))
+                Text(
+                    text = it.artist,
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal,
+                    modifier = Modifier.testTag("ArtistNameInPlayer")
+                )
+            }
+            Spacer(modifier = Modifier.size(16.dp))
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(96.dp)
             ) {
-                IconButton(modifier = Modifier
-                    .size(112.dp)
-                    .padding(bottom = 16.dp, top = 12.dp),
+                IconButton(
+                    modifier = Modifier
+                        .size(112.dp)
+                        .padding(bottom = 16.dp, top = 12.dp),
                     onClick = {
-                        if ( !playerStateFlow.value) {
-                            coroutineScope.launch {
-                                withContext(Dispatchers.IO) {
-                                    playerViewModel.play().apply {
-                                        playerViewModel.albumCover()
-                                    }
-                                }
+                        when (playerState) {
+                            is PlayerState.Playing -> {
+                                playerViewModel.processIntent(PlayerIntent.PauseClicked)
                             }
-                        } else {
-                            coroutineScope.launch {
-                                withContext(Dispatchers.IO) {
-                                    playerViewModel.stop()
-                                }
+                            is PlayerState.Paused, PlayerState.Idle -> {
+                                playerViewModel.processIntent(PlayerIntent.PlayClicked)
                             }
+                            else -> {}
                         }
-                    }) {
-                    if (!playerStateFlow.value) {
-                        val play = AppCompatResources.getDrawable(
-                            LocalContext.current, R.drawable.ic_play
-                        )
-                        Icon(
-                            painter = rememberDrawablePainter(drawable = play),
-                            tint = Color.White,
-                            modifier = Modifier.size(56.dp),
-                            contentDescription = "playButton"
-                        )
-                    } else {
-                        val pause = AppCompatResources.getDrawable(
-                            LocalContext.current, R.drawable.ic_pause
-                        )
-                        Icon(
-                            painter = rememberDrawablePainter(drawable = pause),
-                            tint = Color.White,
-                            modifier = Modifier.size(56.dp),
-                            contentDescription = "pauseButton"
-                        )
+                    }
+                ) {
+                    when (playerState) {
+                        is PlayerState.Playing -> {
+                            val pauseDrawable = AppCompatResources.getDrawable(
+                                LocalContext.current, R.drawable.ic_pause
+                            )
+                            Icon(
+                                painter = rememberDrawablePainter(drawable = pauseDrawable!!),
+                                tint = Color.White,
+                                modifier = Modifier.size(56.dp),
+                                contentDescription = "pauseButton"
+                            )
+                        }
+                        else -> {
+                            val playDrawable = AppCompatResources.getDrawable(
+                                LocalContext.current, R.drawable.ic_play
+                            )
+                            Icon(
+                                painter = rememberDrawablePainter(drawable = playDrawable!!),
+                                tint = Color.White,
+                                modifier = Modifier.size(56.dp),
+                                contentDescription = "playButton"
+                            )
+                        }
                     }
                 }
             }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(24.dp)
-            ) { }
+            Spacer(modifier = Modifier.size(24.dp))
         }
     }
 }
+
 
 @Composable
 fun VolumeSlider(modifier: Modifier, playerViewModel: PlayerViewModel) {
@@ -261,7 +255,7 @@ fun VolumeSlider(modifier: Modifier, playerViewModel: PlayerViewModel) {
 
         onValueChange = {
             position.value = it;
-            playerViewModel.setVolume(position.value)
+          //  playerViewModel.volume(position.value)
         },
         valueRange = 0f..1f,
     )
@@ -282,7 +276,7 @@ fun Space(size: Int) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerTopAppBar(navigationController: NavHostController, playerViewModel: PlayerViewModel = hiltViewModel()) {
-    val stationName = playerViewModel.stationName.collectAsStateWithLifecycle()
+  //  val stationName = playerViewModel.stationName.collectAsStateWithLifecycle()
 
     Row(
         modifier = Modifier
@@ -299,7 +293,8 @@ fun PlayerTopAppBar(navigationController: NavHostController, playerViewModel: Pl
             )
         }
         Text(
-            text = stationName.value ?: " Radio Station",
+           // text = stationName.value ?: " Radio Station",
+            text  = "TODO",
             color = Color.White,
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
@@ -310,7 +305,7 @@ fun PlayerTopAppBar(navigationController: NavHostController, playerViewModel: Pl
     }
 }
 
-@SuppressLint("PrivateResource")
+/*@SuppressLint("PrivateResource")
 @Composable
 fun Botonera() {
     val playerViewModel: PlayerViewModel = hiltViewModel()
@@ -450,7 +445,7 @@ fun Botonera() {
                     }
                 }
             }
-            /*Row(
+            *//*Row(
                 Modifier
                     .height(32.dp)
                     .padding(horizontal = 4.dp)
@@ -498,11 +493,97 @@ fun Botonera() {
                         .padding(top = 8.dp, start = 4.dp),
                     contentDescription = "volumeUp"
                 )
-            }*/
+            }*//*
             Space(size = 4)
         }
+    }
+}*/
+
+
+@Composable
+fun PlayerControls(
+    playerViewModel: PlayerViewModel,
+    modifier: Modifier = Modifier
+) {
+    val playerState by playerViewModel.state.collectAsStateWithLifecycle()
+    val station by playerViewModel.state.collectAsStateWithLifecycle()
+
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Color(0xFF1C1C1C))
+            .padding(16.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Información de la estación
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "TODO",
+                    color = Color.White,
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+
+            // Controles de reproducción
+            IconButton(
+                onClick = {
+                    when (playerState) {
+                        is PlayerState.Playing -> playerViewModel.processIntent(PlayerIntent.PauseClicked)
+                        else -> playerViewModel.processIntent(PlayerIntent.PlayClicked)
+                    }
+                }
+            ) {
+                Icon(
+                    painter = painterResource(
+                        id = if (playerState is PlayerState.Playing) {
+                            R.drawable.ic_pause
+                        } else {
+                            R.drawable.ic_play
+                        }
+                    ),
+                    contentDescription = if (playerState is PlayerState.Playing) "Pause" else "Play",
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
+
+        // Slider de volumen
+        Volume(
+            modifier = Modifier.fillMaxWidth(),
+            playerViewModel = playerViewModel
+        )
     }
 }
 
 
+@Composable
+fun Volume(modifier: Modifier, playerViewModel: PlayerViewModel) {
+    val volume by playerViewModel.volume.collectAsStateWithLifecycle()
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.padding(16.dp)
+    ) {
+        Text(text = "Volumen: ${volume.toInt()}")
+        Slider(
+            value = volume,
+            onValueChange = { newVolume ->
+                playerViewModel.processIntent(PlayerIntent.VolumeChanged(newVolume))
+            },
+            valueRange = 0f..100f,
+            colors = SliderDefaults.colors(
+                thumbColor = Color.Magenta,
+                activeTrackColor = Color.Magenta,
+                inactiveTrackColor = Color.DarkGray
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
 

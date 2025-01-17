@@ -21,7 +21,7 @@ class LastFMService @Inject constructor(
     }
 
     suspend fun getAlbumCover(artistName: String, trackName: String): String {
-        var trackInfo = api.getTrackInfo(getApiKey(), artistName, trackName)
+        val trackInfo = api.getTrackInfo(getApiKey(), artistName, trackName)
         return if (trackInfo.isSuccessful) {
             var cover = trackInfo.body()!!.track.album.image[3].text
             if (cover == null) cover = trackInfo.body()!!.track.album.image[2].text

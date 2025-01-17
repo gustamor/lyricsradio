@@ -202,8 +202,8 @@ Box() {
             .clickable {
                 coroutineScope.launch() {
                     withContext(Dispatchers.IO) {
-                        playerViewModel.addStationModel(station)
-                        playerViewModel.addMediaItem(uri)
+                       /* playerViewModel.addStationModel(station)
+                        playerViewModel.addMediaItem(uri)*/
                     }
                     nav.navigate(Routes.PlayerScreen.route)
                 }
